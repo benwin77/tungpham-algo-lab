@@ -34,8 +34,9 @@
     --signal-sell-bg: rgba(244, 63, 94, 0.08);
     --signal-sell-border: rgba(244, 63, 94, 0.3);
 
-    /* Typography */
-    --font-serif: 'Cinzel', Georgia, serif;
+    /* Typography (Hỗ trợ 100% dấu Tiếng Việt chuẩn Unicode) */
+    --font-serif: 'Cinzel', -apple-system, serif;
+    --font-heading: 'Space Grotesk', 'Plus Jakarta Sans', -apple-system, sans-serif;
     --font-sans: 'Space Grotesk', -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Courier New', monospace;
     --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
@@ -106,7 +107,7 @@ body.stealth-dark-theme {
 }
 
 .logo-text h1 {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 0.95rem;
     font-weight: 700;
     letter-spacing: 1.2px;
@@ -326,7 +327,7 @@ body.stealth-dark-theme {
     margin-bottom: 8px;
 }
 .ac-pair {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-weight: 700;
     font-size: 0.98rem;
     letter-spacing: 0.5px;
@@ -414,7 +415,7 @@ body.stealth-dark-theme {
 }
 
 .pair-symbol-badge {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 1.35rem;
     font-weight: 800;
     padding: 7px 16px;
@@ -426,7 +427,7 @@ body.stealth-dark-theme {
 }
 
 .detail-asset-name {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 1.2rem;
     font-weight: 700;
     color: #ffffff;
@@ -528,7 +529,7 @@ body.stealth-dark-theme {
 }
 
 .signal-direction {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--signal-buy);
@@ -627,7 +628,7 @@ body.stealth-dark-theme {
     margin-bottom: 18px;
 }
 .section-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 0.84rem;
     font-weight: 700;
     color: #ffffff;
@@ -735,7 +736,7 @@ body.stealth-dark-theme {
     margin-bottom: 12px;
 }
 .chart-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 0.98rem;
     font-weight: 700;
     display: flex;
@@ -1087,7 +1088,7 @@ body.stealth-dark-theme {
     font-size: 1rem;
 }
 .modal-title-group h3 {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-primary);
@@ -1266,7 +1267,7 @@ body.stealth-dark-theme {
     text-align: left;
 }
 .footer-brand {
-    font-family: var(--font-serif);
+    font-family: var(--font-heading);
     font-size: 0.8rem;
     color: var(--text-primary);
     letter-spacing: 0.4px;
