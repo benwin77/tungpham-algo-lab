@@ -430,14 +430,14 @@ function renderActivePairDetail() {
     }
 
     // Chart header title
-    const tvSym = m.tv_symbol || f.tv_symbol || "OANDA:XAUUSD";
-    DOM.chartPairName.textContent = `Biểu Đồ Trực Tiếp: ${tvSym}`;
+    const chartLabel = (p === "XAUUSD") ? "XAU/USD (Spot Gold)" : ((p === "US100") ? "US100 (Nasdaq 100 Index)" : formattedPair);
+    DOM.chartPairName.textContent = `Biểu Đồ Trực Tiếp: ${chartLabel}`;
 }
 
 function renderTradingViewWidget() {
     const p = STATE.activePair;
     const m = STATE.marketData[p] || {};
-    const tvSymbol = m.tv_symbol || (p === "XAUUSD" ? "OANDA:XAUUSD" : (p === "US100" ? "NASDAQ:NDX" : `FX:${p}`));
+    const tvSymbol = (p === "XAUUSD") ? "OANDA:XAUUSD" : ((p === "US100") ? "FOREXCOM:NAS100USD" : (m.tv_symbol || `FX:${p}`));
 
     DOM.tvContainer.innerHTML = "";
     
