@@ -1,0 +1,266 @@
+{
+  "XAUUSD": {
+    "pair": "XAUUSD",
+    "name": "Gold / U.S. Dollar (Spot XAU/USD)",
+    "tv_symbol": "OANDA:XAUUSD",
+    "current_price": 4602.99,
+    "bias": "BUY",
+    "bias_badge": "🟢 BUY (Canh Mua Vùng Cầu / FVG)",
+    "status": "PLANNING",
+    "strategy_type": "SMC + Thuần PA + Trend Follow",
+    "entry_zone": "4521.45 - 4557.13",
+    "entry_low": 4521.45,
+    "entry_high": 4557.13,
+    "stop_loss": 4455.2,
+    "tp1": 4694.73,
+    "tp2": 4683.11,
+    "rr_ratio": "1:1.2",
+    "structure": "BULLISH BOS (H4/D1)",
+    "ob_zone": "4521.45 - 4557.13 (H4 Bullish Order Block + Discount FVG)",
+    "bsl": "4632.15 (Buy-side Liquidity Swing High)",
+    "ssl": "4488.6 (Sell-side Liquidity Asia Low)",
+    "key_sr": "Cản Hỗ trợ: 4521.45 | Cản Kháng cự: 4632.15",
+    "checklist": [
+      {
+        "text": "H4 Demand Order Block (OB) chưa bị vi phạm",
+        "checked": true
+      },
+      {
+        "text": "Quét thanh khoản Sell-side (SSL) phiên Á / London",
+        "checked": true
+      },
+      {
+        "text": "Giá nằm trong vùng Discount Zone (Fib 0.618 - 0.786)",
+        "checked": true
+      },
+      {
+        "text": "Nến rút chân Pinbar / Bullish Engulfing tại FVG",
+        "checked": true
+      },
+      {
+        "text": "EMA 50 & 200 ủng hộ xu hướng tăng dài hạn",
+        "checked": true
+      }
+    ],
+    "rationale": "Vàng đang giữ vững cấu trúc tăng (Uptrend Structure) trên khung Daily & H4. Kịch bản tuần: Chờ giá hồi về vùng Discount FVG & Bullish Order Block (4521.45 - 4557.13) sau khi quét thanh khoản đáy ngắn hạn, xác nhận nến đảo chiều PA để kích hoạt lệnh BUY hướng về BSL 4632.15.",
+    "user_customized": false,
+    "user_notes": "",
+    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "sentiment": "NEUTRAL",
+    "bull_score": 54,
+    "bear_score": 46,
+    "updated_at": "2026-08-22 19:41:25"
+  },
+  "USDJPY": {
+    "pair": "USDJPY",
+    "name": "USD / Japanese Yen",
+    "tv_symbol": "FX:USDJPY",
+    "current_price": 158.972,
+    "bias": "SELL",
+    "bias_badge": "🔴 SELL (SMC CHoCH Breakout)",
+    "status": "PLANNING",
+    "strategy_type": "SMC + Thuần PA + Trend Follow",
+    "entry_zone": "159.299 - 159.517",
+    "entry_low": 159.299,
+    "entry_high": 159.517,
+    "stop_loss": 160.007,
+    "tp1": 158.21,
+    "tp2": 158.349,
+    "rr_ratio": "1:1.3",
+    "structure": "BEARISH CHoCH",
+    "ob_zone": "159.299 - 159.517 (Supply OB)",
+    "bsl": "159.132 (BSL)",
+    "ssl": "158.349 (Target SSL)",
+    "key_sr": "Resistance: 159.517 | Support: 158.349",
+    "checklist": [
+      {
+        "text": "Thủng cấu trúc đáy gần nhất (CHoCH)",
+        "checked": true
+      },
+      {
+        "text": "Retest Bearish Order Block thất bại",
+        "checked": true
+      }
+    ],
+    "rationale": "USD/JPY suy yếu, canh SELL hồi tại vùng kháng cự 159.299 - 159.517.",
+    "user_customized": false,
+    "user_notes": "",
+    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "sentiment": "NEUTRAL",
+    "bull_score": 50,
+    "bear_score": 50,
+    "updated_at": "2026-08-22 19:41:13"
+  },
+  "EURUSD": {
+    "pair": "EURUSD",
+    "name": "EUR / U.S. Dollar",
+    "tv_symbol": "FX:EURUSD",
+    "current_price": 1.16761,
+    "bias": "BUY",
+    "bias_badge": "🟢 BUY (Double Bottom Reversal)",
+    "status": "PLANNING",
+    "strategy_type": "SMC + Thuần PA + Trend Follow",
+    "entry_zone": "1.16502 - 1.16605",
+    "entry_low": 1.16502,
+    "entry_high": 1.16605,
+    "stop_loss": 1.16295,
+    "tp1": 1.17123,
+    "tp2": 1.17114,
+    "rr_ratio": "1:1.6",
+    "structure": "BULLISH REVERSAL",
+    "ob_zone": "1.16502 - 1.16605 (Demand Zone)",
+    "bsl": "1.17114 (BSL Target)",
+    "ssl": "1.16688 (SSL)",
+    "key_sr": "Support: 1.16502 | Resistance: 1.17114",
+    "checklist": [
+      {
+        "text": "Mô hình 2 đáy tạo phân kỳ RSI",
+        "checked": true
+      },
+      {
+        "text": "Quét râu đáy cũ SSL thành công",
+        "checked": true
+      }
+    ],
+    "rationale": "EUR/USD tạo đáy đảo chiều, canh BUY ngắn hạn tại vùng cầu 1.16502 - 1.16605.",
+    "user_customized": false,
+    "user_notes": "",
+    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "sentiment": "NEUTRAL",
+    "bull_score": 57,
+    "bear_score": 43,
+    "updated_at": "2026-08-22 19:41:13"
+  },
+  "GBPUSD": {
+    "pair": "GBPUSD",
+    "name": "GBP / U.S. Dollar",
+    "tv_symbol": "FX:GBPUSD",
+    "current_price": 1.3641,
+    "bias": "BUY",
+    "bias_badge": "🟢 BUY (Bullish Trend Rebound)",
+    "status": "PLANNING",
+    "strategy_type": "SMC + Thuần PA + Trend Follow",
+    "entry_zone": "1.36046 - 1.36192",
+    "entry_low": 1.36046,
+    "entry_high": 1.36192,
+    "stop_loss": 1.35781,
+    "tp1": 1.36873,
+    "tp2": 1.36756,
+    "rr_ratio": "1:1.4",
+    "structure": "BULLISH STRUCTURE",
+    "ob_zone": "1.36046 - 1.36192 (H4 Demand OB)",
+    "bsl": "1.36756 (BSL Target)",
+    "ssl": "1.36184 (SSL)",
+    "key_sr": "Hỗ trợ: 1.36046 | Kháng cự: 1.36756",
+    "checklist": [
+      {
+        "text": "Test thành công vùng Demand Order Block H4",
+        "checked": true
+      },
+      {
+        "text": "Trendline hỗ trợ dốc lên giữ vững",
+        "checked": true
+      }
+    ],
+    "rationale": "GBP/USD duy trì lực mua, canh BUY hồi tại vùng cầu 1.36046 - 1.36192.",
+    "user_customized": false,
+    "user_notes": "",
+    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "sentiment": "NEUTRAL",
+    "bull_score": 53,
+    "bear_score": 47,
+    "updated_at": "2026-08-22 19:41:13"
+  },
+  "CADCHF": {
+    "pair": "CADCHF",
+    "name": "CAD / Swiss Franc",
+    "tv_symbol": "FX:CADCHF",
+    "current_price": 0.58176,
+    "bias": "BUY",
+    "bias_badge": "🟢 BUY (Support Channel Bounce + PA)",
+    "status": "PLANNING",
+    "strategy_type": "SMC + Thuần PA + Trend Follow",
+    "entry_zone": "0.58062 - 0.58151",
+    "entry_low": 0.58062,
+    "entry_high": 0.58151,
+    "stop_loss": 0.57938,
+    "tp1": 0.58117,
+    "tp2": 0.58207,
+    "rr_ratio": "1:0.3",
+    "structure": "RANGE ACCUMULATION / S&R BOUNCE",
+    "ob_zone": "0.58062 - 0.58151 (Key Support & Demand Base)",
+    "bsl": "0.58242 (Range High Liquidity)",
+    "ssl": "0.57991 (Range Low Liquidity)",
+    "key_sr": "Cản Đáy: 0.58062 | Cản Đỉnh: 0.58242",
+    "checklist": [
+      {
+        "text": "Giá chạm cạnh dưới biên độ tích lũy (Range Low)",
+        "checked": true
+      },
+      {
+        "text": "Nến Pinbar từ chối vùng hỗ trợ D1",
+        "checked": true
+      },
+      {
+        "text": "Tương quan giá Dầu thô hồi phục hỗ trợ CAD",
+        "checked": true
+      }
+    ],
+    "rationale": "CAD/CHF đang di chuyển trong biên độ Range đi ngang. Kịch bản tuần: Canh BUY khi giá test vùng biên dưới 0.58062 - 0.58151 với xác nhận nến đảo chiều PA, chốt lời tại đỉnh hộp 0.58242.",
+    "user_customized": false,
+    "user_notes": "",
+    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "sentiment": "NEUTRAL",
+    "bull_score": 54,
+    "bear_score": 46,
+    "updated_at": "2026-08-22 19:41:13"
+  },
+  "USOIL": {
+    "pair": "USOIL",
+    "name": "Crude Oil WTI",
+    "tv_symbol": "TVC:USOIL",
+    "current_price": 87.06,
+    "bias": "BUY",
+    "bias_badge": "🟢 BUY (SMC Discount FVG + Trend Follow)",
+    "status": "PLANNING",
+    "strategy_type": "SMC + Thuần PA + Trend Follow",
+    "entry_zone": "85.88 - 86.38",
+    "entry_low": 85.88,
+    "entry_high": 86.38,
+    "stop_loss": 84.87,
+    "tp1": 88.49,
+    "tp2": 89.0,
+    "rr_ratio": "1:1.7",
+    "structure": "BULLISH BREAK OF STRUCTURE",
+    "ob_zone": "85.88 - 86.38 (H4 Bullish FVG & Demand Level)",
+    "bsl": "89.0 (Equal Highs Liquidity)",
+    "ssl": "85.38 (Recent Low)",
+    "key_sr": "Hỗ trợ: 85.88 | Kháng cự: 89.0",
+    "checklist": [
+      {
+        "text": "BOS phá vỡ cấu trúc đỉnh trước đó",
+        "checked": true
+      },
+      {
+        "text": "Giá lấp đầy vùng mất cân bằng (Fair Value Gap - FVG)",
+        "checked": true
+      },
+      {
+        "text": "Dải EMA 20/50 hướng lên mạnh mẽ",
+        "checked": true
+      },
+      {
+        "text": "Rủi ro địa chính trị & cam kết cắt giảm OPEC+",
+        "checked": true
+      }
+    ],
+    "rationale": "Dầu WTI giữ vững cấu trúc tăng sau khi phá vỡ cản gần nhất. Kịch bản tuần: Canh BUY khi giá quay về lấp khoảng trống FVG (85.88 - 86.38) để tiếp tục xu hướng tăng tới 89.0.",
+    "user_customized": false,
+    "user_notes": "",
+    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "sentiment": "NEUTRAL",
+    "bull_score": 54,
+    "bear_score": 46,
+    "updated_at": "2026-08-22 19:41:13"
+  }
+}
