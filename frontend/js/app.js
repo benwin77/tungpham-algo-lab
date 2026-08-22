@@ -233,6 +233,8 @@ function handleAdminButtonClick() {
 // API Calls & Data Ingestion
 // -------------------------------------------------------------
 
+let realtimeStreamStarted = false;
+
 async function initDashboard() {
     try {
         await Promise.all([
@@ -242,10 +244,65 @@ async function initDashboard() {
             loadNews()
         ]);
         renderAll();
+        if (!realtimeStreamStarted) {
+            realtimeStreamStarted = true;
+            startRealtimeTickerStream();
+        }
     } catch (err) {
         console.error("Init dashboard error:", err);
         showToast("Đang kết nối backend server...", "info");
     }
+}
+
+function startRealtimeTickerStream() {
+    // 1. Live Binance stream for BTCUSD (Polls every 3s direct from Binance 24/7)
+    async function updateLiveBTC() {
+        try {
+            const res = await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT");
+            if (res.ok) {
+                const data = await res.json();
+                const price = parseFloat(data.lastPrice).toFixed(2);
+                const chg = parseFloat(data.priceChangePercent).toFixed(2);
+                if (!STATE.marketData["BTCUSD"]) {
+                    STATE.marketData["BTCUSD"] = {};
+                }
+                STATE.marketData["BTCUSD"].current_price = parseFloat(price);
+                STATE.marketData["BTCUSD"].change_pct = parseFloat(chg);
+
+                renderTickerRibbon();
+                
+                // Update active BTC card price & detail if active
+                const btcCard = document.querySelector(".asset-card:nth-child(2) .ac-price");
+                if (btcCard) btcCard.textContent = price;
+                
+                if (STATE.activePair === "BTCUSD") {
+                    const priceSub = document.querySelector(".detail-stat-card .stat-val");
+                    if (priceSub) priceSub.textContent = price;
+                }
+            }
+        } catch (e) {
+            // silent fallback
+        }
+    }
+
+    // 2. Poll backend market-data every 12s for Forex, Gold & US100
+    async function updateLiveMarket() {
+        try {
+            const res = await fetch(`${API_BASE}/api/market-data`);
+            if (res.ok) {
+                const data = await res.json();
+                Object.assign(STATE.marketData, data);
+                renderTickerRibbon();
+                renderAssetGrid();
+            }
+        } catch (e) {
+            // silent fallback
+        }
+    }
+
+    updateLiveBTC();
+    setInterval(updateLiveBTC, 3000);
+    setInterval(updateLiveMarket, 12000);
 }
 
 async function loadMarketData() {
