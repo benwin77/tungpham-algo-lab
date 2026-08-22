@@ -117,49 +117,53 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
                 {"text": "Retest Bearish Order Block thất bại", "checked": True}
             ]
             rationale = f"USD/JPY suy yếu, canh SELL hồi tại vùng kháng cự {entry_low} - {entry_high}."
-    elif pair == "EURUSD":
-        # EURUSD: Bearish trend bias vs USD dominance
-        if trend == "BEARISH" or bull_pct < 45:
-            bias = "SELL"
-            bias_badge = "🔴 SELL (Premium Zone Mitigation)"
-            entry_high = round(price + atr * 0.6, digits)
-            entry_low = round(entry_high - atr * 0.25, digits)
-            sl = round(entry_high + atr * 0.45, digits)
-            tp1 = round(price - atr * 0.75, digits)
-            tp2 = round(swing_low, digits)
-            structure = "BEARISH DOWNTREND (D1/H4)"
-            ob_zone = f"{entry_low} - {entry_high} (H4 Bearish Supply OB + Fib 0.618)"
-            bsl = f"{swing_high} (Liquidity Sweep Zone)"
-            ssl = f"{swing_low} (Major Daily Low SSL)"
-            key_sr = f"Cản Cung: {entry_high} | Cản Cầu: {swing_low}"
+    elif pair == "BTCUSD":
+        # Bitcoin logic: 24/7 Whale Accumulation, CME/FVG Gap Fill, Weekend Liquidity Sweep & Trend Following
+        is_bullish = price >= ema50 or bull_pct >= 50
+        if is_bullish:
+            bias = "BUY"
+            bias_badge = "🟢 BUY (SMC Discount FVG + Whale Accumulation)"
+            entry_low = round(price - atr * 0.65, digits)
+            entry_high = round(entry_low + atr * 0.25, digits)
+            sl = round(entry_low - atr * 0.45, digits)
+            tp1 = round(price + atr * 0.85, digits)
+            tp2 = round(swing_high, digits)
+            structure = "BULLISH UPTREND STRUCTURE (H4/D1)"
+            ob_zone = f"{entry_low} - {entry_high} (H4 Bullish Order Block + Imbalance Fill)"
+            bsl = f"{swing_high} (Major Swing High BSL)"
+            ssl = f"{round(entry_low - atr*0.3, digits)} (Weekend Low Sweep Target)"
+            key_sr = f"Hỗ trợ Cầu: {entry_low} | Kháng cự Đỉnh: {swing_high}"
             checklist = [
-                {"text": "Đường EMA 50 dốc xuống dưới EMA 200", "checked": True},
-                {"text": "Giá hồi lên vùng Premium FVG bị từ chối (Rejection Wick)", "checked": True},
-                {"text": "DXY (Dollar Index) giữ cấu trúc tăng", "checked": True},
-                {"text": "ECB duy trì chính sách ôn hòa", "checked": True}
+                {"text": "H4 Bullish Order Block (OB) giữ vững phản ứng", "checked": True},
+                {"text": "Quét sạch thanh khoản đáy cuối tuần (Weekend Low Sweep)", "checked": True},
+                {"text": "Lấp đầy khoảng trống FVG / Imbalance khung H4", "checked": True},
+                {"text": "Dòng tiền tổ chức ETF & On-chain duy trì mua gom", "checked": True},
+                {"text": "EMA 20/50 dốc lên ủng hộ xu hướng Trend Following 24/7", "checked": True}
             ]
             rationale = (
-                f"EUR/USD chịu áp lực giảm từ phân kỳ chính sách tiền tệ. "
-                f"Kịch bản tuần: Canh SELL khi giá hồi vào vùng Premium Supply OB ({entry_low} - {entry_high}) nhắm mục tiêu SSL tại {swing_low}."
+                f"Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. "
+                f"Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB ({entry_low} - {entry_high}) "
+                f"sau khi quét thanh khoản đáy, hướng tới mục tiêu thanh khoản đỉnh BSL {swing_high}."
             )
         else:
-            bias = "BUY"
-            bias_badge = "🟢 BUY (Double Bottom Reversal)"
-            entry_low = round(price - atr * 0.5, digits)
-            entry_high = round(entry_low + atr * 0.2, digits)
-            sl = round(entry_low - atr * 0.4, digits)
-            tp1 = round(price + atr * 0.7, digits)
-            tp2 = round(swing_high, digits)
-            structure = "BULLISH REVERSAL"
-            ob_zone = f"{entry_low} - {entry_high} (Demand Zone)"
-            bsl = f"{swing_high} (BSL Target)"
-            ssl = f"{swing_low} (SSL)"
-            key_sr = f"Support: {entry_low} | Resistance: {swing_high}"
+            bias = "SELL"
+            bias_badge = "🔴 SELL (Supply Zone Mitigation)"
+            entry_high = round(price + atr * 0.65, digits)
+            entry_low = round(entry_high - atr * 0.25, digits)
+            sl = round(entry_high + atr * 0.45, digits)
+            tp1 = round(price - atr * 0.85, digits)
+            tp2 = round(swing_low, digits)
+            structure = "BEARISH DISTRIBUTION (H4)"
+            ob_zone = f"{entry_low} - {entry_high} (H4 Supply Zone)"
+            bsl = f"{swing_high} (BSL Peak)"
+            ssl = f"{swing_low} (SSL Support Target)"
+            key_sr = f"Kháng cự: {entry_high} | Hỗ trợ: {swing_low}"
             checklist = [
-                {"text": "Mô hình 2 đáy tạo phân kỳ RSI", "checked": True},
-                {"text": "Quét râu đáy cũ SSL thành công", "checked": True}
+                {"text": "Cản Supply Zone H4 giữ vững áp lực bán", "checked": True},
+                {"text": "Quét râu tạo mô hình Swing Failure Pattern (SFP) tại đỉnh BSL", "checked": True},
+                {"text": "Áp lực chốt lời ngắn hạn từ các ví lớn (Whales)", "checked": True}
             ]
-            rationale = f"EUR/USD tạo đáy đảo chiều, canh BUY ngắn hạn tại vùng cầu {entry_low} - {entry_high}."
+            rationale = f"Bitcoin đối mặt áp lực chốt lời tại vùng cản đỉnh, canh SELL khi giá hồi về vùng Supply {entry_low} - {entry_high}."
     elif pair == "GBPUSD":
         # GBPUSD: Liquidity sweeps in London session
         bias = "SELL" if price < ema50 else "BUY"

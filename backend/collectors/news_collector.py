@@ -15,7 +15,7 @@ RSS_FEEDS = [
 PAIR_KEYWORDS = {
     "XAUUSD": ["gold", "xau", "bullion", "precious metal", "treasury yield", "safe haven", "fed rate", "dxy", "powell", "inflation"],
     "USDJPY": ["usdjpy", "usd/jpy", "yen", "jpy", "bank of japan", "boj", "ueda", "tokyo", "japan yield", "intervention"],
-    "EURUSD": ["eurusd", "eur/usd", "euro", "ecb", "lagarde", "european central bank", "eurozone", "germany"],
+    "BTCUSD": ["bitcoin", "btc", "crypto", "halving", "etf", "sec", "crypto market", "satoshi", "cryptocurrency", "coinbase", "binance", "blackrock btc"],
     "GBPUSD": ["gbpusd", "gbp/usd", "pound", "sterling", "cable", "bank of england", "boe", "bailey", "uk cpi", "uk gdp"],
     "CADCHF": ["cadchf", "cad/chf", "loonie", "swiss franc", "chf", "snb", "bank of canada", "boc"],
     "US100":  ["nasdaq", "us100", "ndx", "tech", "nvidia", "apple", "microsoft", "wall street", "mega cap", "ai", "yields", "fed rate"]
@@ -210,6 +210,6 @@ def get_pair_sentiment_summary(pair_key: str, news_list: List[Dict[str, Any]]) -
 if __name__ == "__main__":
     news = fetch_latest_news()
     print(f"Fetched {len(news)} news articles.")
-    for p in ["XAUUSD", "USDJPY", "EURUSD", "GBPUSD", "CADCHF", "US100"]:
+    for p in ["XAUUSD", "BTCUSD", "US100", "GBPUSD", "USDJPY", "CADCHF"]:
         sent = get_pair_sentiment_summary(p, news)
         print(f"Sentiment for {p}: {sent['sentiment']} (Bull: {sent['bull_score']}%, Bear: {sent['bear_score']}%, News: {sent['articles_count']})")

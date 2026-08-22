@@ -324,14 +324,14 @@ function renderAll() {
 }
 
 function renderTickerRibbon() {
-    const pairs = ["XAUUSD", "USDJPY", "EURUSD", "GBPUSD", "CADCHF", "US100"];
+    const pairs = ["XAUUSD", "BTCUSD", "US100", "GBPUSD", "USDJPY", "CADCHF"];
     DOM.tickerContainer.innerHTML = pairs.map(p => {
         const data = STATE.marketData[p] || {};
         const price = data.current_price !== undefined ? data.current_price : "--";
         const chg = data.change_pct || 0;
         const chgClass = chg >= 0 ? "t-up" : "t-down";
         const chgSign = chg >= 0 ? "+" : "";
-        const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`);
+        const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "BTCUSD" ? "BTC/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`));
         return `
             <div class="ticker-item" onclick="switchPair('${p}')">
                 <span class="t-name">${formattedPair}:</span>
@@ -343,7 +343,7 @@ function renderTickerRibbon() {
 }
 
 function renderAssetGrid() {
-    const pairs = ["XAUUSD", "USDJPY", "EURUSD", "GBPUSD", "CADCHF", "US100"];
+    const pairs = ["XAUUSD", "BTCUSD", "US100", "GBPUSD", "USDJPY", "CADCHF"];
     DOM.assetGrid.innerHTML = pairs.map(p => {
         const f = STATE.forecasts[p] || {};
         const m = STATE.marketData[p] || {};
@@ -352,7 +352,7 @@ function renderAssetGrid() {
         const bias = f.bias || "WAIT";
         const biasClass = bias.toLowerCase();
         const biasBadge = bias === "BUY" ? "🟢 BUY" : (bias === "SELL" ? "🔴 SELL" : "⚪️ WAIT");
-        const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`);
+        const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "BTCUSD" ? "BTC/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`));
 
         return `
             <div class="asset-card ${isGold} ${isActive}" onclick="switchPair('${p}')">
@@ -374,7 +374,7 @@ function renderActivePairDetail() {
     const p = STATE.activePair;
     const f = STATE.forecasts[p] || {};
     const m = STATE.marketData[p] || {};
-    const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "US100" ? "US100 (Nasdaq)" : `${p.slice(0,3)}/${p.slice(3)}`);
+    const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "BTCUSD" ? "BTC/USD (24/7)" : (p === "US100" ? "US100 (Nasdaq)" : `${p.slice(0,3)}/${p.slice(3)}`));
 
     DOM.symbolBadge.textContent = formattedPair;
     if (p === "XAUUSD") {
@@ -430,7 +430,7 @@ function renderActivePairDetail() {
     }
 
     // Chart header title
-    const chartLabel = (p === "XAUUSD") ? "XAU/USD (Spot Gold)" : ((p === "US100") ? "US100 (Nasdaq 100 Index)" : formattedPair);
+    const chartLabel = (p === "XAUUSD") ? "XAU/USD (Spot Gold)" : ((p === "BTCUSD") ? "BTC/USD (Bitcoin 24/7)" : ((p === "US100") ? "US100 (Nasdaq 100 Index)" : formattedPair));
     DOM.chartPairName.textContent = `Biểu Đồ Trực Tiếp: ${chartLabel}`;
 }
 
@@ -438,10 +438,10 @@ function renderTradingViewWidget() {
     const p = STATE.activePair;
     let tvSymbol = "OANDA:XAUUSD";
     if (p === "XAUUSD") tvSymbol = "OANDA:XAUUSD";
+    else if (p === "BTCUSD") tvSymbol = "BINANCE:BTCUSDT";
     else if (p === "US100") tvSymbol = "PEPPERSTONE:NAS100";
-    else if (p === "USDJPY") tvSymbol = "FX:USDJPY";
-    else if (p === "EURUSD") tvSymbol = "FX:EURUSD";
     else if (p === "GBPUSD") tvSymbol = "FX:GBPUSD";
+    else if (p === "USDJPY") tvSymbol = "FX:USDJPY";
     else if (p === "CADCHF") tvSymbol = "FX:CADCHF";
 
     const container = document.getElementById("tradingview_chart");
@@ -512,7 +512,7 @@ function renderNews() {
     const relevantNews = allNews.filter(n => (n.pairs || []).includes(p) || (n.pairs || []).includes("ALL"));
     const displayNews = relevantNews.length ? relevantNews : allNews;
 
-    const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`);
+    const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "BTCUSD" ? "BTC/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`));
     DOM.newsSentPair.textContent = formattedPair;
 
     // Sentiment Gauge calculations
@@ -545,11 +545,11 @@ function renderNews() {
 }
 
 function renderMatrixTable() {
-    const pairs = ["XAUUSD", "USDJPY", "EURUSD", "GBPUSD", "CADCHF", "US100"];
+    const pairs = ["XAUUSD", "BTCUSD", "US100", "GBPUSD", "USDJPY", "CADCHF"];
     DOM.matrixTbody.innerHTML = pairs.map(p => {
         const f = STATE.forecasts[p] || {};
         const biasBadge = f.bias === "BUY" ? "<span class='text-success'>🟢 BUY</span>" : (f.bias === "SELL" ? "<span class='text-danger'>🔴 SELL</span>" : "⚪️ WAIT");
-        const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`);
+        const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "BTCUSD" ? "BTC/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`));
 
         return `
             <tr onclick="switchPair('${p}')" style="cursor:pointer;">
@@ -586,7 +586,7 @@ function openEditModal() {
 
     const p = STATE.activePair;
     const f = STATE.forecasts[p] || {};
-    const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`);
+    const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "BTCUSD" ? "BTC/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`));
 
     DOM.modalPairName.textContent = formattedPair;
     DOM.modalInputPair.value = p;
