@@ -436,34 +436,49 @@ function renderActivePairDetail() {
 
 function renderTradingViewWidget() {
     const p = STATE.activePair;
-    const m = STATE.marketData[p] || {};
-    const tvSymbol = (p === "XAUUSD") ? "OANDA:XAUUSD" : ((p === "US100") ? "FOREXCOM:NAS100USD" : (m.tv_symbol || `FX:${p}`));
+    let tvSymbol = "OANDA:XAUUSD";
+    if (p === "XAUUSD") tvSymbol = "OANDA:XAUUSD";
+    else if (p === "US100") tvSymbol = "PEPPERSTONE:NAS100";
+    else if (p === "USDJPY") tvSymbol = "FX:USDJPY";
+    else if (p === "EURUSD") tvSymbol = "FX:EURUSD";
+    else if (p === "GBPUSD") tvSymbol = "FX:GBPUSD";
+    else if (p === "CADCHF") tvSymbol = "FX:CADCHF";
 
-    DOM.tvContainer.innerHTML = "";
-    
-    try {
-        new TradingView.widget({
-            "autosize": true,
-            "symbol": tvSymbol,
-            "interval": "240",
-            "timezone": "Asia/Ho_Chi_Minh",
-            "theme": "dark",
-            "style": "1",
-            "locale": "vi_VN",
-            "toolbar_bg": "#0f172a",
-            "enable_publishing": false,
-            "hide_side_toolbar": false,
-            "allow_symbol_change": true,
-            "studies": [
-                "MASimple@tv-basicstudies",
-                "EMA@tv-basicstudies",
-                "RSI@tv-basicstudies"
-            ],
-            "container_id": "tradingview_chart"
-        });
-    } catch (e) {
-        console.warn("TradingView widget load notice:", e);
+    const container = document.getElementById("tradingview_chart");
+    if (!container) return;
+    container.innerHTML = "";
+
+    function loadWidget() {
+        if (typeof TradingView !== "undefined" && TradingView.widget) {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": tvSymbol,
+                "interval": "240",
+                "timezone": "Asia/Ho_Chi_Minh",
+                "theme": "dark",
+                "style": "1",
+                "locale": "vi_VN",
+                "toolbar_bg": "#0b0c10",
+                "enable_publishing": false,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "studies": [
+                    "MASimple@tv-basicstudies",
+                    "EMA@tv-basicstudies",
+                    "RSI@tv-basicstudies"
+                ],
+                "container_id": "tradingview_chart"
+            });
+        } else {
+            // Fallback iframe embed
+            const encodedSym = encodeURIComponent(tvSymbol);
+            container.innerHTML = `
+                <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=${encodedSym}&interval=240&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=%5B%22MASimple%40tv-basicstudies%22%2C%22EMA%40tv-basicstudies%22%2C%22RSI%40tv-basicstudies%22%5D&theme=dark&style=1&timezone=Asia%2FHo_Chi_Minh&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=vi_VN&utm_source=localhost" style="width: 100%; height: 100%; border: none;"></iframe>
+            `;
+        }
     }
+
+    loadWidget();
 }
 
 function renderCalendar() {
