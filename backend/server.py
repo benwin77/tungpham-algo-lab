@@ -120,6 +120,14 @@ def verify_auth(request: Request):
         "admin_name": "Mr Tung" if is_auth else None
     }
 
+@app.get("/api/health")
+def get_health():
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "service": "tungpham-algo-lab"
+    }
+
 @app.get("/api/status")
 def get_status():
     return {

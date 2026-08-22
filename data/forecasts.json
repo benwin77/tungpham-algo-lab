@@ -49,29 +49,29 @@
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:24:34"
+    "updated_at": "2026-08-22 22:27:36"
   },
   "BTCUSD": {
     "pair": "BTCUSD",
     "name": "Bitcoin / U.S. Dollar (BTC/USD 24/7)",
     "tv_symbol": "BINANCE:BTCUSDT",
-    "current_price": 77019.78,
+    "current_price": 76994.0,
     "bias": "BUY",
     "bias_badge": "🟢 BUY (SMC Discount FVG + Whale Accumulation)",
     "status": "PLANNING",
     "strategy_type": "SMC + Thuần PA + Trend Follow",
-    "entry_zone": "75506.48 - 76088.52",
-    "entry_low": 75506.48,
-    "entry_high": 76088.52,
-    "stop_loss": 74458.81,
-    "tp1": 78998.71,
+    "entry_zone": "75480.7 - 76062.74",
+    "entry_low": 75480.7,
+    "entry_high": 76062.74,
+    "stop_loss": 74433.03,
+    "tp1": 78972.93,
     "tp2": 78828.15,
     "rr_ratio": "1:1.7",
     "structure": "BULLISH UPTREND STRUCTURE (H4/D1)",
-    "ob_zone": "75506.48 - 76088.52 (H4 Bullish Order Block + Imbalance Fill)",
+    "ob_zone": "75480.7 - 76062.74 (H4 Bullish Order Block + Imbalance Fill)",
     "bsl": "78828.15 (Major Swing High BSL)",
-    "ssl": "74808.03 (Weekend Low Sweep Target)",
-    "key_sr": "Hỗ trợ Cầu: 75506.48 | Kháng cự Đỉnh: 78828.15",
+    "ssl": "74782.25 (Weekend Low Sweep Target)",
+    "key_sr": "Hỗ trợ Cầu: 75480.7 | Kháng cự Đỉnh: 78828.15",
     "checklist": [
       {
         "text": "H4 Bullish Order Block (OB) giữ vững phản ứng",
@@ -94,14 +94,14 @@
         "checked": true
       }
     ],
-    "rationale": "Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (75506.48 - 76088.52) sau khi quét thanh khoản đáy, hướng tới mục tiêu thanh khoản đỉnh BSL 78828.15.",
+    "rationale": "Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (75480.7 - 76062.74) sau khi quét thanh khoản đáy, hướng tới mục tiêu thanh khoản đỉnh BSL 78828.15.",
     "user_customized": false,
     "user_notes": "",
     "news_driver": "FOMC Meeting Minutes & Rate Decision",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:24:34"
+    "updated_at": "2026-08-22 22:27:36"
   },
   "US100": {
     "pair": "US100",
@@ -153,7 +153,7 @@
     "sentiment": "NEUTRAL",
     "bull_score": 55,
     "bear_score": 45,
-    "updated_at": "2026-08-22 22:24:34"
+    "updated_at": "2026-08-22 22:27:36"
   },
   "GBPUSD": {
     "pair": "GBPUSD",
@@ -193,7 +193,7 @@
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:24:34"
+    "updated_at": "2026-08-22 22:27:36"
   },
   "USDJPY": {
     "pair": "USDJPY",
@@ -233,7 +233,7 @@
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:24:34"
+    "updated_at": "2026-08-22 22:27:36"
   },
   "CADCHF": {
     "pair": "CADCHF",
@@ -277,6 +277,6 @@
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:24:34"
+    "updated_at": "2026-08-22 22:27:36"
   }
 }
