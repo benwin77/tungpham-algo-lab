@@ -45,33 +45,33 @@
     "rationale": "Vàng đang giữ vững cấu trúc tăng (Uptrend Structure) trên khung Daily & H4. Kịch bản tuần: Chờ giá hồi về vùng Discount FVG & Bullish Order Block (4521.45 - 4557.13) sau khi quét thanh khoản đáy ngắn hạn, xác nhận nến đảo chiều PA để kích hoạt lệnh BUY hướng về BSL 4632.15.",
     "user_customized": false,
     "user_notes": "",
-    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "news_driver": "FOMC Meeting Minutes & Fed Speak",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:03:54"
+    "updated_at": "2026-08-22 22:08:32"
   },
   "BTCUSD": {
     "pair": "BTCUSD",
     "name": "Bitcoin / U.S. Dollar (BTC/USD 24/7)",
     "tv_symbol": "BINANCE:BTCUSDT",
-    "current_price": 77086.55,
+    "current_price": 76980.19,
     "bias": "BUY",
     "bias_badge": "🟢 BUY (SMC Discount FVG + Whale Accumulation)",
     "status": "PLANNING",
     "strategy_type": "SMC + Thuần PA + Trend Follow",
-    "entry_zone": "75573.25 - 76155.29",
-    "entry_low": 75573.25,
-    "entry_high": 76155.29,
-    "stop_loss": 74525.58,
-    "tp1": 79065.48,
+    "entry_zone": "75466.89 - 76048.93",
+    "entry_low": 75466.89,
+    "entry_high": 76048.93,
+    "stop_loss": 74419.22,
+    "tp1": 78959.12,
     "tp2": 78828.15,
-    "rr_ratio": "1:1.6",
+    "rr_ratio": "1:1.7",
     "structure": "BULLISH UPTREND STRUCTURE (H4/D1)",
-    "ob_zone": "75573.25 - 76155.29 (H4 Bullish Order Block + Imbalance Fill)",
+    "ob_zone": "75466.89 - 76048.93 (H4 Bullish Order Block + Imbalance Fill)",
     "bsl": "78828.15 (Major Swing High BSL)",
-    "ssl": "74874.8 (Weekend Low Sweep Target)",
-    "key_sr": "Hỗ trợ Cầu: 75573.25 | Kháng cự Đỉnh: 78828.15",
+    "ssl": "74768.44 (Weekend Low Sweep Target)",
+    "key_sr": "Hỗ trợ Cầu: 75466.89 | Kháng cự Đỉnh: 78828.15",
     "checklist": [
       {
         "text": "H4 Bullish Order Block (OB) giữ vững phản ứng",
@@ -94,14 +94,14 @@
         "checked": true
       }
     ],
-    "rationale": "Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (75573.25 - 76155.29) sau khi quét thanh khoản đáy, hướng tới mục tiêu thanh khoản đỉnh BSL 78828.15.",
+    "rationale": "Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (75466.89 - 76048.93) sau khi quét thanh khoản đáy, hướng tới mục tiêu thanh khoản đỉnh BSL 78828.15.",
     "user_customized": false,
     "user_notes": "",
-    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "news_driver": "FOMC Meeting Minutes & Fed Speak",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:03:54"
+    "updated_at": "2026-08-22 22:08:32"
   },
   "US100": {
     "pair": "US100",
@@ -149,11 +149,11 @@
     "rationale": "Chỉ số US100 (Nasdaq) duy trì cấu trúc tăng trưởng mạnh mẽ của nhóm cổ phiếu công nghệ. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (29111.0 - 29181.0) trong phiên Mỹ để tiếp tục đà tăng hướng tới thanh khoản đỉnh BSL 29420.0.",
     "user_customized": false,
     "user_notes": "",
-    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "news_driver": "FOMC Meeting Minutes & Fed Speak",
     "sentiment": "NEUTRAL",
     "bull_score": 55,
     "bear_score": 45,
-    "updated_at": "2026-08-22 22:03:54"
+    "updated_at": "2026-08-22 22:08:32"
   },
   "GBPUSD": {
     "pair": "GBPUSD",
@@ -189,11 +189,11 @@
     "rationale": "GBP/USD duy trì lực mua, canh BUY hồi tại vùng cầu 1.36046 - 1.36192.",
     "user_customized": false,
     "user_notes": "",
-    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "news_driver": "FOMC Meeting Minutes & Fed Speak",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:03:54"
+    "updated_at": "2026-08-22 22:08:32"
   },
   "USDJPY": {
     "pair": "USDJPY",
@@ -229,11 +229,11 @@
     "rationale": "USD/JPY suy yếu, canh SELL hồi tại vùng kháng cự 159.299 - 159.517.",
     "user_customized": false,
     "user_notes": "",
-    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "news_driver": "FOMC Meeting Minutes & Fed Speak",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:03:54"
+    "updated_at": "2026-08-22 22:08:32"
   },
   "CADCHF": {
     "pair": "CADCHF",
@@ -273,10 +273,10 @@
     "rationale": "CAD/CHF đang di chuyển trong biên độ Range đi ngang. Kịch bản tuần: Canh BUY khi giá test vùng biên dưới 0.58062 - 0.58151 với xác nhận nến đảo chiều PA, chốt lời tại đỉnh hộp 0.58242.",
     "user_customized": false,
     "user_notes": "",
-    "news_driver": "US Non-Farm Employment Change (NFP)",
+    "news_driver": "FOMC Meeting Minutes & Fed Speak",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-22 22:03:54"
+    "updated_at": "2026-08-22 22:08:32"
   }
 }

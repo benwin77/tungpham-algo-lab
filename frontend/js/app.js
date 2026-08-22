@@ -545,18 +545,23 @@ function renderCalendar() {
         return;
     }
 
-    DOM.calendarList.innerHTML = events.slice(0, 25).map(e => {
+    DOM.calendarList.innerHTML = events.slice(0, 35).map(e => {
         const impactClass = `impact-${(e.impact || "low").toLowerCase()}`;
+        const timeDisplay = e.full_date_vn || e.date || "Trong tuần";
         return `
             <div class="cal-event-card">
                 <div class="cal-top">
-                    <span class="cal-currency">${e.currency || "USD"}</span>
+                    <div class="cal-tag-group">
+                        <span class="cal-currency">${e.currency || "USD"}</span>
+                        <span class="cal-datetime-tag"><i class="fa-regular fa-clock"></i> ${timeDisplay}</span>
+                    </div>
                     <span class="cal-impact-badge ${impactClass}">${e.impact} Impact</span>
                 </div>
                 <div class="cal-title">${e.title}</div>
                 <div class="cal-stats">
-                    <span>Dự báo: <strong>${e.forecast}</strong></span>
-                    <span>Trước: <strong>${e.previous}</strong></span>
+                    <span>Dự báo: <strong>${e.forecast || "--"}</strong></span>
+                    <span>Trước: <strong>${e.previous || "--"}</strong></span>
+                    ${e.actual && e.actual !== "--" ? `<span>Thực tế: <strong style="color:#10b981;">${e.actual}</strong></span>` : ""}
                 </div>
             </div>
         `;

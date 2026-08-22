@@ -864,15 +864,38 @@ body.stealth-dark-theme {
     align-items: center;
     margin-bottom: 6px;
 }
+.cal-tag-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
 .cal-currency {
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 700;
     padding: 2px 6px;
     border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     color: var(--text-primary);
-    border: var(--border-subtle);
+    border: var(--border-hairline);
+}
+.cal-datetime-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+.cal-datetime-tag i {
+    font-size: 0.64rem;
+    color: #60a5fa;
 }
 .cal-impact-badge {
     font-family: var(--font-sans);
