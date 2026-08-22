@@ -18,7 +18,7 @@ PAIR_KEYWORDS = {
     "EURUSD": ["eurusd", "eur/usd", "euro", "ecb", "lagarde", "european central bank", "eurozone", "germany"],
     "GBPUSD": ["gbpusd", "gbp/usd", "pound", "sterling", "cable", "bank of england", "boe", "bailey", "uk cpi", "uk gdp"],
     "CADCHF": ["cadchf", "cad/chf", "loonie", "swiss franc", "chf", "snb", "bank of canada", "boc"],
-    "USOIL":  ["oil", "crude", "wti", "brent", "opec", "eia", "petroleum", "energy", "middle east supply", "rig count"]
+    "US100":  ["nasdaq", "us100", "ndx", "tech", "nvidia", "apple", "microsoft", "wall street", "mega cap", "ai", "yields", "fed rate"]
 }
 
 BULLISH_TERMS = ["rise", "rises", "rally", "rallies", "surge", "surges", "gain", "gains", "bullish", "jump", "jumps", "breakout", "high", "upside", "soar", "soars", "boost", "inflow", "strong"]
@@ -210,6 +210,6 @@ def get_pair_sentiment_summary(pair_key: str, news_list: List[Dict[str, Any]]) -
 if __name__ == "__main__":
     news = fetch_latest_news()
     print(f"Fetched {len(news)} news articles.")
-    for p in ["XAUUSD", "USDJPY", "EURUSD", "GBPUSD", "CADCHF", "USOIL"]:
+    for p in ["XAUUSD", "USDJPY", "EURUSD", "GBPUSD", "CADCHF", "US100"]:
         sent = get_pair_sentiment_summary(p, news)
         print(f"Sentiment for {p}: {sent['sentiment']} (Bull: {sent['bull_score']}%, Bear: {sent['bear_score']}%, News: {sent['articles_count']})")

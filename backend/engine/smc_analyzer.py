@@ -242,50 +242,53 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
                 {"text": "Nến Bearish Engulfing trên H4", "checked": True}
             ]
             rationale = f"CAD/CHF gặp cản đỉnh Range, canh SELL hồi tại {entry_low} - {entry_high}."
-    else:  # USOIL
-        # Oil logic: OPEC supply vs EMA Trend Follow + FVG
+    else:  # US100 (Nasdaq 100 Index)
+        # Nasdaq 100 logic: Tech momentum, NY Killzone FVG, Discount Liquidity Sweep & Trend Following
         is_bullish = price >= ema50 or bull_pct >= 50
         if is_bullish:
             bias = "BUY"
-            bias_badge = "🟢 BUY (SMC Discount FVG + Trend Follow)"
-            entry_low = round(price - atr * 0.7, digits)
-            entry_high = round(entry_low + atr * 0.3, digits)
-            sl = round(entry_low - atr * 0.6, digits)
+            bias_badge = "🟢 BUY (SMC NY Killzone FVG + Tech Trend)"
+            entry_low = round(price - atr * 0.65, digits)
+            entry_high = round(entry_low + atr * 0.25, digits)
+            sl = round(entry_low - atr * 0.45, digits)
             tp1 = round(price + atr * 0.85, digits)
             tp2 = round(swing_high, digits)
-            structure = "BULLISH BREAK OF STRUCTURE"
-            ob_zone = f"{entry_low} - {entry_high} (H4 Bullish FVG & Demand Level)"
-            bsl = f"{swing_high} (Equal Highs Liquidity)"
-            ssl = f"{round(entry_low - atr*0.3, digits)} (Recent Low)"
+            structure = "BULLISH TREND CONTINUATION (H4/D1)"
+            ob_zone = f"{entry_low} - {entry_high} (H4 Bullish FVG & Demand Order Block)"
+            bsl = f"{swing_high} (Equal Highs Liquidity Pool)"
+            ssl = f"{round(entry_low - atr*0.3, digits)} (Asia/London Session Low)"
             key_sr = f"Hỗ trợ: {entry_low} | Kháng cự: {swing_high}"
             checklist = [
-                {"text": "BOS phá vỡ cấu trúc đỉnh trước đó", "checked": True},
-                {"text": "Giá lấp đầy vùng mất cân bằng (Fair Value Gap - FVG)", "checked": True},
-                {"text": "Dải EMA 20/50 hướng lên mạnh mẽ", "checked": True},
-                {"text": "Rủi ro địa chính trị & cam kết cắt giảm OPEC+", "checked": True}
+                {"text": "H4 Bullish Order Block (OB) giữ vững phản ứng", "checked": True},
+                {"text": "Quét thanh khoản Sell-side (SSL) phiên Á / London", "checked": True},
+                {"text": "Lấp đầy khoảng trống FVG tại phiên New York Killzone", "checked": True},
+                {"text": "Nhóm Big Tech (Nvidia, Apple, Microsoft) duy trì đà tăng", "checked": True},
+                {"text": "EMA 20/50 dốc lên ủng hộ xu hướng Trend Following", "checked": True}
             ]
             rationale = (
-                f"Dầu WTI giữ vững cấu trúc tăng sau khi phá vỡ cản gần nhất. "
-                f"Kịch bản tuần: Canh BUY khi giá quay về lấp khoảng trống FVG ({entry_low} - {entry_high}) để tiếp tục xu hướng tăng tới {swing_high}."
+                f"Chỉ số US100 (Nasdaq) duy trì cấu trúc tăng trưởng mạnh mẽ của nhóm cổ phiếu công nghệ. "
+                f"Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB ({entry_low} - {entry_high}) "
+                f"trong phiên Mỹ để tiếp tục đà tăng hướng tới thanh khoản đỉnh BSL {swing_high}."
             )
         else:
             bias = "SELL"
-            bias_badge = "🔴 SELL (Supply OB Pullback)"
-            entry_high = round(price + atr * 0.7, digits)
-            entry_low = round(entry_high - atr * 0.3, digits)
-            sl = round(entry_high + atr * 0.6, digits)
+            bias_badge = "🔴 SELL (Bearish Supply Rejection)"
+            entry_high = round(price + atr * 0.65, digits)
+            entry_low = round(entry_high - atr * 0.25, digits)
+            sl = round(entry_high + atr * 0.45, digits)
             tp1 = round(price - atr * 0.85, digits)
             tp2 = round(swing_low, digits)
-            structure = "BEARISH CONTINUATION"
-            ob_zone = f"{entry_low} - {entry_high} (H4 Supply Zone)"
-            bsl = f"{swing_high} (BSL)"
+            structure = "BEARISH REJECTION / CHoCH (H4)"
+            ob_zone = f"{entry_low} - {entry_high} (H4 Bearish Supply Zone)"
+            bsl = f"{swing_high} (BSL Peak)"
             ssl = f"{swing_low} (SSL Target)"
             key_sr = f"Kháng cự: {entry_high} | Hỗ trợ: {swing_low}"
             checklist = [
-                {"text": "Cản Supply Zone H4 giữ vững", "checked": True},
-                {"text": "Tồn kho EIA tăng gây áp lực giá", "checked": True}
+                {"text": "Cản Supply Zone H4 giữ vững áp lực bán", "checked": True},
+                {"text": "Quét thanh khoản đỉnh BSL tạo mô hình SFP đảo chiều", "checked": True},
+                {"text": "Lợi suất Trái phiếu Mỹ tăng gây áp lực định giá nhóm Tech", "checked": True}
             ]
-            rationale = f"Dầu WTI đối mặt áp lực cung, canh SELL khi hồi về vùng {entry_low} - {entry_high}."
+            rationale = f"US100 đối mặt áp lực chốt lời tại vùng cản đỉnh, canh SELL khi giá hồi về vùng Supply {entry_low} - {entry_high}."
 
     # Compute R:R ratio
     risk = abs(entry_high - sl) if bias == "BUY" else abs(sl - entry_low)

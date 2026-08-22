@@ -10,13 +10,12 @@ SYMBOL_MAP = {
     "EURUSD": {"ticker": "EURUSD=X", "name": "EUR / U.S. Dollar", "digits": 5, "tv_symbol": "FX:EURUSD"},
     "GBPUSD": {"ticker": "GBPUSD=X", "name": "GBP / U.S. Dollar", "digits": 5, "tv_symbol": "FX:GBPUSD"},
     "CADCHF": {"ticker": "CADCHF=X", "name": "CAD / Swiss Franc", "digits": 5, "tv_symbol": "FX:CADCHF"},
-    "USOIL":  {"ticker": "CL=F", "name": "Crude Oil WTI", "digits": 2, "tv_symbol": "TVC:USOIL"}
+    "US100":  {"ticker": "^NDX", "name": "US100 (Nasdaq 100 Index)", "digits": 2, "tv_symbol": "NASDAQ:NDX"}
 }
 
 def fetch_tradingview_spot_data() -> Dict[str, Dict[str, Any]]:
     """
-    Fetch exact real-time Spot Forex & Gold prices directly from TradingView Scanner API.
-    Provides accurate spot rates (e.g. OANDA:XAUUSD @ 4603.14).
+    Fetch exact real-time Spot Forex, Gold & US100 prices directly from TradingView Scanner API.
     """
     results = {}
     headers = {
@@ -27,7 +26,7 @@ def fetch_tradingview_spot_data() -> Dict[str, Dict[str, Any]]:
     url_cfd = "https://scanner.tradingview.com/cfd/scan"
     payload_cfd = {
         "symbols": {
-            "tickers": ["OANDA:XAUUSD", "TVC:GOLD", "TVC:USOIL", "PEPPERSTONE:XAUUSD"],
+            "tickers": ["OANDA:XAUUSD", "TVC:GOLD", "PEPPERSTONE:XAUUSD", "OANDA:NAS100USD"],
             "query": {"types": []}
         },
         "columns": ["close", "change", "change_abs", "high", "low", "open", "EMA50", "EMA200", "ATR"]
@@ -54,25 +53,40 @@ def fetch_tradingview_spot_data() -> Dict[str, Dict[str, Any]]:
                             "ema200": round(float(d[7] or close_p), 2),
                             "atr": round(float(d[8] or 25.0), 2),
                         }
-                    elif s == "TVC:USOIL" and "USOIL" not in results:
-                        close_p = round(float(d[0]), 2)
-                        results["USOIL"] = {
-                            "current_price": close_p,
-                            "change_pct": round(float(d[1] or 0), 2),
-                            "change": round(float(d[2] or 0), 2),
-                            "swing_high": round(float(d[3] or close_p * 1.02), 2),
-                            "swing_low": round(float(d[4] or close_p * 0.98), 2),
-                            "weekly_open": round(float(d[5] or close_p), 2),
-                            "weekly_high": round(float(d[3] or close_p * 1.02), 2),
-                            "weekly_low": round(float(d[4] or close_p * 0.98), 2),
-                            "ema50": round(float(d[6] or close_p), 2),
-                            "ema200": round(float(d[7] or close_p), 2),
-                            "atr": round(float(d[8] or 1.8), 2),
-                        }
     except Exception as e:
         print(f"[PriceCollector] CFD scan notice: {e}")
 
-    # 2. Spot Forex Pairs
+    # 2. US100 / Nasdaq Index via America Scanner
+    url_us = "https://scanner.tradingview.com/america/scan"
+    payload_us = {
+        "symbols": {"tickers": ["NASDAQ:NDX", "AMEX:QQQ"]},
+        "columns": ["close", "change", "change_abs", "high", "low", "open", "EMA50", "EMA200", "ATR"]
+    }
+    try:
+        r = requests.post(url_us, json=payload_us, headers=headers, timeout=5)
+        if r.status_code == 200:
+            for item in r.json().get("data", []):
+                s = item.get("s", "")
+                d = item.get("d", [])
+                if s == "NASDAQ:NDX" and len(d) >= 9 and d[0] is not None:
+                    close_p = round(float(d[0]), 2)
+                    results["US100"] = {
+                        "current_price": close_p,
+                        "change_pct": round(float(d[1] or 0), 2),
+                        "change": round(float(d[2] or 0), 2),
+                        "swing_high": round(float(d[3] or close_p * 1.015), 2),
+                        "swing_low": round(float(d[4] or close_p * 0.985), 2),
+                        "weekly_open": round(float(d[5] or close_p), 2),
+                        "weekly_high": round(float(d[3] or close_p * 1.015), 2),
+                        "weekly_low": round(float(d[4] or close_p * 0.985), 2),
+                        "ema50": round(float(d[6] or close_p), 2),
+                        "ema200": round(float(d[7] or close_p), 2),
+                        "atr": round(float(d[8] or 350.0), 2),
+                    }
+    except Exception as e:
+        print(f"[PriceCollector] US100 scan notice: {e}")
+
+    # 3. Spot Forex Pairs
     url_fx = "https://scanner.tradingview.com/forex/scan"
     payload_fx = {
         "symbols": {
@@ -115,7 +129,7 @@ def fetch_tradingview_spot_data() -> Dict[str, Dict[str, Any]]:
     return results
 
 def get_asset_technical_data(pair_key: str, tv_cache: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    config = SYMBOL_MAP.get(pair_key, {"ticker": "GC=F", "name": pair_key, "digits": 2, "tv_symbol": "OANDA:XAUUSD"})
+    config = SYMBOL_MAP.get(pair_key, {"ticker": "^NDX", "name": pair_key, "digits": 2, "tv_symbol": "NASDAQ:NDX"})
     digits = config["digits"]
 
     # Use TradingView spot data if available
@@ -186,16 +200,16 @@ def get_asset_technical_data(pair_key: str, tv_cache: Optional[Dict[str, Any]] =
             "digits": digits
         }
     except Exception as e:
-        # Realistic spot fallback (4603.14 for XAU/USD)
+        # Realistic spot fallback
         spot_defaults = {
             "XAUUSD": {"price": 4603.14, "high": 4632.20, "low": 4508.90, "atr": 28.5, "ema50": 4560.00, "ema200": 4350.00, "trend": "BULLISH"},
             "USDJPY": {"price": 158.97, "high": 159.15, "low": 158.35, "atr": 1.10, "ema50": 160.15, "ema200": 157.85, "trend": "BEARISH"},
             "EURUSD": {"price": 1.1676, "high": 1.1712, "low": 1.1668, "atr": 0.0052, "ema50": 1.1525, "ema200": 1.1560, "trend": "BULLISH"},
             "GBPUSD": {"price": 1.3641, "high": 1.3675, "low": 1.3618, "atr": 0.0066, "ema50": 1.3445, "ema200": 1.3402, "trend": "BULLISH"},
             "CADCHF": {"price": 0.5818, "high": 0.5824, "low": 0.5799, "atr": 0.0035, "ema50": 0.5767, "ema200": 0.5756, "trend": "BULLISH"},
-            "USOIL":  {"price": 87.06, "high": 88.50, "low": 85.20, "atr": 1.90, "ema50": 84.50, "ema200": 81.20, "trend": "BULLISH"}
+            "US100":  {"price": 29308.86, "high": 29450.00, "low": 28900.00, "atr": 350.0, "ema50": 29130.00, "ema200": 27100.00, "trend": "BULLISH"}
         }
-        fb = spot_defaults.get(pair_key, spot_defaults["XAUUSD"])
+        fb = spot_defaults.get(pair_key, spot_defaults["US100"])
         return {
             "pair": pair_key,
             "name": config["name"],
@@ -218,7 +232,6 @@ def get_asset_technical_data(pair_key: str, tv_cache: Optional[Dict[str, Any]] =
         }
 
 def get_all_pairs_technical() -> Dict[str, Any]:
-    # 1. First fetch live spot data from TradingView
     tv_spot = fetch_tradingview_spot_data()
     result = {}
     for pair in SYMBOL_MAP.keys():
