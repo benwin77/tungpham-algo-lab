@@ -538,12 +538,12 @@ function renderMatrixTable() {
 
         return `
             <tr onclick="switchPair('${p}')" style="cursor:pointer;">
-                <td style="font-weight:700;">${formattedPair}</td>
+                <td style="font-weight:700; color:#fff;">${formattedPair}</td>
                 <td>${biasBadge}</td>
-                <td class="text-primary">${f.entry_zone || "--"}</td>
+                <td style="color:#d1d5db;">${f.entry_zone || "--"}</td>
                 <td class="text-danger">${f.stop_loss || "--"}</td>
-                <td>${f.tp1 || "--"} / <span class="text-gold">${f.tp2 || "--"}</span></td>
-                <td class="text-gold">${f.rr_ratio || "1:2.5"}</td>
+                <td style="color:#e5e7eb;">${f.tp1 || "--"} / <span>${f.tp2 || "--"}</span></td>
+                <td style="color:#10b981; font-weight:700;">${f.rr_ratio || "1:2.5"}</td>
             </tr>
         `;
     }).join("");
