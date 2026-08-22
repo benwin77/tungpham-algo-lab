@@ -1345,7 +1345,10 @@ body.stealth-dark-theme {
 .text-danger { color: var(--signal-sell) !important; }
 .text-warning { color: #e2e8f0 !important; }
 
-/* Responsive adjustments */
+/* =============================================================
+   MOBILE-FIRST PRO RESPONSIVE DESIGN SUITE
+   ============================================================= */
+
 @media (max-width: 1440px) {
     .asset-cards-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -1354,9 +1357,15 @@ body.stealth-dark-theme {
         grid-template-columns: 1fr 380px;
     }
 }
+
 @media (max-width: 1024px) {
+    .workspace-container {
+        padding: 12px 14px;
+        gap: 16px;
+    }
     .focus-layout {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
     .sidebar-container {
         height: auto;
@@ -1369,20 +1378,204 @@ body.stealth-dark-theme {
         grid-template-columns: 1fr;
     }
 }
+
 @media (max-width: 768px) {
+    /* 1. Header Optimization */
+    .terminal-header {
+        padding: 10px 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .header-left {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+    .brand-logo-img {
+        width: 42px;
+        height: 42px;
+    }
+    .logo-text h1 {
+        font-size: 1.05rem;
+    }
+    .logo-text .tagline {
+        font-size: 0.58rem;
+    }
+    .header-center {
+        display: none; /* Hide decorative center badge on mobile to save vertical space */
+    }
+    .header-right {
+        display: flex;
+        width: 100%;
+        gap: 6px;
+        justify-content: space-between;
+    }
+    .btn-terminal {
+        flex: 1;
+        padding: 7px 6px;
+        font-size: 0.72rem;
+        justify-content: center;
+    }
+    .btn-terminal span {
+        font-size: 0.72rem;
+    }
+
+    /* 2. Ticker Ribbon */
+    .ticker-ribbon {
+        padding: 6px 10px;
+    }
+    .ticker-item {
+        font-size: 0.72rem;
+        margin-right: 18px;
+    }
+
+    /* 3. Asset Cards Grid - 2 Columns on Mobile */
     .asset-cards-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .asset-card {
+        padding: 10px;
+    }
+    .ac-pair {
+        font-size: 0.82rem;
+    }
+    .ac-bias-pill {
+        font-size: 0.64rem;
+        padding: 2px 6px;
+    }
+    .ac-price {
+        font-size: 1.05rem;
+        margin: 4px 0;
+    }
+    .ac-sub {
+        font-size: 0.66rem;
+    }
+
+    /* 4. Active Pair Plan Detail */
+    .pair-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .pair-actions {
+        width: 100%;
+        display: flex;
+        gap: 6px;
+    }
+    .pair-actions button {
+        flex: 1;
+        justify-content: center;
+    }
+    .symbol-badge {
+        font-size: 1.1rem;
+        padding: 4px 10px;
+    }
+    .asset-full-name {
+        font-size: 0.88rem;
+    }
+
+    /* 5. Execution Levels Grid 2x2 */
+    .execution-levels-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .level-card {
+        padding: 10px;
+    }
+    .level-val {
+        font-size: 0.95rem;
+    }
+
+    /* 6. TradingView Chart Container */
+    .chart-wrapper {
+        padding: 10px;
+    }
+    .tradingview-widget-container {
+        height: 380px !important;
+    }
+
+    /* 7. Sidebar Tabs (Thumb-Friendly 3-Column Bar) */
+    .sidebar-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 4px;
+    }
+    .tab-btn {
+        padding: 8px 4px;
+        font-size: 0.7rem;
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+        justify-content: center;
+    }
+    .tab-btn i {
+        font-size: 0.85rem;
+    }
+    .tab-btn span {
+        font-size: 0.68rem;
+    }
+
+    /* 8. Economic Calendar & News Items */
+    .cal-event-card {
+        padding: 10px;
+    }
+    .cal-title {
+        font-size: 0.78rem;
+    }
+    .cal-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    .cal-impact-badge {
+        align-self: flex-start;
+    }
+
+    /* 9. Matrix Table Scroll */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .matrix-table {
+        min-width: 520px;
+    }
+
+    /* 10. Modals on Mobile */
+    .modal-card {
+        width: 95%;
+        max-height: 90vh;
+        padding: 16px;
     }
     .form-grid-4, .form-grid-2 {
         grid-template-columns: 1fr;
+        gap: 8px;
     }
-    .terminal-header {
+
+    /* 11. Footer */
+    .footer-content {
         flex-direction: column;
+        text-align: center;
         gap: 12px;
-        align-items: flex-start;
     }
-    .header-right {
-        width: 100%;
-        justify-content: flex-end;
+}
+
+@media (max-width: 480px) {
+    .workspace-container {
+        padding: 8px 10px;
+        gap: 12px;
+    }
+    .tradingview-widget-container {
+        height: 350px !important;
+    }
+    .level-val {
+        font-size: 0.88rem;
+    }
+    .btn-terminal {
+        padding: 6px 4px;
+        font-size: 0.68rem;
     }
 }
