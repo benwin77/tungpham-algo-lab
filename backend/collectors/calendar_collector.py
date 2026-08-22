@@ -134,6 +134,15 @@ def get_weekly_calendar() -> List[Dict[str, Any]]:
                 "actual": "--"
             })
     
+    # Sort all events strictly chronologically from Monday to Friday/Sunday
+    def get_event_timestamp(item: Dict[str, Any]) -> float:
+        d_str = item.get("date", "")
+        try:
+            return datetime.fromisoformat(d_str).timestamp()
+        except Exception:
+            return 0.0
+            
+    events.sort(key=get_event_timestamp)
     return events
 
 if __name__ == "__main__":

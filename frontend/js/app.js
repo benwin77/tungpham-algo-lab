@@ -539,21 +539,45 @@ function renderTradingViewWidget() {
 }
 
 function renderCalendar() {
-    const events = STATE.calendar || [];
-    if (events.length === 0) {
+    const rawEvents = STATE.calendar || [];
+    if (rawEvents.length === 0) {
         DOM.calendarList.innerHTML = "<div class='text-dim text-center py-4'>Không có sự kiện kinh tế phù hợp</div>";
         return;
     }
 
-    DOM.calendarList.innerHTML = events.slice(0, 35).map(e => {
+    // Sort strictly chronologically from Monday to Friday/Sunday
+    const sortedEvents = [...rawEvents].sort((a, b) => {
+        const timeA = a.date ? new Date(a.date).getTime() : 0;
+        const timeB = b.date ? new Date(b.date).getTime() : 0;
+        return timeA - timeB;
+    });
+
+    let currentDayGroup = null;
+    let htmlOutput = "";
+
+    sortedEvents.forEach(e => {
+        const dayLabel = e.day_vn || "Trong tuần";
+        
+        // Insert day header when day changes
+        if (dayLabel !== currentDayGroup) {
+            currentDayGroup = dayLabel;
+            htmlOutput += `
+                <div class="cal-day-divider">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    <span>${dayLabel.toUpperCase()}</span>
+                </div>
+            `;
+        }
+
         const impactClass = `impact-${(e.impact || "low").toLowerCase()}`;
-        const timeDisplay = e.full_date_vn || e.date || "Trong tuần";
-        return `
+        const timePeriod = e.period ? `${e.time_vn || ""} (${e.period})` : (e.time_vn || e.date || "");
+        
+        htmlOutput += `
             <div class="cal-event-card">
                 <div class="cal-top">
                     <div class="cal-tag-group">
                         <span class="cal-currency">${e.currency || "USD"}</span>
-                        <span class="cal-datetime-tag"><i class="fa-regular fa-clock"></i> ${timeDisplay}</span>
+                        <span class="cal-datetime-tag"><i class="fa-regular fa-clock"></i> ${timePeriod}</span>
                     </div>
                     <span class="cal-impact-badge ${impactClass}">${e.impact} Impact</span>
                 </div>
@@ -565,7 +589,9 @@ function renderCalendar() {
                 </div>
             </div>
         `;
-    }).join("");
+    });
+
+    DOM.calendarList.innerHTML = htmlOutput;
 }
 
 function renderNews() {

@@ -845,7 +845,29 @@ body.stealth-dark-theme {
     display: flex;
     flex-direction: column;
     gap: 9px;
-    overflow-y: auto;
+.cal-day-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 3px solid #60a5fa;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-heading);
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+    margin-bottom: 2px;
+}
+.cal-day-divider:first-child {
+    margin-top: 0;
+}
+.cal-day-divider i {
+    color: #60a5fa;
+    font-size: 0.72rem;
 }
 .cal-event-card {
     background: var(--bg-surface-elevated);
