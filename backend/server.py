@@ -79,6 +79,22 @@ def refresh_all_data():
 # Initial Load
 refresh_all_data()
 
+# Background Scheduler (Guarantees fresh Sunday analysis for Monday trading)
+import threading
+import time
+
+def background_weekly_scheduler():
+    while True:
+        try:
+            time.sleep(4 * 3600)  # Every 4 hours auto-sync
+            print("[Scheduler] Running automatic background weekly data & calendar sync...")
+            refresh_all_data()
+        except Exception as e:
+            print(f"[Scheduler] Background worker notice: {e}")
+
+scheduler_thread = threading.Thread(target=background_weekly_scheduler, daemon=True)
+scheduler_thread.start()
+
 # Data models for updating scenarios
 class CheckItem(BaseModel):
     text: str
