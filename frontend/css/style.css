@@ -1350,11 +1350,55 @@ body.stealth-dark-theme {
     color: var(--text-dim);
     margin-top: 2px;
 }
+.footer-contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+}
+.contact-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+.contact-pill:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: #d4af37;
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+.contact-pill i {
+    color: #d4af37;
+    font-size: 0.82rem;
+}
+.contact-pill.zalo-btn {
+    background: rgba(0, 136, 255, 0.08);
+    border-color: rgba(0, 136, 255, 0.45);
+}
+.contact-pill.zalo-btn:hover {
+    background: rgba(0, 136, 255, 0.2);
+    border-color: #38bdf8;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+}
+.contact-pill.zalo-btn i {
+    color: #38bdf8;
+}
 .footer-disclaimer {
     font-family: var(--font-sans);
     font-size: 0.7rem;
     color: #555864;
-    margin-top: 6px;
+    margin-top: 4px;
     line-height: 1.35;
 }
 .footer-disclaimer i {

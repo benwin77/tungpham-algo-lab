@@ -284,7 +284,8 @@ def export_text_summary():
             lines.append(f"• Ghi chú riêng: {f_data.get('user_notes')}")
         lines.append("-" * 40)
         
-    lines.append("\n© Tùng Phạm Algo Lab • Trade With Discipline & Risk Management")
+    lines.append("\n📞 Hotline / Zalo: 0903.663.060 (Tung Pham)")
+    lines.append("© Tùng Phạm Algo Lab • Trade With Discipline & Risk Management")
     return {"text": "\n".join(lines)}
 
 # Mount static frontend directory
