@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=4.8">
+    <link rel="stylesheet" href="/static/css/style.css?v=4.9">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -52,18 +52,18 @@
         </div>
 
         <div class="header-right">
-            <button class="btn-terminal btn-outline" id="btn-export-text" title="Xuất Kịch Bản Giao Dịch">
+            <button class="btn-terminal btn-outline admin-only" id="btn-export-text" title="Xuất Kịch Bản Giao Dịch">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span>Xuất Kịch Bản</span>
             </button>
-            <button class="btn-terminal btn-outline" id="btn-refresh-all" title="Làm mới dữ liệu & tin tức">
+            <button class="btn-terminal btn-outline admin-only" id="btn-refresh-all" title="Làm mới dữ liệu & tin tức">
                 <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i>
                 <span>Cập Nhật</span>
             </button>
             <div id="admin-auth-container">
                 <button class="btn-terminal btn-admin" id="btn-admin-auth" title="Đăng nhập quyền Admin">
                     <i class="fa-solid fa-lock"></i>
-                    <span id="admin-btn-text">Mr Tung Login</span>
+                    <span id="admin-btn-text">Admin Login</span>
                 </button>
             </div>
         </div>
@@ -108,7 +108,7 @@
                             </div>
                         </div>
 
-                        <div class="detail-actions">
+                        <div class="detail-actions admin-only">
                             <button class="btn-action btn-edit-scenario" id="btn-open-edit-modal">
                                 <i class="fa-solid fa-pen-to-square"></i>
                                 <span>Chỉnh Sửa Kịch Bản</span>
@@ -473,6 +473,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=4.4"></script>
+    <script src="/static/js/app.js?v=4.9"></script>
 </body>
 </html>

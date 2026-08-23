@@ -159,13 +159,15 @@ async function initAuth() {
 
 function updateAdminUI() {
     if (STATE.isAdmin) {
+        document.body.classList.add("admin-authenticated");
         DOM.btnAdminAuth.classList.add("logged-in");
         DOM.btnAdminAuth.innerHTML = `<i class="fa-solid fa-crown text-gold"></i> <span id="admin-btn-text">Mr Tung (Admin)</span>`;
         DOM.btnAdminAuth.title = "Nhấp để đăng xuất";
     } else {
+        document.body.classList.remove("admin-authenticated");
         DOM.btnAdminAuth.classList.remove("logged-in");
-        DOM.btnAdminAuth.innerHTML = `<i class="fa-solid fa-lock"></i> <span id="admin-btn-text">Mr Tung Login</span>`;
-        DOM.btnAdminAuth.title = "Đăng nhập quyền Admin";
+        DOM.btnAdminAuth.innerHTML = `<i class="fa-solid fa-lock"></i> <span id="admin-btn-text">Admin Login</span>`;
+        DOM.btnAdminAuth.title = "Dành riêng cho Mr Tung";
     }
 }
 

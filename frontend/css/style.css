@@ -227,15 +227,31 @@ body.stealth-dark-theme {
 .btn-admin {
     background: rgba(255, 255, 255, 0.04);
     color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .btn-admin:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
+    border-color: rgba(212, 175, 55, 0.5);
 }
 .btn-admin.logged-in {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: var(--signal-buy);
-    color: var(--signal-buy);
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.15) 0%, rgba(16, 185, 129, 0.12) 100%);
+    border: 1.5px solid #d4af37 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+}
+
+/* Admin-Only Visibility Rules */
+.admin-only {
+    display: none !important;
+}
+
+body.admin-authenticated .admin-only {
+    display: inline-flex !important;
+}
+
+body.admin-authenticated div.detail-actions.admin-only {
+    display: flex !important;
 }
 
 /* Ticker Ribbon */
