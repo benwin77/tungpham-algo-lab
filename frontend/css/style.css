@@ -411,7 +411,10 @@ body.stealth-dark-theme {
 .pair-detail-card {
     margin-bottom: 18px;
     position: relative;
-    border-left: 2px solid #64748b;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-left: 4px solid #d4af37;
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.04) 0%, var(--bg-surface) 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.08);
 }
 
 .detail-header {
@@ -432,12 +435,12 @@ body.stealth-dark-theme {
     font-size: 1.35rem;
     font-weight: 800;
     padding: 7px 16px;
-    background: rgba(212, 175, 55, 0.04);
-    border: 1.5px solid rgba(212, 175, 55, 0.55);
+    background: rgba(212, 175, 55, 0.08);
+    border: 1.5px solid #d4af37;
     color: #ffffff;
     border-radius: var(--radius-sm);
     letter-spacing: 0.8px;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
 }
 
 .detail-asset-name {
@@ -773,23 +776,23 @@ body.stealth-dark-theme {
 /* Sidebar Container */
 .sidebar-container {
     background: var(--bg-surface);
-    border: var(--border-hairline);
+    border: 1px solid rgba(212, 175, 55, 0.35);
     border-radius: var(--radius-md);
     display: flex;
     flex-direction: column;
     height: calc(100vh - 150px);
     position: sticky;
     top: 80px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.08);
 }
 
 .sidebar-tabs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    border-bottom: var(--border-hairline);
-    padding: 5px;
-    gap: 4px;
-    background: #0c0d11;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 6px;
+    gap: 5px;
+    background: #0b0c10;
     border-top-left-radius: var(--radius-md);
     border-top-right-radius: var(--radius-md);
 }
@@ -817,8 +820,12 @@ body.stealth-dark-theme {
 }
 .tab-btn.active {
     color: #ffffff;
-    background: var(--bg-surface-elevated);
-    border: var(--border-hairline);
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.12) 0%, rgba(26, 29, 38, 0.95) 100%);
+    border: 1px solid #d4af37;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.22);
+}
+.tab-btn.active i {
+    color: #d4af37;
 }
 
 .tab-pane {
