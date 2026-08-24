@@ -11,7 +11,7 @@ import hashlib
 from datetime import datetime
 
 from backend.collectors.calendar_collector import get_weekly_calendar
-from backend.collectors.price_collector import get_all_pairs_technical, get_asset_technical_data
+from backend.collectors.price_collector import get_all_pairs_technical, get_asset_technical_data, fetch_tradingview_spot_data
 from backend.collectors.news_collector import fetch_latest_news, get_pair_sentiment_summary
 from backend.engine.smc_analyzer import build_all_weekly_forecasts, generate_smc_setup
 
@@ -92,8 +92,32 @@ def background_weekly_scheduler():
         except Exception as e:
             print(f"[Scheduler] Background worker notice: {e}")
 
+def background_price_streamer():
+    """
+    Constantly updates real-time prices for all 6 pairs in memory every 5 seconds.
+    """
+    while True:
+        try:
+            time.sleep(5)
+            fresh_spot = fetch_tradingview_spot_data()
+            if fresh_spot:
+                for p, d in fresh_spot.items():
+                    if p in APP_STATE["tech_data"]:
+                        APP_STATE["tech_data"][p]["current_price"] = d["current_price"]
+                        APP_STATE["tech_data"][p]["change"] = d["change"]
+                        APP_STATE["tech_data"][p]["change_pct"] = d["change_pct"]
+                        if "weekly_high" in d:
+                            APP_STATE["tech_data"][p]["weekly_high"] = d["weekly_high"]
+                        if "weekly_low" in d:
+                            APP_STATE["tech_data"][p]["weekly_low"] = d["weekly_low"]
+        except Exception as e:
+            pass
+
 scheduler_thread = threading.Thread(target=background_weekly_scheduler, daemon=True)
 scheduler_thread.start()
+
+price_stream_thread = threading.Thread(target=background_price_streamer, daemon=True)
+price_stream_thread.start()
 
 # Data models for updating scenarios
 class CheckItem(BaseModel):

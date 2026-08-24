@@ -287,7 +287,7 @@ function startRealtimeTickerStream() {
         }
     }
 
-    // 2. Poll backend market-data every 12s for Forex, Gold & US100
+    // 2. Poll backend market-data every 4s for Forex, Gold & US100
     async function updateLiveMarket() {
         try {
             const res = await fetch(`${API_BASE}/api/market-data`);
@@ -296,6 +296,13 @@ function startRealtimeTickerStream() {
                 Object.assign(STATE.marketData, data);
                 renderTickerRibbon();
                 renderAssetGrid();
+
+                // Update active pair detail if available
+                const activeM = data[STATE.activePair];
+                if (activeM && activeM.current_price !== undefined) {
+                    const priceSub = document.querySelector(".detail-stat-card .stat-val");
+                    if (priceSub) priceSub.textContent = activeM.current_price;
+                }
             }
         } catch (e) {
             // silent fallback
@@ -303,8 +310,9 @@ function startRealtimeTickerStream() {
     }
 
     updateLiveBTC();
+    updateLiveMarket();
     setInterval(updateLiveBTC, 3000);
-    setInterval(updateLiveMarket, 12000);
+    setInterval(updateLiveMarket, 4000);
 }
 
 async function loadMarketData() {
