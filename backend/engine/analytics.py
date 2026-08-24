@@ -8,9 +8,9 @@ import threading
 ANALYTICS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "analytics.json")
 analytics_lock = threading.Lock()
 
-# Initial seed data aligned with community size (400+ members)
+# 100% Pure Real-time Analytics (Đếm thật 1:1)
 DEFAULT_ANALYTICS = {
-    "total_views": 1428,
+    "total_views": 0,
     "unique_visitors": {},
     "daily_views": {},
     "active_sessions": {}
@@ -40,21 +40,21 @@ def track_visitor(client_id: str = "", client_ip: str = "", is_pageview: bool = 
         today_str = datetime.now().strftime("%Y-%m-%d")
 
         # Hash identifier for privacy
-        raw_id = f"{client_id}_{client_ip}" if client_id else client_ip
-        visitor_hash = hashlib.sha256(raw_id.encode()).hexdigest()[:16] if raw_id else "guest"
+        raw_id = f"{client_id}_{client_ip}" if client_id else (client_ip or "guest_device")
+        visitor_hash = hashlib.sha256(raw_id.encode()).hexdigest()[:16]
 
         # 1. Update Active Session
         if "active_sessions" not in data:
             data["active_sessions"] = {}
         data["active_sessions"][visitor_hash] = now_ts
 
-        # 2. Cleanup expired sessions (> 3 minutes)
-        active_cutoff = now_ts - 180
+        # 2. Cleanup expired sessions (> 2 minutes inactive)
+        active_cutoff = now_ts - 120
         data["active_sessions"] = {
             k: v for k, v in data["active_sessions"].items() if v > active_cutoff
         }
 
-        # 3. Track Unique Visitor
+        # 3. Track Unique Visitor (Real Devices)
         if "unique_visitors" not in data:
             data["unique_visitors"] = {}
         if visitor_hash not in data["unique_visitors"]:
@@ -62,17 +62,18 @@ def track_visitor(client_id: str = "", client_ip: str = "", is_pageview: bool = 
 
         # 4. Increment Pageviews
         if is_pageview:
-            data["total_views"] = data.get("total_views", 1428) + 1
+            data["total_views"] = data.get("total_views", 0) + 1
             if "daily_views" not in data:
                 data["daily_views"] = {}
             data["daily_views"][today_str] = data["daily_views"].get(today_str, 0) + 1
 
         save_analytics_data(data)
 
-        unique_count = max(428, len(data["unique_visitors"]))
-        total_views = max(1428, data.get("total_views", 1428))
-        today_views = data.get("daily_views", {}).get(today_str, 1) + 185 # includes group members
-        online_now = max(8, len(data["active_sessions"]) + 14) # Base active pulse for 400-member community
+        # 100% Real Exact Counts
+        unique_count = len(data["unique_visitors"])
+        total_views = data.get("total_views", 0)
+        today_views = data.get("daily_views", {}).get(today_str, 0)
+        online_now = max(1, len(data["active_sessions"]))
 
         return {
             "total_views": total_views,
@@ -87,15 +88,16 @@ def get_analytics_stats() -> dict:
         now_ts = time.time()
         today_str = datetime.now().strftime("%Y-%m-%d")
 
-        # Cleanup expired sessions (> 3 minutes)
-        active_cutoff = now_ts - 180
+        # Cleanup expired sessions (> 2 minutes)
+        active_cutoff = now_ts - 120
         active_sessions = data.get("active_sessions", {})
-        active_count = len([v for v in active_sessions.values() if v > active_cutoff])
+        active_sessions_clean = {k: v for k, v in active_sessions.items() if v > active_cutoff}
+        data["active_sessions"] = active_sessions_clean
 
-        unique_count = max(428, len(data.get("unique_visitors", {})))
-        total_views = max(1428, data.get("total_views", 1428))
-        today_views = data.get("daily_views", {}).get(today_str, 0) + 185
-        online_now = max(8, active_count + 14)
+        unique_count = len(data.get("unique_visitors", {}))
+        total_views = data.get("total_views", 0)
+        today_views = data.get("daily_views", {}).get(today_str, 0)
+        online_now = max(1, len(active_sessions_clean))
 
         return {
             "total_views": total_views,
