@@ -232,6 +232,57 @@ function handleAdminButtonClick() {
 }
 
 // -------------------------------------------------------------
+// Visitor Tracking & Analytics
+// -------------------------------------------------------------
+
+function getOrCreateClientId() {
+    let cid = localStorage.getItem("tp_client_id");
+    if (!cid) {
+        cid = "tp_cid_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now().toString(36);
+        localStorage.setItem("tp_client_id", cid);
+    }
+    return cid;
+}
+
+function updateAnalyticsDisplay(stats) {
+    if (!stats) return;
+    const formatNum = n => (n !== undefined && n !== null) ? Number(n).toLocaleString("vi-VN") : "--";
+    
+    // Header
+    const hOnline = document.getElementById("header-online-count");
+    if (hOnline) hOnline.textContent = formatNum(stats.online_now);
+    const hViews = document.getElementById("header-views-count");
+    if (hViews) hViews.textContent = formatNum(stats.total_views);
+
+    // Footer
+    const sUnique = document.getElementById("stat-unique-visitors");
+    if (sUnique) sUnique.textContent = formatNum(stats.unique_visitors);
+    const sTotal = document.getElementById("stat-total-views");
+    if (sTotal) sTotal.textContent = formatNum(stats.total_views);
+    const sToday = document.getElementById("stat-today-views");
+    if (sToday) sToday.textContent = formatNum(stats.today_views);
+    const sOnline = document.getElementById("stat-online-now");
+    if (sOnline) sOnline.textContent = formatNum(stats.online_now);
+}
+
+async function trackVisitorPresence(isPageview = false) {
+    try {
+        const cid = getOrCreateClientId();
+        const res = await fetch(`${API_BASE}/api/analytics/track`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ client_id: cid, is_pageview: isPageview })
+        });
+        if (res.ok) {
+            const stats = await res.json();
+            updateAnalyticsDisplay(stats);
+        }
+    } catch (e) {
+        // silent failover
+    }
+}
+
+// -------------------------------------------------------------
 // API Calls & Data Ingestion
 // -------------------------------------------------------------
 
@@ -239,6 +290,8 @@ let realtimeStreamStarted = false;
 
 async function initDashboard() {
     try {
+        trackVisitorPresence(true); // Track pageview on load
+        
         await Promise.all([
             loadMarketData(),
             loadForecasts(),
@@ -249,6 +302,7 @@ async function initDashboard() {
         if (!realtimeStreamStarted) {
             realtimeStreamStarted = true;
             startRealtimeTickerStream();
+            setInterval(() => trackVisitorPresence(false), 30000); // 30s heartbeat
         }
     } catch (err) {
         console.error("Init dashboard error:", err);

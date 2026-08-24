@@ -14,6 +14,7 @@ from backend.collectors.calendar_collector import get_weekly_calendar
 from backend.collectors.price_collector import get_all_pairs_technical, get_asset_technical_data, fetch_tradingview_spot_data
 from backend.collectors.news_collector import fetch_latest_news, get_pair_sentiment_summary
 from backend.engine.smc_analyzer import build_all_weekly_forecasts, generate_smc_setup
+from backend.engine.analytics import track_visitor, get_analytics_stats
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "tungpham8888")
 ADMIN_TOKEN = f"tp_auth_{hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()[:18]}"
@@ -140,6 +141,23 @@ class ForecastUpdateRequest(BaseModel):
     rationale: Optional[str] = None
     user_notes: Optional[str] = None
     checklist: Optional[List[CheckItem]] = None
+
+class AnalyticsTrackRequest(BaseModel):
+    client_id: Optional[str] = ""
+    is_pageview: Optional[bool] = True
+
+@app.post("/api/analytics/track")
+def api_track_visitor(req: AnalyticsTrackRequest, request: Request):
+    client_ip = request.client.host if request.client else ""
+    forwarded = request.headers.get("x-forwarded-for") or request.headers.get("X-Forwarded-For")
+    if forwarded:
+        client_ip = forwarded.split(",")[0].strip()
+    stats = track_visitor(client_id=req.client_id, client_ip=client_ip, is_pageview=req.is_pageview)
+    return stats
+
+@app.get("/api/analytics/stats")
+def api_get_analytics():
+    return get_analytics_stats()
 
 @app.post("/api/auth/login")
 def admin_login(req: LoginRequest):

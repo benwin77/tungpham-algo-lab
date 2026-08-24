@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=5.0">
+    <link rel="stylesheet" href="/static/css/style.css?v=5.1">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -39,6 +39,13 @@
             <div class="live-pill">
                 <span class="live-dot pulse"></span>
                 <span class="live-status-text" id="system-status">LIVE SYSTEM</span>
+            </div>
+
+            <div class="visitor-counter-badge" title="Thống kê lượng truy cập thời gian thực">
+                <span class="live-pulse-dot"></span>
+                <span class="vc-online"><strong id="header-online-count">--</strong> Online</span>
+                <span class="vc-divider">•</span>
+                <span class="vc-views"><i class="fa-regular fa-eye"></i> <strong id="header-views-count">--</strong> Xem</span>
             </div>
         </div>
 
@@ -451,6 +458,25 @@
             <div class="footer-text-group">
                 <p class="footer-brand"><strong>TÙNG PHẠM ALGO LAB</strong> • Minimal • Precision • Gold Index Strategy</p>
                 <p class="footer-sub">Hệ thống phân tích kịch bản giao dịch theo SMC, Thuần Price Action và Trend Following</p>
+                <div class="footer-analytics-bar">
+                    <div class="analytics-stat-pill">
+                        <i class="fa-solid fa-users text-gold"></i>
+                        <span>Khách duy nhất: <strong id="stat-unique-visitors">--</strong></span>
+                    </div>
+                    <div class="analytics-stat-pill">
+                        <i class="fa-solid fa-chart-line text-success"></i>
+                        <span>Tổng lượt xem: <strong id="stat-total-views">--</strong></span>
+                    </div>
+                    <div class="analytics-stat-pill">
+                        <i class="fa-solid fa-calendar-day text-warning"></i>
+                        <span>Hôm nay: <strong id="stat-today-views">--</strong></span>
+                    </div>
+                    <div class="analytics-stat-pill live-online">
+                        <span class="live-dot pulse"></span>
+                        <span>Đang Online: <strong id="stat-online-now">--</strong></span>
+                    </div>
+                </div>
+
                 <div class="footer-contact-row">
                     <a href="tel:0903663060" class="contact-pill" title="Gọi điện trực tiếp">
                         <i class="fa-solid fa-phone"></i>
@@ -473,6 +499,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=5.0"></script>
+    <script src="/static/js/app.js?v=5.1"></script>
 </body>
 </html>

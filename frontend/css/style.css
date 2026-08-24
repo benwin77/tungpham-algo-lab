@@ -159,6 +159,49 @@ body.stealth-dark-theme {
     letter-spacing: 0.5px;
 }
 
+/* Live Visitor Counter Badge (Header) */
+.visitor-counter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+.visitor-counter-badge:hover {
+    border-color: rgba(212, 175, 55, 0.4);
+    background: rgba(212, 175, 55, 0.05);
+}
+.live-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 6px #10b981;
+    animation: livePulse 2s infinite;
+}
+.vc-online strong {
+    color: #10b981;
+    font-weight: 700;
+}
+.vc-divider {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.65rem;
+}
+.vc-views strong {
+    color: #e2e8f0;
+    font-weight: 700;
+}
+.vc-views i {
+    color: #d4af37;
+    margin-right: 2px;
+}
+
 .week-badge {
     background: var(--bg-surface);
     border: var(--border-hairline);
@@ -1372,6 +1415,43 @@ body.admin-authenticated div.detail-actions.admin-only {
     font-size: 0.72rem;
     color: var(--text-dim);
     margin-top: 2px;
+}
+/* Footer Analytics Statistics Bar */
+.footer-analytics-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 8px 0;
+    flex-wrap: wrap;
+}
+.analytics-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    padding: 5px 12px;
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    transition: var(--transition);
+}
+.analytics-stat-pill:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+}
+.analytics-stat-pill strong {
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+.analytics-stat-pill.live-online {
+    border-color: rgba(16, 185, 129, 0.35);
+    background: rgba(16, 185, 129, 0.05);
+}
+.analytics-stat-pill.live-online strong {
+    color: #10b981;
 }
 .footer-contact-row {
     display: flex;
