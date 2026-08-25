@@ -1,1 +1,67 @@
-[]
+[
+  {
+    "id": "rec_xauusd_20260824",
+    "pair": "XAUUSD",
+    "type": "BUY",
+    "entry_price": 4612.5,
+    "exit_price": 4688.0,
+    "pnl_pips": "+75.5 pts",
+    "r_value": 3.5,
+    "result": "WIN",
+    "status_badge": "TP2 HIT 🎯",
+    "date": "2026-08-24 16:45",
+    "notes": "Bắt đáy Demand Order Block H4 sau nhịp quét thanh khoản phiên Á. Chốt lời trọn vẹn TP2 thanh khoản đỉnh BSL."
+  },
+  {
+    "id": "rec_us100_20260824",
+    "pair": "US100",
+    "type": "BUY",
+    "entry_price": 28945.0,
+    "exit_price": 29215.0,
+    "pnl_pips": "+270.0 pts",
+    "r_value": 3.8,
+    "result": "WIN",
+    "status_badge": "TP2 HIT 🎯",
+    "date": "2026-08-24 21:15",
+    "notes": "Lấp FVG New York Killzone + nến xác nhận M15 Bullish CHOCH nhóm Tech. Chốt lời đỉnh cũ BSL."
+  },
+  {
+    "id": "rec_usdjpy_20260823",
+    "pair": "USDJPY",
+    "type": "SELL",
+    "entry_price": 159.55,
+    "exit_price": 158.75,
+    "pnl_pips": "+80.0 pips",
+    "r_value": 2.7,
+    "result": "WIN",
+    "status_badge": "TP2 HIT 🎯",
+    "date": "2026-08-23 14:20",
+    "notes": "Phản ứng tại Supply Zone H4 + phá vỡ CHoCH khung M15. Chốt lời tại đáy thanh khoản SSL."
+  },
+  {
+    "id": "rec_gbpusd_20260822",
+    "pair": "GBPUSD",
+    "type": "SELL",
+    "entry_price": 1.3645,
+    "exit_price": 1.3670,
+    "pnl_pips": "-25.0 pips",
+    "r_value": -1.0,
+    "result": "LOSS",
+    "status_badge": "SL HIT 🛑",
+    "date": "2026-08-22 15:30",
+    "notes": "Tin tức PMI Anh vượt kỳ vọng đẩy giá quét qua râu Supply Zone. Dừng lỗ kỷ luật theo đúng quy tắc."
+  },
+  {
+    "id": "rec_btcusd_20260821",
+    "pair": "BTCUSD",
+    "type": "BUY",
+    "entry_price": 77450.0,
+    "exit_price": 81100.0,
+    "pnl_pips": "+3650.0 pts",
+    "r_value": 4.1,
+    "result": "WIN",
+    "status_badge": "TP2 HIT 🎯",
+    "date": "2026-08-21 19:10",
+    "notes": "Bắt sóng gom Whale Accumulation tại Discount Zone khung H4. Đạt trọn vẹn mục tiêu thanh khoản đỉnh tuần."
+  }
+]
