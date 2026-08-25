@@ -2173,3 +2173,221 @@ body.admin-authenticated div.detail-actions.admin-only {
         font-size: 0.68rem;
     }
 }
+
+/* =============================================================
+   12. MỜI CAFE / DONATE MODAL & BUTTONS
+   ============================================================= */
+.btn-donate {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(184, 134, 11, 0.25) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    color: #ffd700;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+}
+.btn-donate:hover {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 134, 11, 0.45) 100%);
+    border-color: #ffd700;
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
+}
+.btn-donate i {
+    color: #ffd700;
+    animation: coffeeSteam 2.5s infinite ease-in-out;
+}
+@keyframes coffeeSteam {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+.donate-footer-btn {
+    background: rgba(212, 175, 55, 0.12) !important;
+    border: 1px solid rgba(212, 175, 55, 0.35) !important;
+    color: #ffd700 !important;
+    font-weight: 600;
+}
+.donate-footer-btn:hover {
+    background: rgba(212, 175, 55, 0.25) !important;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+}
+
+.donate-modal-card {
+    max-width: 680px;
+    width: 92%;
+}
+.donate-icon-glow {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+.donate-presets-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.donate-preset-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+}
+.donate-preset-btn {
+    background: #15181f;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    transition: all 0.2s ease;
+    color: #ffffff;
+}
+.donate-preset-btn:hover {
+    background: #1c212b;
+    border-color: rgba(212, 175, 55, 0.4);
+    transform: translateY(-2px);
+}
+.donate-preset-btn.active {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1.5px solid #ffd700;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+}
+.dp-icon {
+    font-size: 1.2rem;
+}
+.dp-amount {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #ffd700;
+}
+.dp-tag {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+}
+
+.donate-content-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 18px;
+    align-items: center;
+}
+.donate-qr-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.donate-qr-frame {
+    width: 210px;
+    height: 210px;
+    background: #ffffff;
+    padding: 8px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(212, 175, 55, 0.5);
+}
+.donate-qr-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+}
+.donate-qr-hint {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin: 0;
+}
+
+.donate-info-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.donate-field-card {
+    background: #11141a;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.df-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.df-label {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}
+.df-value {
+    font-size: 0.88rem;
+    color: #e5e7eb;
+}
+.df-value.highlight-num {
+    color: #ffd700;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+.btn-copy-field {
+    background: #1e232e;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #94a3b8;
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+.btn-copy-field:hover {
+    background: #ffd700;
+    color: #0b0c10;
+    border-color: #ffd700;
+    transform: scale(1.03);
+}
+
+.donate-thankyou-box {
+    margin-top: 4px;
+    padding: 8px 12px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px dashed rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    font-size: 0.72rem;
+    color: #fca5a5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.35;
+}
+
+@media (max-width: 640px) {
+    .donate-preset-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .donate-content-layout {
+        grid-template-columns: 1fr;
+    }
+    .donate-qr-frame {
+        width: 180px;
+        height: 180px;
+    }
+}
+

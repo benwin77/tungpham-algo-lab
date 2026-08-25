@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=6.3">
+    <link rel="stylesheet" href="/static/css/style.css?v=6.4">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -61,6 +61,10 @@
         </div>
 
         <div class="header-right">
+            <button class="btn-terminal btn-donate" id="btn-open-donate" title="Mời Cafe Mr Tung / Ủng hộ duy trì Server & Data">
+                <i class="fa-solid fa-mug-hot text-gold"></i>
+                <span>Mời Cafe</span>
+            </button>
             <button class="btn-terminal btn-outline admin-only" id="btn-export-text" title="Xuất Kịch Bản Giao Dịch">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span>Xuất Kịch Bản</span>
@@ -685,11 +689,117 @@
                         <i class="fa-solid fa-comment-dots"></i>
                         <span>Chat Zalo Trực Tiếp</span>
                     </a>
+                    <a href="javascript:void(0)" class="contact-pill donate-footer-btn" id="btn-open-donate-footer" title="Mời Cafe Mr Tung / Ủng hộ Lab">
+                        <i class="fa-solid fa-mug-hot text-gold"></i>
+                        <span>Mời Cafe Mr Tung ☕️</span>
+                    </a>
                 </div>
                 <p class="footer-disclaimer"><i class="fa-solid fa-shield-halved"></i> <strong>Disclaimer:</strong> Mọi thông tin và kịch bản phân tích trên website chỉ mang tính chất tham khảo & chia sẻ góc nhìn từ Tùng Phạm Algo Lab, không phải lời khuyên đầu tư tài chính.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Modal: Mời Cafe / Donate Ủng Hộ (VPBank VietQR) -->
+    <div class="modal-overlay" id="donate-modal-overlay">
+        <div class="modal-card donate-modal-card">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon donate-icon-glow"><i class="fa-solid fa-mug-hot text-gold"></i></div>
+                    <div>
+                        <h3>Mời Cafe Tác Giả • Tùng Phạm Algo Lab</h3>
+                        <p class="modal-sub">Ủng hộ duy trì máy chủ, dữ liệu thời gian thực & nghiên cứu kịch bản miễn phí</p>
+                    </div>
+                </div>
+                <button class="btn-close-modal" id="btn-close-donate-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="donate-modal-body">
+                <!-- Preset Amount Selector -->
+                <div class="donate-presets-label"><i class="fa-solid fa-coins text-gold"></i> Chọn mức ủng hộ nhanh:</div>
+                <div class="donate-preset-grid">
+                    <button type="button" class="donate-preset-btn active" data-amount="50000">
+                        <span class="dp-icon">☕️</span>
+                        <span class="dp-amount">50.000đ</span>
+                        <span class="dp-tag">Ly Cafe Sáng</span>
+                    </button>
+                    <button type="button" class="donate-preset-btn" data-amount="100000">
+                        <span class="dp-icon">🍜</span>
+                        <span class="dp-amount">100.000đ</span>
+                        <span class="dp-tag">Bữa Trưa</span>
+                    </button>
+                    <button type="button" class="donate-preset-btn" data-amount="200000">
+                        <span class="dp-icon">🚀</span>
+                        <span class="dp-amount">200.000đ</span>
+                        <span class="dp-tag">Server & Data</span>
+                    </button>
+                    <button type="button" class="donate-preset-btn" data-amount="500000">
+                        <span class="dp-icon">💎</span>
+                        <span class="dp-amount">500.000đ</span>
+                        <span class="dp-tag">Đồng Hành Lab</span>
+                    </button>
+                </div>
+
+                <!-- QR Display and Bank Info -->
+                <div class="donate-content-layout">
+                    <!-- Left: QR Frame -->
+                    <div class="donate-qr-wrapper">
+                        <div class="donate-qr-frame">
+                            <img id="donate-qr-img" src="https://img.vietqr.io/image/VPB-88868689-compact2.png?amount=50000&addInfo=Moi%20Cafe%20Tung%20Pham%20Algo%20Lab&accountName=PHAM%20THANH%20TUNG" alt="VietQR VPBank PHAM THANH TUNG" onerror="this.onerror=null; this.src='/static/assets/vpbank_qr.jpg';">
+                        </div>
+                        <p class="donate-qr-hint"><i class="fa-solid fa-camera"></i> Mở app Ngân Hàng / MoMo quét mã</p>
+                    </div>
+
+                    <!-- Right: Direct Bank Details with Copy -->
+                    <div class="donate-info-pane">
+                        <div class="donate-field-card">
+                            <div class="df-left">
+                                <span class="df-label">Ngân Hàng:</span>
+                                <strong class="df-value"><i class="fa-solid fa-building-columns text-gold"></i> VPBank (Việt Nam Thịnh Vượng)</strong>
+                            </div>
+                        </div>
+
+                        <div class="donate-field-card">
+                            <div class="df-left">
+                                <span class="df-label">Số Tài Khoản:</span>
+                                <strong class="df-value highlight-num" id="donate-stk-text">88868689</strong>
+                            </div>
+                            <button type="button" class="btn-copy-field" id="btn-copy-stk" title="Sao chép Số Tài Khoản">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copy STK</span>
+                            </button>
+                        </div>
+
+                        <div class="donate-field-card">
+                            <div class="df-left">
+                                <span class="df-label">Chủ Tài Khoản:</span>
+                                <strong class="df-value" id="donate-name-text">PHAM THANH TUNG</strong>
+                            </div>
+                            <button type="button" class="btn-copy-field" id="btn-copy-name" title="Sao chép Tên">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copy Tên</span>
+                            </button>
+                        </div>
+
+                        <div class="donate-field-card">
+                            <div class="df-left">
+                                <span class="df-label">Nội Dung Chuyển:</span>
+                                <strong class="df-value" id="donate-memo-text">Moi Cafe Tung Pham Algo Lab</strong>
+                            </div>
+                            <button type="button" class="btn-copy-field" id="btn-copy-memo" title="Sao chép Nội Dung">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copy ND</span>
+                            </button>
+                        </div>
+
+                        <div class="donate-thankyou-box">
+                            <i class="fa-solid fa-heart text-danger"></i>
+                            <span>Mr Tung và Algo Lab xin chân thành cảm ơn sự đồng hành & quý mến của quý anh em trader!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Notification Box -->
     <div class="toast-container" id="toast-container"></div>
@@ -698,6 +808,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=6.3"></script>
+    <script src="/static/js/app.js?v=6.4"></script>
 </body>
 </html>

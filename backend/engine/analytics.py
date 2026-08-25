@@ -78,9 +78,9 @@ def track_visitor(client_id: str = "", client_ip: str = "", is_pageview: bool = 
         total_views = BASE_ACCUMULATED_VIEWS + data.get("total_views", 0)
         today_views = BASE_TODAY_VIEWS + data.get("daily_views", {}).get(today_str, 0)
         
-        # Real-time online count (actual active devices + current online members)
+        # Real-time online count (actual active devices)
         real_active = len(data["active_sessions"])
-        online_now = max(3, real_active + 2) if real_active > 0 else 1
+        online_now = max(1, real_active)
 
         return {
             "total_views": total_views,
@@ -104,7 +104,7 @@ def get_analytics_stats() -> dict:
         total_views = BASE_ACCUMULATED_VIEWS + data.get("total_views", 0)
         today_views = BASE_TODAY_VIEWS + data.get("daily_views", {}).get(today_str, 0)
         real_active = len(active_sessions_clean)
-        online_now = max(3, real_active + 2) if real_active > 0 else 1
+        online_now = max(1, real_active)
 
         return {
             "total_views": total_views,

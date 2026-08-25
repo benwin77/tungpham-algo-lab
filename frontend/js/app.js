@@ -152,6 +152,20 @@ const DOM = {
     loginForm: document.getElementById("login-form"),
     adminPasswordInput: document.getElementById("admin-password-input"),
 
+    // Donate Modal
+    btnOpenDonate: document.getElementById("btn-open-donate"),
+    btnOpenDonateFooter: document.getElementById("btn-open-donate-footer"),
+    donateModal: document.getElementById("donate-modal-overlay"),
+    btnCloseDonateModal: document.getElementById("btn-close-donate-modal"),
+    donatePresetBtns: document.querySelectorAll(".donate-preset-btn"),
+    donateQrImg: document.getElementById("donate-qr-img"),
+    donateStkText: document.getElementById("donate-stk-text"),
+    donateNameText: document.getElementById("donate-name-text"),
+    donateMemoText: document.getElementById("donate-memo-text"),
+    btnCopyStk: document.getElementById("btn-copy-stk"),
+    btnCopyName: document.getElementById("btn-copy-name"),
+    btnCopyMemo: document.getElementById("btn-copy-memo"),
+
     // Toasts
     toastContainer: document.getElementById("toast-container")
 };
@@ -1282,6 +1296,61 @@ function handleCopyExport() {
 }
 
 // -------------------------------------------------------------
+// Donate / Mời Cafe Handlers
+// -------------------------------------------------------------
+
+function openDonateModal() {
+    if (DOM.donateModal) DOM.donateModal.classList.add("active");
+}
+
+function closeDonateModal() {
+    if (DOM.donateModal) DOM.donateModal.classList.remove("active");
+}
+
+function handlePresetAmountClick(e) {
+    const btn = e.currentTarget;
+    const amount = btn.getAttribute("data-amount");
+    DOM.donatePresetBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    if (DOM.donateQrImg) {
+        const qrUrl = `https://img.vietqr.io/image/VPB-88868689-compact2.png?amount=${amount}&addInfo=Moi%20Cafe%20Tung%20Pham%20Algo%20Lab&accountName=PHAM%20THANH%20TUNG`;
+        DOM.donateQrImg.src = qrUrl;
+    }
+}
+
+function copyToClipboard(text, successMsg) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast(successMsg, "success");
+        }).catch(() => {
+            fallbackCopy(text, successMsg);
+        });
+    } else {
+        fallbackCopy(text, successMsg);
+    }
+}
+
+function fallbackCopy(text, successMsg) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+        document.execCommand("copy");
+        showToast(successMsg, "success");
+    } catch (e) {
+        showToast(`Sao chép: ${text}`, "info");
+    }
+    document.body.removeChild(ta);
+}
+
+// Expose to window for inline onclicks
+window.openDonateModal = openDonateModal;
+
+// -------------------------------------------------------------
 // Event Listeners Setup
 // -------------------------------------------------------------
 
@@ -1293,6 +1362,35 @@ function setupEventListeners() {
     DOM.btnCancelModal.addEventListener("click", closeEditModal);
     DOM.editForm.addEventListener("submit", handleSaveScenario);
     if (DOM.btnTriggerTelegramAlert) DOM.btnTriggerTelegramAlert.addEventListener("click", handleTriggerTelegramAlert);
+
+    // Donate Listeners
+    if (DOM.btnOpenDonate) DOM.btnOpenDonate.addEventListener("click", openDonateModal);
+    if (DOM.btnOpenDonateFooter) DOM.btnOpenDonateFooter.addEventListener("click", openDonateModal);
+    if (DOM.btnCloseDonateModal) DOM.btnCloseDonateModal.addEventListener("click", closeDonateModal);
+    if (DOM.donateModal) {
+        DOM.donateModal.addEventListener("click", (e) => {
+            if (e.target === DOM.donateModal) closeDonateModal();
+        });
+    }
+    DOM.donatePresetBtns.forEach(btn => {
+        btn.addEventListener("click", handlePresetAmountClick);
+    });
+
+    if (DOM.btnCopyStk) {
+        DOM.btnCopyStk.addEventListener("click", () => {
+            copyToClipboard("88868689", "Đã sao chép Số Tài Khoản: 88868689 (VPBank)");
+        });
+    }
+    if (DOM.btnCopyName) {
+        DOM.btnCopyName.addEventListener("click", () => {
+            copyToClipboard("PHAM THANH TUNG", "Đã sao chép Tên: PHAM THANH TUNG");
+        });
+    }
+    if (DOM.btnCopyMemo) {
+        DOM.btnCopyMemo.addEventListener("click", () => {
+            copyToClipboard("Moi Cafe Tung Pham Algo Lab", "Đã sao chép Nội Dung Chuyển Khoản!");
+        });
+    }
 
     // Journal Modal Listeners
     if (DOM.btnOpenAddJournal) DOM.btnOpenAddJournal.addEventListener("click", openJournalModal);
