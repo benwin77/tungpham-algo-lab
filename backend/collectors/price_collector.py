@@ -7,7 +7,7 @@ from typing import Dict, Any, Optional
 SYMBOL_MAP = {
     "XAUUSD": {"ticker": "GC=F", "name": "Gold / U.S. Dollar (Spot XAU/USD)", "digits": 2, "tv_symbol": "OANDA:XAUUSD"},
     "BTCUSD": {"ticker": "BTC-USD", "name": "Bitcoin / U.S. Dollar (BTC/USD 24/7)", "digits": 2, "tv_symbol": "BINANCE:BTCUSDT"},
-    "US100":  {"ticker": "^NDX", "name": "US100 (Nasdaq 100 Index)", "digits": 2, "tv_symbol": "FOREXCOM:NAS100USD"},
+    "US100":  {"ticker": "NQ=F", "name": "US100 (Nasdaq 100 Index)", "digits": 2, "tv_symbol": "PEPPERSTONE:NAS100"},
     "GBPUSD": {"ticker": "GBPUSD=X", "name": "GBP / U.S. Dollar", "digits": 5, "tv_symbol": "FX:GBPUSD"},
     "USDJPY": {"ticker": "USDJPY=X", "name": "USD / Japanese Yen", "digits": 3, "tv_symbol": "FX:USDJPY"},
     "CADCHF": {"ticker": "CADCHF=X", "name": "CAD / Swiss Franc", "digits": 5, "tv_symbol": "FX:CADCHF"}
@@ -83,20 +83,20 @@ def fetch_tradingview_spot_data() -> Dict[str, Dict[str, Any]]:
     except Exception as e:
         print(f"[PriceCollector] Binance live feed notice: {e}")
 
-    # 3. US100 / Nasdaq Index Spot (Live from yfinance Fast Info & Futures)
+    # 3. US100 / Nasdaq Index Spot (Live 24/5 continuous CFD & Futures feed from NQ=F)
     try:
-        t_ndx = yf.Ticker("^NDX")
-        p = getattr(t_ndx.fast_info, "last_price", None)
-        h = getattr(t_ndx.fast_info, "day_high", None)
-        l = getattr(t_ndx.fast_info, "day_low", None)
-        prev = getattr(t_ndx.fast_info, "previous_close", None)
+        t_nq = yf.Ticker("NQ=F")
+        p = getattr(t_nq.fast_info, "last_price", None)
+        h = getattr(t_nq.fast_info, "day_high", None)
+        l = getattr(t_nq.fast_info, "day_low", None)
+        prev = getattr(t_nq.fast_info, "previous_close", None)
         
         if not p:
-            t_nq = yf.Ticker("NQ=F")
-            p = getattr(t_nq.fast_info, "last_price", None)
-            h = getattr(t_nq.fast_info, "day_high", None)
-            l = getattr(t_nq.fast_info, "day_low", None)
-            prev = getattr(t_nq.fast_info, "previous_close", None)
+            t_ndx = yf.Ticker("^NDX")
+            p = getattr(t_ndx.fast_info, "last_price", None)
+            h = getattr(t_ndx.fast_info, "day_high", None)
+            l = getattr(t_ndx.fast_info, "day_low", None)
+            prev = getattr(t_ndx.fast_info, "previous_close", None)
             
         if p:
             close_p = round(float(p), 1)
