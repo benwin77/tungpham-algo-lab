@@ -723,10 +723,9 @@ function renderJournal() {
     if (records.length === 0) {
         DOM.journalList.innerHTML = `
             <div class="empty-journal-box">
-                <i class="fa-solid fa-chart-line text-gold"></i>
-                <h4>Bắt Đầu Nhật Ký Giao Dịch Từ Hôm Nay</h4>
-                <p>Chưa có lệnh nào kết thúc. Khi Mr Tung cập nhật kết quả các kịch bản đã xuất bản, Winrate % và R:R tích lũy sẽ được tính toán tự động và hiển thị tại đây!</p>
-                ${STATE.isAdmin ? `<button type="button" class="btn-sm btn-gold-action" style="margin-top:6px;" onclick="openJournalModal()"><i class="fa-solid fa-plus"></i> Ghi Nhận Lệnh Đầu Tiên</button>` : ''}
+                <i class="fa-solid fa-robot text-gold"></i>
+                <h4>Bắt Đầu Nhật Ký Tự Động Từ Hôm Nay (Reset Về 0)</h4>
+                <p>Chưa có lệnh nào đóng. Hệ thống đang tự động theo dõi giá thời gian thực 24/7 của 6 cặp tài sản và sẽ <strong>tự động ghi nhận tức thì</strong> vào bảng này khi có lệnh kích hoạt chạm mục tiêu TP hoặc SL!</p>
             </div>
         `;
         return;
