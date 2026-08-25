@@ -1,5 +1,22 @@
 [
   {
+    "id": "quant_smc_cbot_gold",
+    "name": "SMC Institutional Order Block & ChoCH Pro (cBot cTrader)",
+    "market": "Vàng Giao Ngay (XAU/USD)",
+    "timeframe": "M15 Execution • H1/H4 Structure",
+    "period": "2022 – 2026 (4 Năm Dữ Liệu Tick FTMO)",
+    "total_trades": 352,
+    "win_rate": "67.0%",
+    "profit_factor": 1.43,
+    "max_drawdown": "4.84%",
+    "expectancy": "+0.64R / Trade",
+    "sharpe_ratio": 2.45,
+    "net_profit_r": "+22.45% (Net +$2,245)",
+    "description": "Thuật toán SMC thế hệ mới kết hợp nhận diện Order Block vi mô, quét thanh khoản SFP, chốt lời đa tầng (TP1 +1.5R chốt 50% & kéo SL về Breakeven hòa vốn, TP2 +3.5R). Đã kiểm thử 4 năm thực chiến trên nền tảng Quỹ FTMO với Max Drawdown chỉ 4.84%.",
+    "badge": "⚡️ FTMO VERIFIED (4 NĂM)",
+    "download_url": "/api/cbot/download"
+  },
+  {
     "id": "quant_vn30f",
     "name": "VN30F Intraday Momentum & Liquidity Algo",
     "market": "Phái Sinh Việt Nam (VN30F1M)",
@@ -14,22 +31,6 @@
     "net_profit_r": "+539.4R",
     "description": "Thuật toán khai thác dòng tiền lớn (Smart Money Liquidity) trong phiên sáng và chiều của thị trường chứng khoán phái sinh Việt Nam, tự động cắt lỗ cố định và gồng lãi theo bước sóng Fibonacci.",
     "badge": "Algo Chiến Lược HFT"
-  },
-  {
-    "id": "quant_xauusd",
-    "name": "XAU/USD London-NY Killzone Breakout & Sweep",
-    "market": "Vàng Giao Ngay (Spot Gold)",
-    "timeframe": "H1 / M15 Execution",
-    "period": "2020 – 2026 (6 Năm Backtest)",
-    "total_trades": 1842,
-    "win_rate": "58.4%",
-    "profit_factor": 2.15,
-    "max_drawdown": "16.8%",
-    "expectancy": "+0.58R / Trade",
-    "sharpe_ratio": 2.38,
-    "net_profit_r": "+1068.3R",
-    "description": "Chiến lược định lượng chuyên săn bẫy giá Judas Swing phiên London (13:00 - 15:30 VN) và bùng nổ xung lực phiên Mỹ (19:30 - 22:00 VN). Tối ưu hóa tỷ lệ R:R tối thiểu 1:2.5.",
-    "badge": "Algo Đỉnh Cao Vàng"
   },
   {
     "id": "quant_us100",

@@ -790,6 +790,13 @@ function renderQuantLab() {
                     </div>
                 </div>
                 <p class="qs-desc">${s.description}</p>
+                ${s.download_url ? `
+                    <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+                        <a href="${s.download_url}" class="btn-sm btn-gold-action" download="TungPhamAlgoLab_SMC_Bot.cs" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; padding:6px 14px;">
+                            <i class="fa-solid fa-download"></i> Tải Mã Nguồn cBot (.cs)
+                        </a>
+                    </div>
+                ` : ''}
             </div>
         `;
     }).join("");
