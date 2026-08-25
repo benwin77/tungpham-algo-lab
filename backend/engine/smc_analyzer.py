@@ -299,6 +299,19 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
     reward = abs(tp2 - entry_high) if bias == "BUY" else abs(entry_low - tp2)
     rr_str = f"1:{round(reward/risk, 1)}" if risk > 0 else "1:2.5"
 
+    # Execution Trigger & Multi-timeframe Structure Flow
+    trigger = (
+        f"M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block ({entry_low} - {entry_high})"
+        if bias == "BUY"
+        else f"M15 Bearish CHOCH + râu quét thanh khoản đỉnh + retest Supply Zone ({entry_low} - {entry_high})"
+    )
+    market_structure_flow = {
+        "d1": "BULLISH UPTREND" if bias == "BUY" else "BEARISH DOWNTREND",
+        "h4": "BULLISH BOS" if bias == "BUY" else "BEARISH CHOCH",
+        "h1": "PULLBACK TO DISCOUNT" if bias == "BUY" else "PULLBACK TO PREMIUM",
+        "m15": "WAITING CONFIRMATION TRIGGER"
+    }
+
     return {
         "pair": pair,
         "name": tech.get("name", pair),
@@ -306,7 +319,7 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
         "current_price": price,
         "bias": bias,
         "bias_badge": bias_badge,
-        "status": "PLANNING",  # PLANNING, ACTIVE, TRIGGERED, TP1_HIT, TP2_HIT, STOPPED, CANCELLED
+        "status": "WAITING",  # WAITING, ACTIVE, TP1_HIT, TP2_HIT, INVALIDATED
         "strategy_type": "SMC + Thuần PA + Trend Follow",
         "entry_zone": f"{entry_low} - {entry_high}",
         "entry_low": entry_low,
@@ -315,6 +328,8 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
         "tp1": tp1,
         "tp2": tp2,
         "rr_ratio": rr_str,
+        "trigger": trigger,
+        "market_structure_flow": market_structure_flow,
         "structure": structure,
         "ob_zone": ob_zone,
         "bsl": bsl,

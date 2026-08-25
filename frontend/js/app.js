@@ -11,9 +11,13 @@ const STATE = {
     marketData: {},
     calendar: [],
     news: [],
+    trackRecord: { stats: {}, records: [] },
+    quantLab: [],
     tradingViewWidget: null,
     isAdmin: false,
-    adminToken: localStorage.getItem("tp_admin_token") || ""
+    adminToken: localStorage.getItem("tp_admin_token") || "",
+    userTier: localStorage.getItem("tp_user_tier") || "PRO", // PRO by default for high value, or toggleable
+    previewAsFree: false
 };
 
 // DOM Elements Cache
@@ -27,6 +31,9 @@ const DOM = {
     btnExportText: document.getElementById("btn-export-text"),
     btnAdminAuth: document.getElementById("btn-admin-auth"),
     adminBtnText: document.getElementById("admin-btn-text"),
+    btnOpenPricing: document.getElementById("btn-open-pricing"),
+    btnToggleTier: document.getElementById("btn-toggle-tier"),
+    tierPreviewBtnText: document.getElementById("tier-preview-btn-text"),
 
     // Active Pair View
     symbolBadge: document.getElementById("detail-symbol-badge"),
@@ -39,11 +46,20 @@ const DOM = {
     structureSub: document.getElementById("detail-structure-sub"),
     rrValue: document.getElementById("detail-rr-value"),
 
-    // Levels
+    // Structure Pipeline
+    sfD1: document.getElementById("sf-d1"),
+    sfH4: document.getElementById("sf-h4"),
+    sfH1: document.getElementById("sf-h1"),
+    sfM15: document.getElementById("sf-m15"),
+
+    // Execution & PRO Gating
+    gatedWrapper: document.getElementById("execution-gated-wrapper"),
     entryVal: document.getElementById("detail-entry-val"),
     slVal: document.getElementById("detail-sl-val"),
     tp1Val: document.getElementById("detail-tp1-val"),
     tp2Val: document.getElementById("detail-tp2-val"),
+    triggerBadge: document.getElementById("detail-trigger-badge"),
+    triggerDesc: document.getElementById("detail-trigger-desc"),
 
     // SMC Zones
     obVal: document.getElementById("detail-ob-val"),
@@ -79,6 +95,19 @@ const DOM = {
     newsBearVal: document.getElementById("news-bear-val"),
     matrixTbody: document.getElementById("matrix-tbody"),
 
+    // Track Record elements
+    trTotalSetups: document.getElementById("tr-total-setups"),
+    trWinRate: document.getElementById("tr-win-rate"),
+    trNetR: document.getElementById("tr-net-r"),
+    trProfitFactor: document.getElementById("tr-profit-factor"),
+    trAvgWin: document.getElementById("tr-avg-win"),
+    trAvgLoss: document.getElementById("tr-avg-loss"),
+    trMaxStreak: document.getElementById("tr-max-streak"),
+    trackRecordList: document.getElementById("track-record-list"),
+
+    // Quant Lab elements
+    quantStrategiesList: document.getElementById("quant-strategies-list"),
+
     // Edit Modal
     editModal: document.getElementById("edit-modal-overlay"),
     btnCloseModal: document.getElementById("btn-close-modal"),
@@ -88,6 +117,7 @@ const DOM = {
     modalInputPair: document.getElementById("modal-input-pair"),
     modalSelectBias: document.getElementById("modal-select-bias"),
     modalSelectStatus: document.getElementById("modal-select-status"),
+    modalInputTrigger: document.getElementById("modal-input-trigger"),
     modalInputEntry: document.getElementById("modal-input-entry"),
     modalInputSl: document.getElementById("modal-input-sl"),
     modalInputTp1: document.getElementById("modal-input-tp1"),
@@ -95,6 +125,7 @@ const DOM = {
     modalChecklistEditor: document.getElementById("modal-checklist-editor"),
     modalInputRationale: document.getElementById("modal-input-rationale"),
     modalInputNotes: document.getElementById("modal-input-notes"),
+    btnTriggerTelegramAlert: document.getElementById("btn-trigger-telegram-alert"),
 
     // Export Modal
     exportModal: document.getElementById("export-modal-overlay"),
@@ -109,6 +140,10 @@ const DOM = {
     btnCancelLogin: document.getElementById("btn-cancel-login"),
     loginForm: document.getElementById("login-form"),
     adminPasswordInput: document.getElementById("admin-password-input"),
+
+    // Pricing Modal
+    pricingModal: document.getElementById("pricing-modal-overlay"),
+    btnClosePricing: document.getElementById("btn-close-pricing"),
 
     // Toasts
     toastContainer: document.getElementById("toast-container")
@@ -296,7 +331,9 @@ async function initDashboard() {
             loadMarketData(),
             loadForecasts(),
             loadCalendar(),
-            loadNews()
+            loadNews(),
+            loadTrackRecord(),
+            loadQuantLab()
         ]);
         renderAll();
         if (!realtimeStreamStarted) {
@@ -414,6 +451,29 @@ async function loadNews() {
     }
 }
 
+async function loadTrackRecord() {
+    try {
+        const res = await fetch(`${API_BASE}/api/track-record`);
+        if (res.ok) {
+            STATE.trackRecord = await res.json();
+        }
+    } catch (e) {
+        console.warn("Failed loading track record:", e);
+    }
+}
+
+async function loadQuantLab() {
+    try {
+        const res = await fetch(`${API_BASE}/api/quant-lab`);
+        if (res.ok) {
+            const data = await res.json();
+            STATE.quantLab = data.strategies || [];
+        }
+    } catch (e) {
+        console.warn("Failed loading quant lab:", e);
+    }
+}
+
 async function refreshAllData() {
     DOM.refreshIcon.classList.add("fa-spin");
     try {
@@ -441,6 +501,8 @@ function renderAll() {
     renderTradingViewWidget();
     renderCalendar();
     renderNews();
+    renderTrackRecord();
+    renderQuantLab();
     renderMatrixTable();
 }
 
@@ -506,8 +568,24 @@ function renderActivePairDetail() {
 
     DOM.assetName.textContent = m.name || f.name || formattedPair;
     DOM.strategyBadge.textContent = f.strategy_type || "SMC + Thuần PA + Trend Follow";
-    DOM.statusBadge.textContent = f.status || "PLANNING";
+    
+    // Lifecycle Status Badge
+    const st = f.status || "WAITING";
+    let stBadge = "🟡 WAITING";
+    if (st === "ACTIVE") stBadge = "🟢 ACTIVE";
+    else if (st === "TP1_HIT") stBadge = "✅ TP1 HIT";
+    else if (st === "TP2_HIT") stBadge = "🏆 TP2 HIT";
+    else if (st === "INVALIDATED") stBadge = "❌ INVALIDATED";
+    DOM.statusBadge.textContent = stBadge;
+
     DOM.customBadge.style.display = f.user_customized ? "inline-block" : "none";
+
+    // Structure Pipeline Flow
+    const flow = f.market_structure_flow || {};
+    if (DOM.sfD1) DOM.sfD1.textContent = flow.d1 || (f.bias === "BUY" ? "BULLISH" : "BEARISH");
+    if (DOM.sfH4) DOM.sfH4.textContent = flow.h4 || (f.bias === "BUY" ? "BULLISH BOS" : "BEARISH CHOCH");
+    if (DOM.sfH1) DOM.sfH1.textContent = flow.h1 || "PULLBACK DISCOUNT";
+    if (DOM.sfM15) DOM.sfM15.textContent = flow.m15 || "TRIGGER CONFIRM";
 
     // Bias Banner
     const isSell = f.bias === "SELL";
@@ -525,6 +603,16 @@ function renderActivePairDetail() {
     DOM.slVal.textContent = f.stop_loss || "--";
     DOM.tp1Val.textContent = f.tp1 || "--";
     DOM.tp2Val.textContent = f.tp2 || "--";
+
+    // Execution Trigger Card
+    if (DOM.triggerBadge) DOM.triggerBadge.textContent = stBadge;
+    if (DOM.triggerDesc) DOM.triggerDesc.textContent = f.trigger || (f.bias === "BUY" ? "M15 Bullish CHOCH + displacement nến xác nhận + retest Order Block" : "M15 Bearish CHOCH + râu quét thanh khoản đỉnh + retest Supply Zone");
+
+    // PRO Gating Overlay
+    const isFreeViewer = (STATE.userTier === "FREE" || STATE.previewAsFree) && !STATE.isAdmin;
+    if (DOM.gatedWrapper) {
+        DOM.gatedWrapper.classList.toggle("is-gated", isFreeViewer);
+    }
 
     // SMC Key Zones
     DOM.obVal.textContent = f.ob_zone || "--";
@@ -553,6 +641,80 @@ function renderActivePairDetail() {
     // Chart header title
     const chartLabel = (p === "XAUUSD") ? "XAU/USD (Spot Gold)" : ((p === "BTCUSD") ? "BTC/USD (Bitcoin 24/7)" : ((p === "US100") ? "US100 (Nasdaq 100 Index)" : formattedPair));
     DOM.chartPairName.textContent = `Biểu Đồ Trực Tiếp: ${chartLabel}`;
+}
+
+function renderTrackRecord() {
+    const stats = STATE.trackRecord.stats || {};
+    const records = STATE.trackRecord.records || [];
+
+    if (DOM.trTotalSetups) DOM.trTotalSetups.textContent = stats.total_setups || "0";
+    if (DOM.trWinRate) DOM.trWinRate.textContent = `${stats.win_rate || 0}%`;
+    if (DOM.trNetR) DOM.trNetR.textContent = stats.net_r || "+0.0R";
+    if (DOM.trProfitFactor) DOM.trProfitFactor.textContent = stats.profit_factor || "0.0";
+    if (DOM.trAvgWin) DOM.trAvgWin.textContent = stats.avg_winner || "+0.0R";
+    if (DOM.trAvgLoss) DOM.trAvgLoss.textContent = stats.avg_loser || "-0.0R";
+    if (DOM.trMaxStreak) DOM.trMaxStreak.textContent = stats.max_losing_streak || "0";
+
+    if (!DOM.trackRecordList) return;
+    DOM.trackRecordList.innerHTML = records.map(r => {
+        const isWin = r.result === "WIN";
+        const isLoss = r.result === "LOSS";
+        const pillClass = isWin ? "win" : (isLoss ? "loss" : "be");
+        const formattedPair = r.pair === "XAUUSD" ? "XAU/USD" : (r.pair === "BTCUSD" ? "BTC/USD" : (r.pair === "US100" ? "US100" : `${r.pair.slice(0,3)}/${r.pair.slice(3)}`));
+        const dirIcon = r.direction === "BUY" ? "🟢 BUY" : "🔴 SELL";
+
+        return `
+            <div class="tr-card">
+                <div class="tr-top-row">
+                    <div class="tr-pair-badge">${formattedPair} • ${dirIcon} <span class="text-dim" style="font-weight:400; font-size:0.68rem;">(${r.date})</span></div>
+                    <span class="tr-res-pill ${pillClass}">${r.r_multiple}</span>
+                </div>
+                <div class="tr-strat-text"><i class="fa-solid fa-crosshairs text-gold"></i> ${r.strategy || "SMC Strategy"}</div>
+                <div class="tr-levels-row">
+                    <span>Entry: <strong>${r.entry}</strong></span>
+                    <span>SL: <strong>${r.sl}</strong></span>
+                    <span>TP: <strong>${r.tp}</strong></span>
+                </div>
+                <div class="tr-notes">${r.notes || ""}</div>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderQuantLab() {
+    if (!DOM.quantStrategiesList) return;
+    DOM.quantStrategiesList.innerHTML = (STATE.quantLab || []).map(s => {
+        return `
+            <div class="quant-strat-card">
+                <div class="qs-header">
+                    <div class="qs-title-group">
+                        <h5>${s.name}</h5>
+                        <span class="qs-market"><i class="fa-solid fa-chart-pie text-gold"></i> ${s.market} • ${s.timeframe}</span>
+                    </div>
+                    <span class="qs-badge">${s.badge || "PRO ALGO"}</span>
+                </div>
+                <div class="qs-metrics-grid">
+                    <div class="qm-box">
+                        <span class="qm-label">WIN RATE</span>
+                        <strong class="qm-val text-success">${s.win_rate}</strong>
+                    </div>
+                    <div class="qm-box">
+                        <span class="qm-label">PROFIT FACTOR</span>
+                        <strong class="qm-val text-gold">${s.profit_factor}</strong>
+                    </div>
+                    <div class="qm-box">
+                        <span class="qm-label">MAX DRAWDOWN</span>
+                        <strong class="qm-val text-danger">${s.max_drawdown}</strong>
+                    </div>
+                    <div class="qm-box">
+                        <span class="qm-label">EXPECTANCY</span>
+                        <strong class="qm-val text-primary">${s.expectancy}</strong>
+                    </div>
+                </div>
+                <p class="qs-desc">${s.description}</p>
+            </div>
+        `;
+    }).join("");
 }
 
 function renderTradingViewWidget() {
@@ -743,7 +905,8 @@ function openEditModal() {
     DOM.modalPairName.textContent = formattedPair;
     DOM.modalInputPair.value = p;
     DOM.modalSelectBias.value = f.bias || "BUY";
-    DOM.modalSelectStatus.value = f.status || "PLANNING";
+    DOM.modalSelectStatus.value = f.status || "WAITING";
+    if (DOM.modalInputTrigger) DOM.modalInputTrigger.value = f.trigger || "";
     DOM.modalInputEntry.value = f.entry_zone || "";
     DOM.modalInputSl.value = f.stop_loss || "";
     DOM.modalInputTp1.value = f.tp1 || "";
@@ -773,6 +936,59 @@ function closeEditModal() {
     DOM.editModal.classList.remove("active");
 }
 
+function openPricingModal() {
+    if (DOM.pricingModal) DOM.pricingModal.classList.add("active");
+}
+
+function closePricingModal() {
+    if (DOM.pricingModal) DOM.pricingModal.classList.remove("active");
+}
+
+function toggleTierPreview() {
+    STATE.previewAsFree = !STATE.previewAsFree;
+    if (DOM.tierPreviewBtnText) {
+        DOM.tierPreviewBtnText.textContent = STATE.previewAsFree ? "Đang xem: Free View" : "Xem Thử Free View";
+    }
+    renderActivePairDetail();
+    showToast(STATE.previewAsFree ? "Đang bật chế độ xem thử nghiệm Khách (Free View)" : "Đã chuyển về chế độ Toàn quyền (Admin/PRO View)", "info");
+}
+
+async function handleTriggerTelegramAlert() {
+    if (!STATE.isAdmin) {
+        showToast("Vui lòng đăng nhập Admin để phát cảnh báo!", "warning");
+        return;
+    }
+    const p = STATE.activePair;
+    const f = STATE.forecasts[p] || {};
+    
+    try {
+        const res = await fetch(`${API_BASE}/api/alerts/telegram`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Admin-Token": STATE.adminToken
+            },
+            body: JSON.stringify({
+                pair: p,
+                direction: f.bias || "BUY",
+                status: f.status || "ACTIVE",
+                entry: f.entry_zone || "",
+                sl: String(f.stop_loss || ""),
+                tp1: String(f.tp1 || ""),
+                tp2: String(f.tp2 || ""),
+                trigger: f.trigger || ""
+            })
+        });
+        if (res.ok) {
+            showToast(`🚀 Đã phát cảnh báo kịch bản ${p} tới Telegram!`, "success");
+        } else {
+            showToast("Lỗi khi phát cảnh báo.", "warning");
+        }
+    } catch (e) {
+        showToast("Không thể kết nối máy chủ để phát cảnh báo.", "warning");
+    }
+}
+
 async function handleSaveScenario(e) {
     e.preventDefault();
     if (!STATE.isAdmin) {
@@ -783,6 +999,7 @@ async function handleSaveScenario(e) {
     const p = DOM.modalInputPair.value;
     const bias = DOM.modalSelectBias.value;
     const status = DOM.modalSelectStatus.value;
+    const trigger = DOM.modalInputTrigger ? DOM.modalInputTrigger.value : "";
     const entry = DOM.modalInputEntry.value;
     const sl = parseFloat(DOM.modalInputSl.value) || 0;
     const tp1 = parseFloat(DOM.modalInputTp1.value) || 0;
@@ -814,6 +1031,7 @@ async function handleSaveScenario(e) {
         pair: p,
         bias: bias,
         status: status,
+        trigger: trigger,
         entry_zone: entry,
         stop_loss: sl,
         tp1: tp1,
@@ -921,6 +1139,12 @@ function setupEventListeners() {
     DOM.btnCancelModal.addEventListener("click", closeEditModal);
     DOM.editForm.addEventListener("submit", handleSaveScenario);
 
+    // Pricing Modal Listeners
+    if (DOM.btnOpenPricing) DOM.btnOpenPricing.addEventListener("click", openPricingModal);
+    if (DOM.btnClosePricing) DOM.btnClosePricing.addEventListener("click", closePricingModal);
+    if (DOM.btnToggleTier) DOM.btnToggleTier.addEventListener("click", toggleTierPreview);
+    if (DOM.btnTriggerTelegramAlert) DOM.btnTriggerTelegramAlert.addEventListener("click", handleTriggerTelegramAlert);
+
     // Admin Auth Listeners
     DOM.btnAdminAuth.addEventListener("click", handleAdminButtonClick);
     DOM.loginForm.addEventListener("submit", handleLoginSubmit);
@@ -939,7 +1163,8 @@ function setupEventListeners() {
             DOM.tabPanes.forEach(p => p.classList.remove("active"));
 
             btn.classList.add("active");
-            document.getElementById(tabId).classList.add("active");
+            const targetPane = document.getElementById(tabId);
+            if (targetPane) targetPane.classList.add("active");
         });
     });
 

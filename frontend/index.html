@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=5.3">
+    <link rel="stylesheet" href="/static/css/style.css?v=6.0">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -32,7 +32,7 @@
                 <img src="/static/assets/logo.jpg" alt="Tùng Phạm Algo Lab Logo" class="brand-logo-img">
                 <div class="logo-text">
                     <h1>TÙNG PHẠM <span>ALGO LAB</span></h1>
-                    <p class="tagline">MINIMAL • PRECISION • GOLD INDEX STRATEGY</p>
+                    <p class="tagline">TRADE THE PLAN. NOT THE NOISE.</p>
                 </div>
             </div>
             
@@ -50,15 +50,29 @@
         </div>
 
         <div class="header-center">
-            <!-- Weekly Period Badge -->
-            <div class="week-badge">
-                <i class="fa-regular fa-calendar-days"></i>
-                <span id="current-week-label">KỊCH BẢN ĐẦU TUẦN</span>
-                <span class="badge-tag">SMC • PA • TREND</span>
+            <!-- Systematic Workflow Process -->
+            <div class="header-framework-pill" title="Hệ thống phân tích chuẩn: Cấu trúc D1/H4 ➔ Bối cảnh H1 ➔ Kích hoạt lệnh M15">
+                <span class="fw-item">D1/H4 Structure</span>
+                <i class="fa-solid fa-chevron-right fw-sep"></i>
+                <span class="fw-item">H1 Context</span>
+                <i class="fa-solid fa-chevron-right fw-sep"></i>
+                <span class="fw-item fw-active">M15 Execution</span>
             </div>
         </div>
 
         <div class="header-right">
+            <!-- PRO Upgrade / Pricing Trigger -->
+            <button class="btn-terminal btn-pro-upgrade" id="btn-open-pricing" title="Xem bảng quyền lợi hội viên PRO">
+                <i class="fa-solid fa-crown"></i>
+                <span>Gói Hội Viên PRO</span>
+            </button>
+
+            <!-- Admin Free/PRO View Switcher -->
+            <button class="btn-terminal btn-outline admin-only" id="btn-toggle-tier" title="Chuyển đổi góc nhìn Khách (Free) / Thành viên (PRO)">
+                <i class="fa-solid fa-eye"></i>
+                <span id="tier-preview-btn-text">Xem Thử Free View</span>
+            </button>
+
             <button class="btn-terminal btn-outline admin-only" id="btn-export-text" title="Xuất Kịch Bản Giao Dịch">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span>Xuất Kịch Bản</span>
@@ -109,7 +123,7 @@
                                 <h2 class="detail-asset-name" id="detail-asset-name">Gold / U.S. Dollar</h2>
                                 <div class="detail-meta">
                                     <span class="strategy-badge" id="detail-strategy-badge">SMC + Thuần PA + Trend Follow</span>
-                                    <span class="status-badge" id="detail-status-badge">PLANNING</span>
+                                    <span class="status-badge" id="detail-status-badge">🟡 WAITING</span>
                                     <span class="custom-badge" id="detail-custom-badge" style="display:none;"><i class="fa-solid fa-user-pen"></i> Tuỳ chỉnh bởi Mr Tung</span>
                                 </div>
                             </div>
@@ -126,6 +140,17 @@
                         </div>
                     </div>
 
+                    <!-- Market Structure Flow Pipeline -->
+                    <div class="structure-flow-bar" id="detail-structure-flow-bar">
+                        <div class="sf-item"><span class="sf-tf">D1</span> <strong id="sf-d1">BULLISH</strong></div>
+                        <div class="sf-sep"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="sf-item"><span class="sf-tf">H4</span> <strong id="sf-h4">BULLISH BOS</strong></div>
+                        <div class="sf-sep"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="sf-item"><span class="sf-tf">H1</span> <strong id="sf-h1">DISCOUNT PULLBACK</strong></div>
+                        <div class="sf-sep"><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="sf-item sf-exec"><span class="sf-tf">M15</span> <strong id="sf-m15">TRIGGER CONFIRM</strong></div>
+                    </div>
+
                     <!-- Bias Banner -->
                     <div class="bias-banner" id="detail-bias-banner">
                         <div class="bias-signal-box">
@@ -138,23 +163,48 @@
                         </div>
                     </div>
 
-                    <!-- Execution Levels Grid -->
-                    <div class="execution-levels-grid">
-                        <div class="level-box entry-box">
-                            <span class="level-tag"><i class="fa-solid fa-crosshairs"></i> VÙNG ENTRY (BUY/SELL)</span>
-                            <span class="level-val" id="detail-entry-val">--</span>
+                    <!-- Actionable Trade Setup Execution Layer (PRO Gated for Free Users) -->
+                    <div class="pro-gated-wrapper" id="execution-gated-wrapper">
+                        <!-- PRO Lock Overlay for Free Viewers -->
+                        <div class="pro-unlock-overlay" id="pro-unlock-overlay">
+                            <div class="pro-lock-content">
+                                <div class="lock-icon-glow"><i class="fa-solid fa-shield-halved"></i></div>
+                                <h4>VÙNG ENTRY & TRIGGER M15 DÀNH RIÊNG CHO HỘI VIÊN PRO</h4>
+                                <p>Mở khóa điểm vào lệnh chuẩn xác, tỷ lệ R:R tối ưu và nhận Cảnh báo Telegram tức thì khi setup chuyển sang <strong>ACTIVE</strong>.</p>
+                                <button class="btn-terminal btn-gold-action" id="btn-overlay-unlock" onclick="openPricingModal()">
+                                    <i class="fa-solid fa-crown"></i>
+                                    <span>Mở Khóa Setup PRO (Chỉ từ 299k/Tháng)</span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="level-box sl-box">
-                            <span class="level-tag"><i class="fa-solid fa-shield-halved"></i> STOP LOSS (SL)</span>
-                            <span class="level-val" id="detail-sl-val">--</span>
+
+                        <!-- Execution Levels Grid -->
+                        <div class="execution-levels-grid">
+                            <div class="level-box entry-box">
+                                <span class="level-tag"><i class="fa-solid fa-crosshairs"></i> VÙNG ENTRY (BUY/SELL)</span>
+                                <span class="level-val" id="detail-entry-val">--</span>
+                            </div>
+                            <div class="level-box sl-box">
+                                <span class="level-tag"><i class="fa-solid fa-shield-halved"></i> STOP LOSS (SL)</span>
+                                <span class="level-val" id="detail-sl-val">--</span>
+                            </div>
+                            <div class="level-box tp-box">
+                                <span class="level-tag"><i class="fa-solid fa-bullseye"></i> TAKE PROFIT 1</span>
+                                <span class="level-val" id="detail-tp1-val">--</span>
+                            </div>
+                            <div class="level-box tp-box tp2-box">
+                                <span class="level-tag"><i class="fa-solid fa-flag-checkered"></i> TAKE PROFIT 2</span>
+                                <span class="level-val" id="detail-tp2-val">--</span>
+                            </div>
                         </div>
-                        <div class="level-box tp-box">
-                            <span class="level-tag"><i class="fa-solid fa-bullseye"></i> TAKE PROFIT 1</span>
-                            <span class="level-val" id="detail-tp1-val">--</span>
-                        </div>
-                        <div class="level-box tp-box tp2-box">
-                            <span class="level-tag"><i class="fa-solid fa-flag-checkered"></i> TAKE PROFIT 2</span>
-                            <span class="level-val" id="detail-tp2-val">--</span>
+
+                        <!-- Actionable Trigger Condition Card -->
+                        <div class="execution-trigger-card">
+                            <div class="trigger-header">
+                                <span class="trigger-label"><i class="fa-solid fa-bolt-lightning text-gold"></i> ĐIỀU KIỆN KÍCH HOẠT (EXECUTION TRIGGER M15):</span>
+                                <span class="trigger-status-badge" id="detail-trigger-badge">🟡 CHỜ XÁC NHẬN</span>
+                            </div>
+                            <p class="trigger-desc" id="detail-trigger-desc">Đang tải điều kiện kích hoạt M15...</p>
                         </div>
                     </div>
 
@@ -218,21 +268,29 @@
                 </div>
             </section>
 
-            <!-- Right Column: Sidebar with Tabs (Economic Calendar & Live News Feed) -->
+            <!-- Right Column: Sidebar with Tabs (Economic Calendar, News, Track Record, Quant Lab & Matrix) -->
             <aside class="sidebar-container">
                 <!-- Sidebar Tabs Navigation -->
                 <div class="sidebar-tabs">
                     <button class="tab-btn active" data-tab="calendar-tab">
                         <i class="fa-solid fa-calendar-week"></i>
-                        <span>Lịch Kinh Tế Tuần</span>
+                        <span>Lịch Kinh Tế</span>
                     </button>
                     <button class="tab-btn" data-tab="news-tab">
                         <i class="fa-solid fa-newspaper"></i>
-                        <span>Tin Tức & Tâm Lý</span>
+                        <span>Tin Tức</span>
+                    </button>
+                    <button class="tab-btn" data-tab="track-record-tab">
+                        <i class="fa-solid fa-trophy text-gold"></i>
+                        <span>Track Record</span>
+                    </button>
+                    <button class="tab-btn" data-tab="quant-lab-tab">
+                        <i class="fa-solid fa-microchip text-primary"></i>
+                        <span>Quant Lab</span>
                     </button>
                     <button class="tab-btn" data-tab="matrix-tab">
                         <i class="fa-solid fa-table-cells"></i>
-                        <span>Ma Trận 6 Cặp</span>
+                        <span>Ma Trận</span>
                     </button>
                 </div>
 
@@ -276,7 +334,58 @@
                     </div>
                 </div>
 
-                <!-- Tab 3: Comparison Matrix -->
+                <!-- Tab 3: Verified Track Record (Vũ khí hạt nhân minh bạch) -->
+                <div class="tab-pane" id="track-record-tab">
+                    <div class="track-record-container">
+                        <!-- Track Record Header & Stats Bar -->
+                        <div class="tr-stats-banner">
+                            <div class="tr-stat-box">
+                                <span class="tr-label">TỔNG SETUPS</span>
+                                <strong class="tr-val" id="tr-total-setups">12</strong>
+                            </div>
+                            <div class="tr-stat-box">
+                                <span class="tr-label">WIN RATE</span>
+                                <strong class="tr-val text-success" id="tr-win-rate">75.0%</strong>
+                            </div>
+                            <div class="tr-stat-box">
+                                <span class="tr-label">NET TÍCH LŨY</span>
+                                <strong class="tr-val text-gold" id="tr-net-r">+20.4R</strong>
+                            </div>
+                            <div class="tr-stat-box">
+                                <span class="tr-label">PROFIT FACTOR</span>
+                                <strong class="tr-val" id="tr-profit-factor">7.80</strong>
+                            </div>
+                        </div>
+
+                        <div class="tr-sub-meta">
+                            <span><i class="fa-solid fa-circle-check text-success"></i> Thắng TB: <strong id="tr-avg-win">+2.6R</strong></span>
+                            <span><i class="fa-solid fa-circle-xmark text-danger"></i> Thua TB: <strong id="tr-avg-loss">-1.0R</strong></span>
+                            <span><i class="fa-solid fa-shield"></i> Max Loss Streak: <strong id="tr-max-streak">1</strong></span>
+                        </div>
+
+                        <!-- Track Record Setups List -->
+                        <div class="tr-list" id="track-record-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Quant Lab (Chiến lược Định lượng & Backtest 2019-2026) -->
+                <div class="tab-pane" id="quant-lab-tab">
+                    <div class="quant-lab-container">
+                        <div class="quant-header-box">
+                            <div class="quant-badge"><i class="fa-solid fa-microchip"></i> QUANTITATIVE RESEARCH</div>
+                            <h4>Chiến Lược Giao Dịch Thuật Toán</h4>
+                            <p>Báo cáo hiệu suất Backtest thực chiến giai đoạn 2019 – 2026 trên Phái sinh VN30F, Vàng và Nasdaq.</p>
+                        </div>
+
+                        <div class="quant-strategies-list" id="quant-strategies-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Comparison Matrix -->
                 <div class="tab-pane" id="matrix-tab">
                     <div class="matrix-table-container">
                         <table class="matrix-table">
@@ -284,6 +393,7 @@
                                 <tr>
                                     <th>Cặp</th>
                                     <th>Bias</th>
+                                    <th>Trạng Thái</th>
                                     <th>Vùng Entry</th>
                                     <th>SL</th>
                                     <th>TP1 / TP2</th>
@@ -330,17 +440,21 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="modal-select-status"><i class="fa-solid fa-bars-progress"></i> Trạng Thái Kế Hoạch:</label>
+                        <label for="modal-select-status"><i class="fa-solid fa-bars-progress"></i> Trạng Thái Vòng Đời Setup (Lifecycle):</label>
                         <select id="modal-select-status" class="form-input">
-                            <option value="PLANNING">📋 Đang Chờ / Lập Kế Hoạch (Planning)</option>
-                            <option value="ACTIVE">⚡️ Đang Hoạt Động (Active Setup)</option>
-                            <option value="TRIGGERED">🎯 Đã Khớp Entry (In Position)</option>
-                            <option value="TP1_HIT">✅ Đã Đạt TP1 (Partial Profit)</option>
-                            <option value="TP2_HIT">🏆 Đã Đạt TP2 (Full Target)</option>
-                            <option value="STOPPED">🛑 Dính Stop Loss</option>
-                            <option value="CANCELLED">❌ Đã Hủy Kế Hoạch</option>
+                            <option value="WAITING">🟡 WAITING (Chờ Tín Hiệu CHOCH M15)</option>
+                            <option value="ACTIVE">🟢 ACTIVE (Đã Chạm Entry & Đang Chạy Lệnh)</option>
+                            <option value="TP1_HIT">✅ TP1 HIT (Đạt Mục Tiêu 1 - Chốt 50% & Kéo BE)</option>
+                            <option value="TP2_HIT">🏆 TP2 HIT (Đạt Trọn Mục Tiêu - Full Target)</option>
+                            <option value="INVALIDATED">❌ INVALIDATED (Bị Phá Vỡ Cấu Trúc / Hit SL)</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Row 1.5: Actionable Execution Trigger M15 -->
+                <div class="form-group">
+                    <label for="modal-input-trigger"><i class="fa-solid fa-bolt text-gold"></i> Điều Kiện Kích Hoạt Lệnh Thực Chiến (M15 Trigger):</label>
+                    <input type="text" id="modal-input-trigger" class="form-input input-gold" placeholder="Ví dụ: M15 Bullish CHOCH + displacement nến tăng dứt khoát + retest Order Block...">
                 </div>
 
                 <!-- Row 2: Price Levels -->
@@ -386,6 +500,10 @@
 
                 <!-- Modal Footer -->
                 <div class="modal-footer">
+                    <button type="button" class="btn-terminal btn-telegram-alert" id="btn-trigger-telegram-alert" title="Bắn cảnh báo setup ACTIVE tới kênh VIP Telegram">
+                        <i class="fa-brands fa-telegram"></i>
+                        <span>Bắn Alert Telegram</span>
+                    </button>
                     <button type="button" class="btn-terminal btn-outline" id="btn-cancel-modal">Hủy Bỏ</button>
                     <button type="submit" class="btn-terminal btn-primary" id="btn-save-scenario">
                         <i class="fa-solid fa-floppy-disk"></i>
@@ -396,7 +514,7 @@
         </div>
     </div>
 
-    <!-- Modal: Admin PIN Login -->
+    <!-- Modal: Admin PIN Login (Bảo mật nghiêm ngặt không lộ mật khẩu) -->
     <div class="modal-overlay" id="login-modal-overlay">
         <div class="modal-card modal-sm">
             <div class="modal-header">
@@ -413,7 +531,6 @@
                 <div class="form-group">
                     <label for="admin-password-input"><i class="fa-solid fa-key"></i> Mật khẩu / PIN Quản Trị:</label>
                     <input type="password" id="admin-password-input" class="form-input input-gold" placeholder="Nhập mật khẩu Admin..." autocomplete="current-password" required>
-                    <small class="text-dim" style="font-size:0.72rem; margin-top:4px;">(Mật khẩu mặc định: <code>tungpham8888</code>)</small>
                 </div>
                 <div class="modal-footer" style="padding: 12px 0 0 0; background: transparent; border-top: none;">
                     <button type="button" class="btn-terminal btn-outline" id="btn-cancel-login">Hủy</button>
@@ -423,6 +540,97 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal: Membership Pricing / Upgrade Tiers (Chuyển đổi hội viên PRO) -->
+    <div class="modal-overlay" id="pricing-modal-overlay">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon text-gold"><i class="fa-solid fa-crown"></i></div>
+                    <div>
+                        <h3>GÓI HỘI VIÊN TÙNG PHẠM ALGO LAB</h3>
+                        <p class="modal-sub">Hệ thống phân tích thực chiến, dữ liệu định lượng & cảnh báo lệnh thời gian thực</p>
+                    </div>
+                </div>
+                <button class="btn-close-modal" id="btn-close-pricing"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="pricing-grid">
+                    <!-- Tier 1: Free -->
+                    <div class="pricing-card tier-free">
+                        <div class="pc-header">
+                            <span class="pc-badge">MIỄN PHÍ</span>
+                            <h4>FREE MEMBER</h4>
+                            <div class="pc-price">0đ <span>/ Mãi mãi</span></div>
+                        </div>
+                        <ul class="pc-features">
+                            <li><i class="fa-solid fa-check text-success"></i> Weekly Market Map tổng quan</li>
+                            <li><i class="fa-solid fa-check text-success"></i> Xu hướng D1/H4 của 6 cặp chính</li>
+                            <li><i class="fa-solid fa-check text-success"></i> Lịch kinh tế ForexFactory lọc tin đỏ</li>
+                            <li><i class="fa-solid fa-check text-success"></i> Xem toàn bộ Verified Track Record</li>
+                            <li class="pc-disabled"><i class="fa-solid fa-xmark text-danger"></i> Vùng Entry, Stop Loss, TP1/TP2</li>
+                            <li class="pc-disabled"><i class="fa-solid fa-xmark text-danger"></i> Điều kiện Trigger kích hoạt M15</li>
+                            <li class="pc-disabled"><i class="fa-solid fa-xmark text-danger"></i> Cảnh báo Telegram tức thì</li>
+                        </ul>
+                        <div class="pc-footer">
+                            <button class="btn-terminal btn-outline full-width" onclick="closePricingModal()">Đang Sử Dụng</button>
+                        </div>
+                    </div>
+
+                    <!-- Tier 2: PRO (Featured) -->
+                    <div class="pricing-card tier-pro featured">
+                        <div class="featured-ribbon">🔥 ĐƯỢC CHỌN NHIỀU NHẤT</div>
+                        <div class="pc-header">
+                            <span class="pc-badge gold">ACTIONABLE TRADER</span>
+                            <h4>PRO MEMBERSHIP</h4>
+                            <div class="pc-price text-gold">399.000đ <span>/ Tháng</span></div>
+                        </div>
+                        <ul class="pc-features">
+                            <li><i class="fa-solid fa-check text-success"></i> <strong>Toàn bộ quyền lợi gói FREE</strong></li>
+                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Mở khóa Full Setup Kịch Bản Thực Chiến</strong></li>
+                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Điểm Entry Zone, SL, TP1, TP2 tối ưu R:R</strong></li>
+                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Execution Trigger M15 (CHOCH + FVG OB)</strong></li>
+                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Setup Lifecycle: WAITING ➔ ACTIVE ➔ TP</strong></li>
+                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Nhận Cảnh Báo Telegram VIP Tức Thì</strong></li>
+                            <li><i class="fa-solid fa-check text-success"></i> Chi tiết lịch sử lệnh & R-Multiple</li>
+                        </ul>
+                        <div class="pc-footer">
+                            <a href="https://zalo.me/0903663060?text=Toi%20muon%20dang%20ky%20goi%20PRO%20Tung%20Pham%20Algo%20Lab" target="_blank" class="btn-terminal btn-primary btn-glow full-width">
+                                <i class="fa-solid fa-bolt"></i> Đăng Ký Gói PRO Ngay
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tier 3: PRO+ QUANT -->
+                    <div class="pricing-card tier-pro-plus">
+                        <div class="pc-header">
+                            <span class="pc-badge purple">QUANT & INSTITUTIONAL</span>
+                            <h4>PRO+ QUANT LAB</h4>
+                            <div class="pc-price text-primary">899.000đ <span>/ Tháng</span></div>
+                        </div>
+                        <ul class="pc-features">
+                            <li><i class="fa-solid fa-check text-success"></i> <strong>Toàn bộ quyền lợi gói PRO</strong></li>
+                            <li><i class="fa-solid fa-microchip text-primary"></i> <strong>Truy cập toàn bộ Báo cáo Quant Lab</strong></li>
+                            <li><i class="fa-solid fa-file-csv text-primary"></i> <strong>Tải dữ liệu Backtest VN30F & Vàng (CSV)</strong></li>
+                            <li><i class="fa-solid fa-calculator text-primary"></i> <strong>Công cụ tính Risk & Position Sizing chuẩn</strong></li>
+                            <li><i class="fa-solid fa-video text-primary"></i> <strong>Livestream Review Thị Trường Hàng Tuần</strong></li>
+                            <li><i class="fa-solid fa-headset text-primary"></i> <strong>Hỗ trợ 1-1 trực tiếp từ Mr Tung</strong></li>
+                        </ul>
+                        <div class="pc-footer">
+                            <a href="https://zalo.me/0903663060?text=Toi%20muon%20dang%20ky%20goi%20PRO%2B%20Quant%20Lab" target="_blank" class="btn-terminal btn-outline full-width">
+                                <i class="fa-solid fa-paper-plane"></i> Tư Vấn Gói PRO+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pricing-contact-banner">
+                    <p><i class="fa-solid fa-phone-volume text-gold"></i> Liên hệ kích hoạt nhanh tài khoản: Hotline / Zalo <strong>0903.663.060</strong> (Tung Pham)</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -499,6 +707,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=5.3"></script>
+    <script src="/static/js/app.js?v=6.0"></script>
 </body>
 </html>

@@ -15,6 +15,8 @@ from backend.collectors.price_collector import get_all_pairs_technical, get_asse
 from backend.collectors.news_collector import fetch_latest_news, get_pair_sentiment_summary
 from backend.engine.smc_analyzer import build_all_weekly_forecasts, generate_smc_setup
 from backend.engine.analytics import track_visitor, get_analytics_stats
+from backend.engine.track_record import load_track_record, calculate_track_record_stats, save_track_record
+from backend.engine.quant_lab import load_quant_lab_data
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "tungpham8888")
 ADMIN_TOKEN = f"tp_auth_{hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()[:18]}"
@@ -138,6 +140,7 @@ class ForecastUpdateRequest(BaseModel):
     tp1: Optional[float] = None
     tp2: Optional[float] = None
     rr_ratio: Optional[str] = None
+    trigger: Optional[str] = None
     rationale: Optional[str] = None
     user_notes: Optional[str] = None
     checklist: Optional[List[CheckItem]] = None
@@ -158,6 +161,108 @@ def api_track_visitor(req: AnalyticsTrackRequest, request: Request):
 @app.get("/api/analytics/stats")
 def api_get_analytics():
     return get_analytics_stats()
+
+class TrackRecordAddRequest(BaseModel):
+    pair: str
+    direction: str
+    strategy: str
+    entry: str
+    sl: str
+    tp: str
+    r_multiple: str
+    r_value: float
+    result: str # WIN / LOSS / BE
+    notes: Optional[str] = ""
+
+class TelegramAlertRequest(BaseModel):
+    pair: str
+    direction: str
+    status: str
+    entry: str
+    sl: str
+    tp1: str
+    tp2: str
+    trigger: str
+
+@app.get("/api/track-record")
+def get_track_record():
+    records = load_track_record()
+    stats = calculate_track_record_stats(records)
+    return {
+        "stats": stats,
+        "records": records
+    }
+
+@app.post("/api/track-record/add")
+def add_track_record(req: TrackRecordAddRequest, request: Request):
+    if not is_admin_authorized(request):
+        raise HTTPException(status_code=401, detail="Yêu cầu quyền Admin để thêm lịch sử lệnh!")
+    records = load_track_record()
+    new_record = {
+        "id": f"tr_{int(datetime.now().timestamp())}",
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "pair": req.pair,
+        "direction": req.direction,
+        "strategy": req.strategy,
+        "entry": req.entry,
+        "sl": req.sl,
+        "tp": req.tp,
+        "r_multiple": req.r_multiple,
+        "r_value": req.r_value,
+        "result": req.result,
+        "status_label": f"✅ TP Hit ({req.r_multiple})" if req.result == "WIN" else (f"❌ Hit SL ({req.r_multiple})" if req.result == "LOSS" else "⏸️ Breakeven"),
+        "notes": req.notes
+    }
+    records.insert(0, new_record)
+    save_track_record(records)
+    return {"success": True, "record": new_record, "stats": calculate_track_record_stats(records)}
+
+@app.get("/api/quant-lab")
+def get_quant_lab():
+    strategies = load_quant_lab_data()
+    return {
+        "lab_name": "TÙNG PHẠM QUANT LAB",
+        "description": "Báo cáo nghiên cứu chiến lược định lượng & Backtest thực chiến (2019 – 2026)",
+        "strategies": strategies
+    }
+
+@app.post("/api/alerts/telegram")
+def trigger_telegram_alert(req: TelegramAlertRequest, request: Request):
+    if not is_admin_authorized(request):
+        raise HTTPException(status_code=401, detail="Yêu cầu quyền Admin để phát cảnh báo!")
+    
+    # Format PRO alert message
+    alert_msg = (
+        f"🚨 [TÙNG PHẠM ALGO LAB - SETUP ACTIVE]\n"
+        f"📊 Cặp: #{req.pair} ({req.direction})\n"
+        f"⚡️ Trạng thái: {req.status}\n"
+        f"🎯 Vùng Entry: {req.entry}\n"
+        f"🛑 Dừng lỗ (SL): {req.sl}\n"
+        f"💰 Chốt lời TP1: {req.tp1} | TP2: {req.tp2}\n"
+        f"🔑 Trigger: {req.trigger}\n"
+        f"------------------------------------\n"
+        f"👉 Trade the plan. Not the noise."
+    )
+    
+    # If TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID exist in env, send to Telegram
+    bot_token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
+    sent = False
+    if bot_token and chat_id:
+        try:
+            import requests
+            url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+            requests.post(url, json={"chat_id": chat_id, "text": alert_msg, "parse_mode": "Markdown"}, timeout=5)
+            sent = True
+        except Exception as e:
+            print(f"[Telegram Alert] Error sending: {e}")
+            
+    return {
+        "success": True,
+        "message": "Đã phát cảnh báo kịch bản thành công!",
+        "alert_text": alert_msg,
+        "sent_telegram": sent
+    }
 
 @app.post("/api/auth/login")
 def admin_login(req: LoginRequest):
@@ -242,6 +347,8 @@ def update_forecast(req: ForecastUpdateRequest, request: Request):
         current["tp2"] = req.tp2
     if req.rr_ratio is not None:
         current["rr_ratio"] = req.rr_ratio
+    if req.trigger is not None:
+        current["trigger"] = req.trigger
     if req.rationale is not None:
         current["rationale"] = req.rationale
     if req.user_notes is not None:
