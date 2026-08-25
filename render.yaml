@@ -8,5 +8,9 @@ services:
     envVars:
       - key: ADMIN_PASSWORD
         value: tungpham8888
+      - key: TELEGRAM_BOT_TOKEN
+        value: 8967574408:AAGdgUvwM8YODICgkLu5f06FZgr2SLexHcU
+      - key: TELEGRAM_CHAT_ID
+        value: "344297776"
       - key: PYTHON_VERSION
         value: 3.11.8
