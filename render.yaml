@@ -11,6 +11,6 @@ services:
       - key: TELEGRAM_BOT_TOKEN
         value: 8967574408:AAGdgUvwM8YODICgkLu5f06FZgr2SLexHcU
       - key: TELEGRAM_CHAT_ID
-        value: "344297776"
+        value: "344296676"
       - key: PYTHON_VERSION
         value: 3.11.8
