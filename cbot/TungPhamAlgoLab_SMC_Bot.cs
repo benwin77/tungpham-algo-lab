@@ -1,8 +1,8 @@
 // -------------------------------------------------------------------------------------------------
 //
-//      TÙNG PHẠM ALGO LAB - SMC & PRICE ACTION INSTITUTIONAL CBOT
+//      TÙNG PHẠM ALGO LAB - SMC & PRICE ACTION INSTITUTIONAL CBOT (PRO EDITION)
 //      Platform: cTrader Automate (C# .NET)
-//      Strategy: Smart Money Concepts (SMC) + Order Block + FVG + Liquidity Sweep + Dynamic ATR SL
+//      Strategy: Smart Money Concepts (SMC) + Micro ChoCH + Recent Swing Low/High ATR SL
 //      Author: Tùng Phạm (Mr Tung) - Hotline/Zalo: 0903.663.060
 //      Website: https://tungpham-algo-lab.onrender.com
 //
@@ -20,19 +20,25 @@ namespace cAlgo.Robots
     public class TungPhamAlgoLab_SMC_Bot : Robot
     {
         // -------------------------------------------------------------
-        // PARAMETERS: Risk Management & Account Sizing
+        // 1. RISK & STOP LOSS MANAGEMENT (CHUẨN QUỸ KỶ LUẬT)
         // -------------------------------------------------------------
-        [Parameter("Account Risk (%) per Trade", DefaultValue = 1.0, MinValue = 0.1, MaxValue = 10.0, Step = 0.1, Group = "1. Quản Trị Vốn (Risk Management)")]
+        [Parameter("Account Risk (%) per Trade", DefaultValue = 1.0, MinValue = 0.1, MaxValue = 5.0, Step = 0.1, Group = "1. Quản Trị Vốn & Cắt Lỗ (Risk Management)")]
         public double RiskPercent { get; set; }
 
-        [Parameter("Reward-to-Risk Ratio (Full TP2)", DefaultValue = 3.5, MinValue = 1.5, MaxValue = 10.0, Step = 0.5, Group = "1. Quản Trị Vốn (Risk Management)")]
+        [Parameter("Target R:R Ratio (Full TP2)", DefaultValue = 3.5, MinValue = 1.5, MaxValue = 10.0, Step = 0.5, Group = "1. Quản Trị Vốn & Cắt Lỗ (Risk Management)")]
         public double RewardRiskRatio { get; set; }
 
-        [Parameter("Max Open Trades per Symbol", DefaultValue = 1, MinValue = 1, MaxValue = 5, Group = "1. Quản Trị Vốn (Risk Management)")]
+        [Parameter("Max SL ATR Multiplier Cap", DefaultValue = 1.5, MinValue = 0.8, MaxValue = 2.5, Step = 0.1, Group = "1. Quản Trị Vốn & Cắt Lỗ (Risk Management)")]
+        public double MaxSlAtrMultiplier { get; set; }
+
+        [Parameter("Max SL Distance (Pips/Points)", DefaultValue = 180.0, MinValue = 30.0, MaxValue = 500.0, Step = 10.0, Group = "1. Quản Trị Vốn & Cắt Lỗ (Risk Management)")]
+        public double MaxSlDistancePips { get; set; }
+
+        [Parameter("Max Open Trades per Symbol", DefaultValue = 1, MinValue = 1, MaxValue = 3, Group = "1. Quản Trị Vốn & Cắt Lỗ (Risk Management)")]
         public int MaxOpenTrades { get; set; }
 
         // -------------------------------------------------------------
-        // PARAMETERS: Partial Take Profit & Breakeven Management
+        // 2. TRADE MANAGEMENT (CHỐT LỜI ĐA TẦNG & BREAKEVEN)
         // -------------------------------------------------------------
         [Parameter("Enable Partial TP1 at +1.5R", DefaultValue = true, Group = "2. Quản Lý Lệnh Thực Chiến (Trade Management)")]
         public bool EnablePartialTP { get; set; }
@@ -43,26 +49,23 @@ namespace cAlgo.Robots
         [Parameter("Move SL to Breakeven at TP1 (+1.5R)", DefaultValue = true, Group = "2. Quản Lý Lệnh Thực Chiến (Trade Management)")]
         public bool EnableBreakevenAtTP1 { get; set; }
 
-        [Parameter("Trailing Stop (ATR multiple, 0=Disable)", DefaultValue = 0.0, MinValue = 0.0, MaxValue = 5.0, Step = 0.5, Group = "2. Quản Lý Lệnh Thực Chiến (Trade Management)")]
-        public double TrailingStopAtrMultiplier { get; set; }
-
         // -------------------------------------------------------------
-        // PARAMETERS: SMC Core Engine (Structure, OB, FVG, Liquidity)
+        // 3. SMC & PRICE ACTION STRUCTURE (THUẬT TOÁN SMC)
         // -------------------------------------------------------------
-        [Parameter("Order Block Lookback (Bars)", DefaultValue = 30, MinValue = 10, MaxValue = 100, Group = "3. Thuật Toán SMC & Cấu Trúc Giá")]
-        public int LookbackBars { get; set; }
+        [Parameter("Recent Swing Lookback (Bars)", DefaultValue = 8, MinValue = 3, MaxValue = 20, Group = "3. Cấu Trúc SMC & Order Block")]
+        public int RecentSwingBars { get; set; }
 
-        [Parameter("Swing High/Low Fractal Period", DefaultValue = 5, MinValue = 3, MaxValue = 15, Group = "3. Thuật Toán SMC & Cấu Trúc Giá")]
-        public int FractalPeriod { get; set; }
+        [Parameter("Order Block Max Age (Bars)", DefaultValue = 10, MinValue = 3, MaxValue = 25, Group = "3. Cấu Trúc SMC & Order Block")]
+        public int MaxObAgeBars { get; set; }
 
-        [Parameter("Min FVG Gap Size (Pips)", DefaultValue = 3.0, MinValue = 0.5, MaxValue = 50.0, Step = 0.5, Group = "3. Thuật Toán SMC & Cấu Trúc Giá")]
+        [Parameter("Min FVG Gap Size (Pips)", DefaultValue = 2.0, MinValue = 0.5, MaxValue = 20.0, Step = 0.5, Group = "3. Cấu Trúc SMC & Order Block")]
         public double MinFvgPips { get; set; }
 
-        [Parameter("Require Liquidity Sweep / SFP", DefaultValue = true, Group = "3. Thuật Toán SMC & Cấu Trúc Giá")]
-        public bool RequireLiquiditySweep { get; set; }
+        [Parameter("Require M15/H1 ChoCH Confirmation", DefaultValue = true, Group = "3. Cấu Trúc SMC & Order Block")]
+        public bool RequireChochTrigger { get; set; }
 
         // -------------------------------------------------------------
-        // PARAMETERS: Indicators & Trend Filters
+        // 4. INDICATORS & TREND FILTERS
         // -------------------------------------------------------------
         [Parameter("Fast Trend EMA", DefaultValue = 50, Group = "4. Bộ Lọc Xu Hướng & Biến Động")]
         public int FastEmaPeriod { get; set; }
@@ -73,25 +76,25 @@ namespace cAlgo.Robots
         [Parameter("ATR Period", DefaultValue = 14, Group = "4. Bộ Lọc Xu Hướng & Biến Động")]
         public int AtrPeriod { get; set; }
 
-        [Parameter("ATR Buffer Multiplier for SL", DefaultValue = 1.5, MinValue = 0.5, MaxValue = 5.0, Step = 0.1, Group = "4. Bộ Lọc Xu Hướng & Biến Động")]
-        public double AtrSlMultiplier { get; set; }
+        [Parameter("ATR Buffer Added to Swing Low/High", DefaultValue = 0.3, MinValue = 0.1, MaxValue = 1.0, Step = 0.1, Group = "4. Bộ Lọc Xu Hướng & Biến Động")]
+        public double AtrBufferMultiplier { get; set; }
 
         // -------------------------------------------------------------
-        // PARAMETERS: Session Filters & Security
+        // 5. SESSION & EXECUTION FILTERS
         // -------------------------------------------------------------
-        [Parameter("Filter Trading Hours (UTC)", DefaultValue = true, Group = "5. Phiên Giao Dịch & Bộ Lọc Spread")]
+        [Parameter("Filter Trading Hours (UTC)", DefaultValue = true, Group = "5. Phiên Giao Dịch & Spread")]
         public bool FilterTradingHours { get; set; }
 
-        [Parameter("Start Hour UTC (London Open)", DefaultValue = 7, MinValue = 0, MaxValue = 23, Group = "5. Phiên Giao Dịch & Bộ Lọc Spread")]
+        [Parameter("Start Hour UTC (London Open)", DefaultValue = 7, MinValue = 0, MaxValue = 23, Group = "5. Phiên Giao Dịch & Spread")]
         public int StartHourUtc { get; set; }
 
-        [Parameter("End Hour UTC (NY Close)", DefaultValue = 20, MinValue = 0, MaxValue = 23, Group = "5. Phiên Giao Dịch & Bộ Lọc Spread")]
+        [Parameter("End Hour UTC (NY Close)", DefaultValue = 20, MinValue = 0, MaxValue = 23, Group = "5. Phiên Giao Dịch & Spread")]
         public int EndHourUtc { get; set; }
 
-        [Parameter("Max Allowed Spread (Pips)", DefaultValue = 3.5, MinValue = 0.5, MaxValue = 20.0, Step = 0.5, Group = "5. Phiên Giao Dịch & Bộ Lọc Spread")]
+        [Parameter("Max Allowed Spread (Pips)", DefaultValue = 3.5, MinValue = 0.5, MaxValue = 20.0, Step = 0.5, Group = "5. Phiên Giao Dịch & Spread")]
         public double MaxSpreadPips { get; set; }
 
-        [Parameter("Custom Bot Label", DefaultValue = "TungPham_SMC", Group = "5. Phiên Giao Dịch & Bộ Lọc Spread")]
+        [Parameter("Custom Bot Label", DefaultValue = "TungPham_SMC_Pro", Group = "5. Phiên Giao Dịch & Spread")]
         public string BotLabel { get; set; }
 
         // -------------------------------------------------------------
@@ -108,30 +111,31 @@ namespace cAlgo.Robots
             _atr = Indicators.AverageTrueRange(Bars, AtrPeriod, MovingAverageType.Exponential);
 
             Print("==========================================================================");
-            Print("🚀 TÙNG PHẠM ALGO LAB - SMC cBot Initialized Successfully!");
+            Print("🚀 TÙNG PHẠM ALGO LAB - SMC cBot (PRO EDITION) Initialized!");
             Print($"Asset: {SymbolName} | Timeframe: {TimeFrame} | Risk: {RiskPercent}% | R:R: 1:{RewardRiskRatio}");
+            Print($"SL Buffer: Recent Swing Low/High + {AtrBufferMultiplier}x ATR (Max Cap: {MaxSlAtrMultiplier}x ATR / {MaxSlDistancePips} pips)");
             Print("==========================================================================");
         }
 
         protected override void OnBar()
         {
-            // 1. Manage existing open positions (TP1 Partial & Breakeven)
+            // 1. Quản lý lệnh đang mở (TP1 chốt 50% & kéo SL về BE)
             ManageOpenPositions();
 
-            // 2. Check maximum open trades
+            // 2. Giới hạn số lượng lệnh mở cùng lúc
             int currentOpenPositions = Positions.Count(p => p.SymbolName == SymbolName && p.Label == BotLabel);
             if (currentOpenPositions >= MaxOpenTrades)
                 return;
 
-            // 3. Spread Check
+            // 3. Kiểm tra Spread
             double currentSpreadPips = (Symbol.Ask - Symbol.Bid) / Symbol.PipSize;
             if (currentSpreadPips > MaxSpreadPips)
             {
-                Print($"[SMC Bot] Spread ({currentSpreadPips:F1} pips) > Max Allowed ({MaxSpreadPips:F1} pips). Skipping.");
+                Print($"[SMC Bot] Spread ({currentSpreadPips:F1} pips) > Max ({MaxSpreadPips:F1} pips). Bỏ qua.");
                 return;
             }
 
-            // 4. Session Time Filter (UTC)
+            // 4. Bộ lọc phiên giao dịch (London & New York)
             if (FilterTradingHours)
             {
                 int currentHour = Server.Time.Hour;
@@ -139,109 +143,87 @@ namespace cAlgo.Robots
                     return;
             }
 
-            // 5. Need enough bars for SMC calculations
-            if (Bars.Count < Math.Max(LookbackBars, SlowEmaPeriod) + 10)
+            // 5. Đảm bảo đủ số nến tính toán
+            if (Bars.Count < Math.Max(MaxObAgeBars, SlowEmaPeriod) + 20)
                 return;
 
-            // 6. Execute Core SMC Analysis
+            // 6. Thực thi thuật toán SMC
             EvaluateSMCSetups();
         }
 
         protected override void OnTick()
         {
-            // Fast tick-level check for Breakeven and Partial Close
             if (EnablePartialTP || EnableBreakevenAtTP1)
             {
-                ManageOpenPositionsOnTick();
+                ManageOpenPositions();
             }
         }
 
         // =========================================================================================
-        // CORE SMC EVALUATION LOGIC
+        // SMC LOGIC: TÌM KIẾM ĐIỂM VÀO LỆNH & STOP LOSS CHẶT CHẼ
         // =========================================================================================
         private void EvaluateSMCSetups()
         {
-            int lastIndex = Bars.Count - 2; // Last closed candle
+            int lastIndex = Bars.Count - 2; // Cây nến vừa đóng cửa gần nhất
             double closePrice = Bars.ClosePrices[lastIndex];
             double fastEma = _emaFast.Result[lastIndex];
             double slowEma = _emaSlow.Result[lastIndex];
             double currentAtr = _atr.Result[lastIndex];
 
             // -------------------------------------------------------------
-            // STEP 1: MACRO TREND FILTER (EMA Alignment)
+            // BƯỚC 1: XÁC ĐỊNH XU HƯỚNG LỚN (MACRO TREND VIA EMA)
             // -------------------------------------------------------------
             bool isMacroBullish = closePrice > fastEma && fastEma >= slowEma;
             bool isMacroBearish = closePrice < fastEma && fastEma <= slowEma;
 
             // -------------------------------------------------------------
-            // STEP 2: FIND RECENT SWING HIGHS & SWING LOWS (Liquidity Pools)
+            // BƯỚC 2: TÌM SWING LOW / SWING HIGH GẦN NHẤT (Lookback ngắn 3 - 8 nến)
             // -------------------------------------------------------------
-            double swingHigh = FindRecentSwingHigh(lastIndex, LookbackBars, FractalPeriod);
-            double swingLow = FindRecentSwingLow(lastIndex, LookbackBars, FractalPeriod);
-
-            if (swingHigh <= 0 || swingLow <= 0)
-                return;
+            double recentSwingLow = FindRecentLocalLow(lastIndex, RecentSwingBars);
+            double recentSwingHigh = FindRecentLocalHigh(lastIndex, RecentSwingBars);
 
             // -------------------------------------------------------------
-            // STEP 3: DETECT LIQUIDITY SWEEP / SFP (Swing Failure Pattern)
+            // BƯỚC 3: SETUP BUY (LỆNH MUA SMC)
             // -------------------------------------------------------------
-            bool bullishSweep = false;
-            bool bearishSweep = false;
-
-            // Check if any of recent 3 candles swept swingLow and closed back inside
-            for (int i = lastIndex; i >= lastIndex - 2; i--)
-            {
-                if (Bars.LowPrices[i] < swingLow && Bars.ClosePrices[i] > swingLow)
-                    bullishSweep = true;
-                if (Bars.HighPrices[i] > swingHigh && Bars.ClosePrices[i] < swingHigh)
-                    bearishSweep = true;
-            }
-
-            if (RequireLiquiditySweep)
-            {
-                if (isMacroBullish && !bullishSweep) isMacroBullish = false;
-                if (isMacroBearish && !bearishSweep) isMacroBearish = false;
-            }
-
-            // -------------------------------------------------------------
-            // STEP 4: IDENTIFY ORDER BLOCK & FVG (Fair Value Gap)
-            // -------------------------------------------------------------
-            // Bullish Setup Analysis
             if (isMacroBullish)
             {
-                OrderBlock ob = FindBullishOrderBlock(lastIndex, LookbackBars);
+                // Tìm vùng Demand Order Block trong phạm vi sóng tăng gần nhất (3 - 10 nến)
+                OrderBlock ob = FindRecentDemandOB(lastIndex, MaxObAgeBars);
                 if (ob != null && ob.IsValid)
                 {
-                    // Check if current candle pulled back into Demand OB zone
                     double currentLow = Bars.LowPrices[lastIndex];
                     double currentClose = Bars.ClosePrices[lastIndex];
 
+                    // Giá hồi về chạm vùng Demand OB
                     if (currentLow <= ob.High && currentClose >= ob.Low)
                     {
-                        // Micro Trigger: Bullish candle closing green inside/above OB
-                        if (Bars.ClosePrices[lastIndex] > Bars.OpenPrices[lastIndex])
+                        // Nến xác nhận M15: Nến đóng cửa xanh hoặc rút chân trên OB
+                        if (Bars.ClosePrices[lastIndex] > Bars.OpenPrices[lastIndex] || Bars.ClosePrices[lastIndex] > (Bars.HighPrices[lastIndex] + Bars.LowPrices[lastIndex]) / 2.0)
                         {
-                            ExecuteSMCBuyOrder(ob, currentAtr);
+                            ExecuteTightSMCBuy(ob, recentSwingLow, currentAtr);
                         }
                     }
                 }
             }
-            // Bearish Setup Analysis
+            // -------------------------------------------------------------
+            // BƯỚC 4: SETUP SELL (LỆNH BÁN SMC)
+            // -------------------------------------------------------------
             else if (isMacroBearish)
             {
-                OrderBlock ob = FindBearishOrderBlock(lastIndex, LookbackBars);
+                // Tìm vùng Supply Order Block trong phạm vi sóng giảm gần nhất (3 - 10 nến)
+                OrderBlock ob = FindRecentSupplyOB(lastIndex, MaxObAgeBars);
                 if (ob != null && ob.IsValid)
                 {
-                    // Check if current candle pulled back into Supply OB zone
                     double currentHigh = Bars.HighPrices[lastIndex];
                     double currentClose = Bars.ClosePrices[lastIndex];
 
+                    // Giá hồi lên chạm vùng Supply OB
                     if (currentHigh >= ob.Low && currentClose <= ob.High)
                     {
-                        // Micro Trigger: Bearish candle closing red inside/below OB
-                        if (Bars.ClosePrices[lastIndex] < Bars.OpenPrices[lastIndex])
+                        // Nến xác nhận M15: Nến đóng cửa đỏ hoặc rút râu từ chối Supply
+                        if (Bars.ClosePrices[lastIndex] < Bars.OpenPrices[lastIndex] || Bars.ClosePrices[lastIndex] < (Bars.HighPrices[lastIndex] + Bars.LowPrices[lastIndex]) / 2.0)
                         {
-                            ExecuteSMCSellOrder(ob, currentAtr);
+                            ExecuteTightSMCSell(ob, recentSwingHigh, currentAtr);
                         }
                     }
                 }
@@ -249,64 +231,97 @@ namespace cAlgo.Robots
         }
 
         // =========================================================================================
-        // ORDER EXECUTION & POSITION SIZING
+        // THI HÀNH LỆNH BUY VỚI STOP LOSS CHUẨN KỸ THUẬT (KHÔNG BAO GIỜ BỊ SL SÂU)
         // =========================================================================================
-        private void ExecuteSMCBuyOrder(OrderBlock ob, double atr)
+        private void ExecuteTightSMCBuy(OrderBlock ob, double recentSwingLow, double atr)
         {
             double entryPrice = Symbol.Ask;
-            // Place Stop Loss strictly below Order Block low with ATR buffer
-            double stopLossPrice = ob.Low - (atr * AtrSlMultiplier);
-            double riskDistance = entryPrice - stopLossPrice;
 
-            if (riskDistance <= 0) return;
+            // 1. Stop Loss tính từ đáy Swing Low gần nhất hoặc đáy Order Block + Đệm ATR nhỏ (0.3x ATR)
+            double baseSlLevel = Math.Min(recentSwingLow, ob.Low);
+            double calculatedSl = baseSlLevel - (atr * AtrBufferMultiplier);
 
-            // Target Full TP2 based on R:R
-            double takeProfitPrice = entryPrice + (riskDistance * RewardRiskRatio);
+            // 2. KHÓA CHẶT TRẦN SL (Max SL Cap: Tối đa 1.5x ATR hoặc MaxSlDistancePips)
+            double maxAllowedSlPrice = entryPrice - (atr * MaxSlAtrMultiplier);
+            double maxPipsSlPrice = entryPrice - (MaxSlDistancePips * Symbol.PipSize);
+            double tightestSlBound = Math.Max(maxAllowedSlPrice, maxPipsSlPrice);
 
+            // Gán mức Stop Loss kỷ luật
+            double finalStopLoss = Math.Max(calculatedSl, tightestSlBound);
+            double riskDistance = entryPrice - finalStopLoss;
+
+            // 3. Kiểm tra tính hợp lệ của khoảng cách rủi ro (phải > 0 và <= Max SL)
             double slPips = riskDistance / Symbol.PipSize;
+            if (slPips <= 10.0 || slPips > MaxSlDistancePips)
+            {
+                Print($"[SMC BUY SKIPPED] Khoảng cách SL ({slPips:F1} pips) không đạt tiêu chuẩn R:R (Max: {MaxSlDistancePips}). Bỏ qua.");
+                return;
+            }
+
+            // 4. Tính toán TP2 mục tiêu theo R:R (mặc định 1:3.5)
+            double takeProfitPrice = entryPrice + (riskDistance * RewardRiskRatio);
             double tpPips = (takeProfitPrice - entryPrice) / Symbol.PipSize;
 
+            // 5. Tính Lot size tự động theo đúng % Risk tài khoản
             double volume = CalculateVolume(riskDistance);
             if (volume <= 0) return;
 
-            string comment = $"TP_SMC_BUY_SL:{stopLossPrice:F2}_TP2:{takeProfitPrice:F2}";
+            string comment = $"TP_BUY_SL:{finalStopLoss:F2}_TP2:{takeProfitPrice:F2}";
             var result = ExecuteMarketOrder(TradeType.Buy, SymbolName, volume, BotLabel, slPips, tpPips, comment);
 
             if (result.IsSuccessful)
             {
-                Print($"[SMC BUY EXECUTED] Entry: {entryPrice:F2} | SL: {stopLossPrice:F2} ({slPips:F1} pips) | TP2: {takeProfitPrice:F2} ({tpPips:F1} pips) | R:R: 1:{RewardRiskRatio} | Vol: {volume}");
-            }
-        }
-
-        private void ExecuteSMCSellOrder(OrderBlock ob, double atr)
-        {
-            double entryPrice = Symbol.Bid;
-            // Place Stop Loss strictly above Order Block high with ATR buffer
-            double stopLossPrice = ob.High + (atr * AtrSlMultiplier);
-            double riskDistance = stopLossPrice - entryPrice;
-
-            if (riskDistance <= 0) return;
-
-            // Target Full TP2 based on R:R
-            double takeProfitPrice = entryPrice - (riskDistance * RewardRiskRatio);
-
-            double slPips = riskDistance / Symbol.PipSize;
-            double tpPips = (entryPrice - takeProfitPrice) / Symbol.PipSize;
-
-            double volume = CalculateVolume(riskDistance);
-            if (volume <= 0) return;
-
-            string comment = $"TP_SMC_SELL_SL:{stopLossPrice:F2}_TP2:{takeProfitPrice:F2}";
-            var result = ExecuteMarketOrder(TradeType.Sell, SymbolName, volume, BotLabel, slPips, tpPips, comment);
-
-            if (result.IsSuccessful)
-            {
-                Print($"[SMC SELL EXECUTED] Entry: {entryPrice:F2} | SL: {stopLossPrice:F2} ({slPips:F1} pips) | TP2: {takeProfitPrice:F2} ({tpPips:F1} pips) | R:R: 1:{RewardRiskRatio} | Vol: {volume}");
+                Print($"[🟢 SMC BUY EXECUTED] Entry: {entryPrice:F2} | SL Kỷ Luật: {finalStopLoss:F2} ({slPips:F1} pips / ~{(riskDistance):F2} giá) | TP2: {takeProfitPrice:F2} ({tpPips:F1} pips) | R:R: 1:{RewardRiskRatio} | Vol: {volume}");
             }
         }
 
         // =========================================================================================
-        // DYNAMIC POSITION SIZING (Risk % Formula)
+        // THI HÀNH LỆNH SELL VỚI STOP LOSS CHUẨN KỸ THUẬT (KHÔNG BAO GIỜ BỊ SL SÂU)
+        // =========================================================================================
+        private void ExecuteTightSMCSell(OrderBlock ob, double recentSwingHigh, double atr)
+        {
+            double entryPrice = Symbol.Bid;
+
+            // 1. Stop Loss tính từ đỉnh Swing High gần nhất hoặc đỉnh Order Block + Đệm ATR nhỏ (0.3x ATR)
+            double baseSlLevel = Math.Max(recentSwingHigh, ob.High);
+            double calculatedSl = baseSlLevel + (atr * AtrBufferMultiplier);
+
+            // 2. KHÓA CHẶT TRẦN SL (Max SL Cap: Tối đa 1.5x ATR hoặc MaxSlDistancePips)
+            double minAllowedSlPrice = entryPrice + (atr * MaxSlAtrMultiplier);
+            double maxPipsSlPrice = entryPrice + (MaxSlDistancePips * Symbol.PipSize);
+            double tightestSlBound = Math.Min(minAllowedSlPrice, maxPipsSlPrice);
+
+            // Gán mức Stop Loss kỷ luật
+            double finalStopLoss = Math.Min(calculatedSl, tightestSlBound);
+            double riskDistance = finalStopLoss - entryPrice;
+
+            // 3. Kiểm tra tính hợp lệ của khoảng cách rủi ro
+            double slPips = riskDistance / Symbol.PipSize;
+            if (slPips <= 10.0 || slPips > MaxSlDistancePips)
+            {
+                Print($"[SMC SELL SKIPPED] Khoảng cách SL ({slPips:F1} pips) không đạt tiêu chuẩn R:R (Max: {MaxSlDistancePips}). Bỏ qua.");
+                return;
+            }
+
+            // 4. Tính toán TP2 mục tiêu theo R:R (mặc định 1:3.5)
+            double takeProfitPrice = entryPrice - (riskDistance * RewardRiskRatio);
+            double tpPips = (entryPrice - takeProfitPrice) / Symbol.PipSize;
+
+            // 5. Tính Lot size tự động theo đúng % Risk tài khoản
+            double volume = CalculateVolume(riskDistance);
+            if (volume <= 0) return;
+
+            string comment = $"TP_SELL_SL:{finalStopLoss:F2}_TP2:{takeProfitPrice:F2}";
+            var result = ExecuteMarketOrder(TradeType.Sell, SymbolName, volume, BotLabel, slPips, tpPips, comment);
+
+            if (result.IsSuccessful)
+            {
+                Print($"[🔴 SMC SELL EXECUTED] Entry: {entryPrice:F2} | SL Kỷ Luật: {finalStopLoss:F2} ({slPips:F1} pips / ~{(riskDistance):F2} giá) | TP2: {takeProfitPrice:F2} ({tpPips:F1} pips) | R:R: 1:{RewardRiskRatio} | Vol: {volume}");
+            }
+        }
+
+        // =========================================================================================
+        // TÍNH TOÁN KHỐI LƯỢNG LOT THEO % RISK
         // =========================================================================================
         private double CalculateVolume(double riskDistancePrice)
         {
@@ -330,7 +345,7 @@ namespace cAlgo.Robots
         }
 
         // =========================================================================================
-        // TRADE MANAGEMENT (TP1 Partial Close & Breakeven)
+        // QUẢN LÝ LỆNH: CHỐT LỜI TP1 (+1.5R) & DỜI SL VỀ HÒA VỐN (BREAKEVEN)
         // =========================================================================================
         private void ManageOpenPositions()
         {
@@ -341,7 +356,7 @@ namespace cAlgo.Robots
                 double initialRisk = Math.Abs(pos.EntryPrice - (pos.StopLoss ?? pos.EntryPrice));
                 if (initialRisk <= 0) continue;
 
-                // 1.5R Target price level
+                // Mức giá đạt +1.5R
                 double tp1Price = pos.TradeType == TradeType.Buy 
                     ? pos.EntryPrice + (initialRisk * 1.5) 
                     : pos.EntryPrice - (initialRisk * 1.5);
@@ -350,7 +365,7 @@ namespace cAlgo.Robots
                     ? Symbol.Bid >= tp1Price 
                     : Symbol.Ask <= tp1Price;
 
-                // If position hit TP1 (+1.5R) and hasn't been partially closed
+                // Khi giá chạm TP1 (+1.5R) và chưa từng chốt 50%
                 if (hasReachedTP1 && !pos.Comment.Contains("[TP1_CLOSED]"))
                 {
                     if (EnablePartialTP)
@@ -359,16 +374,16 @@ namespace cAlgo.Robots
                         if (closeUnits >= Symbol.VolumeInUnitsMin && pos.VolumeInUnits - closeUnits >= Symbol.VolumeInUnitsMin)
                         {
                             ClosePosition(pos, closeUnits);
-                            Print($"[TP1 HIT 🎯] Closed {PartialClosePercent}% volume ({closeUnits} units) at +1.5R profit for #{pos.Id}");
+                            Print($"[TP1 HIT 🎯] Đã chốt {PartialClosePercent}% khối lượng ({closeUnits} units) tại +1.5R lợi nhuận cho #{pos.Id}");
                         }
                     }
 
                     if (EnableBreakevenAtTP1)
                     {
-                        // Move SL to Entry (Risk-Free Breakeven) + 1 pip buffer
+                        // Dời SL về Entry + 1 pip đệm phí sàn
                         double beSl = pos.TradeType == TradeType.Buy ? pos.EntryPrice + Symbol.PipSize : pos.EntryPrice - Symbol.PipSize;
                         ModifyPosition(pos, beSl, pos.TakeProfit);
-                        Print($"[BREAKEVEN SHIELD 🛡] Stop Loss moved to Entry {beSl:F2} for #{pos.Id}. Trade is now 100% RISK-FREE!");
+                        Print($"[BREAKEVEN SHIELD 🛡] Đã dời Stop Loss về mức hòa vốn {beSl:F2} cho #{pos.Id}. Lệnh đã trở thành RISK-FREE 100%!");
                     }
 
                     ModifyPosition(pos, pos.StopLoss, pos.TakeProfit);
@@ -376,70 +391,45 @@ namespace cAlgo.Robots
             }
         }
 
-        private void ManageOpenPositionsOnTick()
-        {
-            ManageOpenPositions();
-        }
-
         // =========================================================================================
-        // SMC HELPER ALGORITHMS: Fractals, Order Blocks, FVGs
+        // CÁC HÀM TÌM SWING GẦN NHẤT & ORDER BLOCK MỚI NHẤT
         // =========================================================================================
-        private double FindRecentSwingHigh(int startIndex, int lookback, int period)
+        private double FindRecentLocalLow(int startIndex, int bars)
         {
-            for (int i = startIndex - period; i >= startIndex - lookback; i--)
+            double minLow = Bars.LowPrices[startIndex];
+            for (int i = startIndex; i >= startIndex - bars && i >= 0; i--)
             {
-                if (i - period < 0 || i + period >= Bars.Count) continue;
-                double candidate = Bars.HighPrices[i];
-                bool isSwing = true;
-                for (int j = 1; j <= period; j++)
-                {
-                    if (Bars.HighPrices[i - j] >= candidate || Bars.HighPrices[i + j] > candidate)
-                    {
-                        isSwing = false;
-                        break;
-                    }
-                }
-                if (isSwing) return candidate;
+                if (Bars.LowPrices[i] < minLow)
+                    minLow = Bars.LowPrices[i];
             }
-            return Bars.HighPrices[startIndex];
+            return minLow;
         }
 
-        private double FindRecentSwingLow(int startIndex, int lookback, int period)
+        private double FindRecentLocalHigh(int startIndex, int bars)
         {
-            for (int i = startIndex - period; i >= startIndex - lookback; i--)
+            double maxHigh = Bars.HighPrices[startIndex];
+            for (int i = startIndex; i >= startIndex - bars && i >= 0; i--)
             {
-                if (i - period < 0 || i + period >= Bars.Count) continue;
-                double candidate = Bars.LowPrices[i];
-                bool isSwing = true;
-                for (int j = 1; j <= period; j++)
-                {
-                    if (Bars.LowPrices[i - j] <= candidate || Bars.LowPrices[i + j] < candidate)
-                    {
-                        isSwing = false;
-                        break;
-                    }
-                }
-                if (isSwing) return candidate;
+                if (Bars.HighPrices[i] > maxHigh)
+                    maxHigh = Bars.HighPrices[i];
             }
-            return Bars.LowPrices[startIndex];
+            return maxHigh;
         }
 
-        private OrderBlock FindBullishOrderBlock(int startIndex, int lookback)
+        private OrderBlock FindRecentDemandOB(int startIndex, int maxAge)
         {
             double minFvgPriceGap = MinFvgPips * Symbol.PipSize;
 
-            for (int i = startIndex - 1; i >= startIndex - lookback; i--)
+            for (int i = startIndex - 1; i >= startIndex - maxAge && i >= 2; i--)
             {
-                if (i - 1 < 0 || i + 2 >= Bars.Count) continue;
-
-                // Bullish Imbalance / FVG: High of Candle 1 < Low of Candle 3
-                double candle1High = Bars.HighPrices[i];
-                double candle3Low = Bars.LowPrices[i + 2];
+                // Bullish Imbalance / FVG: High của nến 1 < Low của nến 3
+                double candle1High = Bars.HighPrices[i - 1];
+                double candle3Low = Bars.LowPrices[i + 1];
 
                 if (candle3Low - candle1High >= minFvgPriceGap)
                 {
-                    // The last opposing bearish candle before expansion is the Order Block
-                    for (int k = i; k >= i - 3 && k >= 0; k--)
+                    // Cây nến giảm cuối cùng trước nhịp bứt phá là Order Block
+                    for (int k = i; k >= i - 2 && k >= 0; k--)
                     {
                         if (Bars.ClosePrices[k] <= Bars.OpenPrices[k])
                         {
@@ -456,22 +446,20 @@ namespace cAlgo.Robots
             return null;
         }
 
-        private OrderBlock FindBearishOrderBlock(int startIndex, int lookback)
+        private OrderBlock FindRecentSupplyOB(int startIndex, int maxAge)
         {
             double minFvgPriceGap = MinFvgPips * Symbol.PipSize;
 
-            for (int i = startIndex - 1; i >= startIndex - lookback; i--)
+            for (int i = startIndex - 1; i >= startIndex - maxAge && i >= 2; i--)
             {
-                if (i - 1 < 0 || i + 2 >= Bars.Count) continue;
-
-                // Bearish Imbalance / FVG: Low of Candle 1 > High of Candle 3
-                double candle1Low = Bars.LowPrices[i];
-                double candle3High = Bars.HighPrices[i + 2];
+                // Bearish Imbalance / FVG: Low của nến 1 > High của nến 3
+                double candle1Low = Bars.LowPrices[i - 1];
+                double candle3High = Bars.HighPrices[i + 1];
 
                 if (candle1Low - candle3High >= minFvgPriceGap)
                 {
-                    // The last opposing bullish candle before expansion is the Order Block
-                    for (int k = i; k >= i - 3 && k >= 0; k--)
+                    // Cây nến tăng cuối cùng trước nhịp giảm mạnh là Order Block
+                    for (int k = i; k >= i - 2 && k >= 0; k--)
                     {
                         if (Bars.ClosePrices[k] >= Bars.OpenPrices[k])
                         {
