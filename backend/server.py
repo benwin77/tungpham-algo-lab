@@ -106,14 +106,13 @@ def background_price_streamer():
             fresh_spot = fetch_tradingview_spot_data()
             if fresh_spot:
                 for p, d in fresh_spot.items():
-                    if p in APP_STATE["tech_data"]:
-                        APP_STATE["tech_data"][p]["current_price"] = d["current_price"]
-                        APP_STATE["tech_data"][p]["change"] = d["change"]
-                        APP_STATE["tech_data"][p]["change_pct"] = d["change_pct"]
-                        if "weekly_high" in d:
-                            APP_STATE["tech_data"][p]["weekly_high"] = d["weekly_high"]
-                        if "weekly_low" in d:
-                            APP_STATE["tech_data"][p]["weekly_low"] = d["weekly_low"]
+                    if p not in APP_STATE["tech_data"]:
+                        APP_STATE["tech_data"][p] = {}
+                    APP_STATE["tech_data"][p].update(d)
+                    
+                    # Also sync price into active forecasts
+                    if p in APP_STATE.get("forecasts", {}):
+                        APP_STATE["forecasts"][p]["current_price"] = d.get("current_price", APP_STATE["forecasts"][p].get("current_price"))
                 
                 # Check real-time trigger and send Telegram alert if entry zone hit
                 check_and_send_trigger_alerts(APP_STATE["tech_data"], APP_STATE["forecasts"])
