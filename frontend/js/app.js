@@ -11,7 +11,6 @@ const STATE = {
     marketData: {},
     calendar: [],
     news: [],
-    trackRecord: { stats: {}, records: [] },
     quantLab: [],
     tradingViewWidget: null,
     isAdmin: false,
@@ -47,8 +46,7 @@ const DOM = {
     sfH1: document.getElementById("sf-h1"),
     sfM15: document.getElementById("sf-m15"),
 
-    // Execution & PRO Gating
-    gatedWrapper: document.getElementById("execution-gated-wrapper"),
+    // Execution & Levels
     entryVal: document.getElementById("detail-entry-val"),
     slVal: document.getElementById("detail-sl-val"),
     tp1Val: document.getElementById("detail-tp1-val"),
@@ -89,16 +87,6 @@ const DOM = {
     newsBullVal: document.getElementById("news-bull-val"),
     newsBearVal: document.getElementById("news-bear-val"),
     matrixTbody: document.getElementById("matrix-tbody"),
-
-    // Track Record elements
-    trTotalSetups: document.getElementById("tr-total-setups"),
-    trWinRate: document.getElementById("tr-win-rate"),
-    trNetR: document.getElementById("tr-net-r"),
-    trProfitFactor: document.getElementById("tr-profit-factor"),
-    trAvgWin: document.getElementById("tr-avg-win"),
-    trAvgLoss: document.getElementById("tr-avg-loss"),
-    trMaxStreak: document.getElementById("tr-max-streak"),
-    trackRecordList: document.getElementById("track-record-list"),
 
     // Quant Lab elements
     quantStrategiesList: document.getElementById("quant-strategies-list"),
@@ -323,7 +311,6 @@ async function initDashboard() {
             loadForecasts(),
             loadCalendar(),
             loadNews(),
-            loadTrackRecord(),
             loadQuantLab()
         ]);
         renderAll();
@@ -442,17 +429,6 @@ async function loadNews() {
     }
 }
 
-async function loadTrackRecord() {
-    try {
-        const res = await fetch(`${API_BASE}/api/track-record`);
-        if (res.ok) {
-            STATE.trackRecord = await res.json();
-        }
-    } catch (e) {
-        console.warn("Failed loading track record:", e);
-    }
-}
-
 async function loadQuantLab() {
     try {
         const res = await fetch(`${API_BASE}/api/quant-lab`);
@@ -492,7 +468,6 @@ function renderAll() {
     renderTradingViewWidget();
     renderCalendar();
     renderNews();
-    renderTrackRecord();
     renderQuantLab();
     renderMatrixTable();
 }
@@ -626,44 +601,6 @@ function renderActivePairDetail() {
     // Chart header title
     const chartLabel = (p === "XAUUSD") ? "XAU/USD (Spot Gold)" : ((p === "BTCUSD") ? "BTC/USD (Bitcoin 24/7)" : ((p === "US100") ? "US100 (Nasdaq 100 Index)" : formattedPair));
     DOM.chartPairName.textContent = `Biểu Đồ Trực Tiếp: ${chartLabel}`;
-}
-
-function renderTrackRecord() {
-    const stats = STATE.trackRecord.stats || {};
-    const records = STATE.trackRecord.records || [];
-
-    if (DOM.trTotalSetups) DOM.trTotalSetups.textContent = stats.total_setups || "0";
-    if (DOM.trWinRate) DOM.trWinRate.textContent = `${stats.win_rate || 0}%`;
-    if (DOM.trNetR) DOM.trNetR.textContent = stats.net_r || "+0.0R";
-    if (DOM.trProfitFactor) DOM.trProfitFactor.textContent = stats.profit_factor || "0.0";
-    if (DOM.trAvgWin) DOM.trAvgWin.textContent = stats.avg_winner || "+0.0R";
-    if (DOM.trAvgLoss) DOM.trAvgLoss.textContent = stats.avg_loser || "-0.0R";
-    if (DOM.trMaxStreak) DOM.trMaxStreak.textContent = stats.max_losing_streak || "0";
-
-    if (!DOM.trackRecordList) return;
-    DOM.trackRecordList.innerHTML = records.map(r => {
-        const isWin = r.result === "WIN";
-        const isLoss = r.result === "LOSS";
-        const pillClass = isWin ? "win" : (isLoss ? "loss" : "be");
-        const formattedPair = r.pair === "XAUUSD" ? "XAU/USD" : (r.pair === "BTCUSD" ? "BTC/USD" : (r.pair === "US100" ? "US100" : `${r.pair.slice(0,3)}/${r.pair.slice(3)}`));
-        const dirIcon = r.direction === "BUY" ? "🟢 BUY" : "🔴 SELL";
-
-        return `
-            <div class="tr-card">
-                <div class="tr-top-row">
-                    <div class="tr-pair-badge">${formattedPair} • ${dirIcon} <span class="text-dim" style="font-weight:400; font-size:0.68rem;">(${r.date})</span></div>
-                    <span class="tr-res-pill ${pillClass}">${r.r_multiple}</span>
-                </div>
-                <div class="tr-strat-text"><i class="fa-solid fa-crosshairs text-gold"></i> ${r.strategy || "SMC Strategy"}</div>
-                <div class="tr-levels-row">
-                    <span>Entry: <strong>${r.entry}</strong></span>
-                    <span>SL: <strong>${r.sl}</strong></span>
-                    <span>TP: <strong>${r.tp}</strong></span>
-                </div>
-                <div class="tr-notes">${r.notes || ""}</div>
-            </div>
-        `;
-    }).join("");
 }
 
 function renderQuantLab() {

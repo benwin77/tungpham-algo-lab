@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=6.1">
+    <link rel="stylesheet" href="/static/css/style.css?v=6.2">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -253,10 +253,6 @@
                         <i class="fa-solid fa-newspaper"></i>
                         <span>Tin Tức</span>
                     </button>
-                    <button class="tab-btn" data-tab="track-record-tab">
-                        <i class="fa-solid fa-trophy text-gold"></i>
-                        <span>Track Record</span>
-                    </button>
                     <button class="tab-btn" data-tab="quant-lab-tab">
                         <i class="fa-solid fa-microchip text-primary"></i>
                         <span>Quant Lab</span>
@@ -307,43 +303,7 @@
                     </div>
                 </div>
 
-                <!-- Tab 3: Verified Track Record (Vũ khí hạt nhân minh bạch) -->
-                <div class="tab-pane" id="track-record-tab">
-                    <div class="track-record-container">
-                        <!-- Track Record Header & Stats Bar -->
-                        <div class="tr-stats-banner">
-                            <div class="tr-stat-box">
-                                <span class="tr-label">TỔNG SETUPS</span>
-                                <strong class="tr-val" id="tr-total-setups">12</strong>
-                            </div>
-                            <div class="tr-stat-box">
-                                <span class="tr-label">WIN RATE</span>
-                                <strong class="tr-val text-success" id="tr-win-rate">75.0%</strong>
-                            </div>
-                            <div class="tr-stat-box">
-                                <span class="tr-label">NET TÍCH LŨY</span>
-                                <strong class="tr-val text-gold" id="tr-net-r">+20.4R</strong>
-                            </div>
-                            <div class="tr-stat-box">
-                                <span class="tr-label">PROFIT FACTOR</span>
-                                <strong class="tr-val" id="tr-profit-factor">7.80</strong>
-                            </div>
-                        </div>
-
-                        <div class="tr-sub-meta">
-                            <span><i class="fa-solid fa-circle-check text-success"></i> Thắng TB: <strong id="tr-avg-win">+2.6R</strong></span>
-                            <span><i class="fa-solid fa-circle-xmark text-danger"></i> Thua TB: <strong id="tr-avg-loss">-1.0R</strong></span>
-                            <span><i class="fa-solid fa-shield"></i> Max Loss Streak: <strong id="tr-max-streak">1</strong></span>
-                        </div>
-
-                        <!-- Track Record Setups List -->
-                        <div class="tr-list" id="track-record-list">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab 4: Quant Lab (Chiến lược Định lượng & Backtest 2019-2026) -->
+                <!-- Tab 3: Quant Lab (Chiến lược Định lượng & Backtest 2019-2026) -->
                 <div class="tab-pane" id="quant-lab-tab">
                     <div class="quant-lab-container">
                         <div class="quant-header-box">
@@ -589,6 +549,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=6.1"></script>
+    <script src="/static/js/app.js?v=6.2"></script>
 </body>
 </html>
