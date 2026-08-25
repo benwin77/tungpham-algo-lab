@@ -17,7 +17,7 @@ from backend.engine.smc_analyzer import build_all_weekly_forecasts, generate_smc
 from backend.engine.analytics import track_visitor, get_analytics_stats
 from backend.engine.track_record import load_track_record, calculate_track_record_stats, save_track_record
 from backend.engine.quant_lab import load_quant_lab_data
-from backend.engine.trigger_monitor import check_and_send_trigger_alerts, send_telegram_message
+from backend.engine.trigger_monitor import check_and_send_trigger_alerts, send_telegram_message, send_manual_update_telegram_alert
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "tungpham8888")
 ADMIN_TOKEN = f"tp_auth_{hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()[:18]}"
@@ -403,6 +403,12 @@ def update_forecast(req: ForecastUpdateRequest, request: Request):
     with open(FORECAST_FILE, "w", encoding="utf-8") as f:
         json.dump(APP_STATE["forecasts"], f, ensure_ascii=False, indent=2)
         
+    # Dispatch real-time Telegram notification
+    try:
+        send_manual_update_telegram_alert(pair, current)
+    except Exception as e:
+        print(f"[Server] Telegram notification notice: {e}")
+
     return {"message": "Updated successfully", "pair": pair, "forecast": current}
 
 @app.post("/api/forecasts/reset/{pair}")

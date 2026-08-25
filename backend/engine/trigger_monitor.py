@@ -13,13 +13,23 @@ ALERT_COOLDOWN_SECONDS = 1800 # 30 mins cooldown per event type
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data")
 FORECAST_FILE = os.path.join(DATA_DIR, "forecasts.json")
 
+DEFAULT_BOT_TOKEN = "8967574408:AAGdgUvwM8YODICgkLu5f06FZgr2SLexHcU"
+DEFAULT_CHAT_ID = "344296676"
+
+def get_telegram_credentials():
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip() or DEFAULT_BOT_TOKEN
+    chat = os.environ.get("TELEGRAM_CHAT_ID", "").strip() or DEFAULT_CHAT_ID
+    return token, chat
+
 def send_telegram_message(bot_token: str, chat_id: str, message: str) -> bool:
-    if not bot_token or not chat_id:
+    token = bot_token or DEFAULT_BOT_TOKEN
+    chat = chat_id or DEFAULT_CHAT_ID
+    if not token or not chat:
         return False
     try:
-        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        url = f"https://api.telegram.org/bot{token}/sendMessage"
         payload = {
-            "chat_id": chat_id,
+            "chat_id": chat,
             "text": message,
             "parse_mode": "Markdown",
             "disable_web_page_preview": False
@@ -31,8 +41,7 @@ def send_telegram_message(bot_token: str, chat_id: str, message: str) -> bool:
         return False
 
 def check_and_send_trigger_alerts(market_data: Dict[str, Any], forecasts: Dict[str, Any]) -> Dict[str, Any]:
-    bot_token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+    bot_token, chat_id = get_telegram_credentials()
 
     now_ts = datetime.now().timestamp()
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -215,3 +224,38 @@ def check_and_send_trigger_alerts(market_data: Dict[str, Any], forecasts: Dict[s
         "triggered_count": len(triggered_alerts),
         "triggered_alerts": triggered_alerts
     }
+
+def send_manual_update_telegram_alert(pair: str, f: Dict[str, Any], old_status: str = "") -> bool:
+    bot_token, chat_id = get_telegram_credentials()
+    if not bot_token or not chat_id:
+        return False
+        
+    bias = f.get("bias", "BUY")
+    status = f.get("status", "ACTIVE")
+    formatted_pair = pair
+    if pair == "XAUUSD": formatted_pair = "XAU/USD (Vàng)"
+    elif pair == "BTCUSD": formatted_pair = "BTC/USD (Bitcoin)"
+    elif pair == "US100": formatted_pair = "US100 (Nasdaq)"
+    elif len(pair) == 6: formatted_pair = f"{pair[:3]}/{pair[3:]}"
+    
+    dir_emoji = "🟢 BUY" if bias == "BUY" else "🔴 SELL"
+    status_icon = "⚡️ ĐANG CHẠY LỆNH (ACTIVE)" if status == "ACTIVE" else (
+        "🎯 ĐÃ ĐẠT TP1" if status == "TP1_HIT" else (
+            "🏆 ĐÃ CHỐT TP2" if status == "TP2_HIT" else (
+                "🛑 DỪNG LỖ / HỦY" if status == "INVALIDATED" else "🟡 ĐANG CANH (WAITING)"
+            )
+        )
+    )
+
+    msg = (
+        f"📣 *[TÙNG PHẠM ALGO LAB - CẬP NHẬT TRẠNG THÁI SETUP]*\n\n"
+        f"📊 *Cặp Tài Sản:* #{pair} • {formatted_pair}\n"
+        f"🧭 *Hướng Setup:* *{dir_emoji}*\n"
+        f"📌 *Trạng Thái:* *{status_icon}*\n"
+        f"🎯 *Vùng Entry:* `{f.get('entry_zone', '--')}`\n"
+        f"🛑 *Stop Loss (SL):* `{f.get('stop_loss', '--')}`\n"
+        f"💰 *Take Profit:* TP1 `{f.get('tp1', '--')}` | TP2 `{f.get('tp2', '--')}`\n"
+        f"📈 *Tỷ Lệ R:R:* `{f.get('rr_ratio', '1:3.5')}`\n\n"
+        f"👉 *Xem chi tiết trên Terminal:* [Tùng Phạm Algo Lab](https://tungpham-algo-lab.onrender.com)"
+    )
+    return send_telegram_message(bot_token, chat_id, msg)
