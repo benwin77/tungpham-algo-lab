@@ -17,6 +17,7 @@ from backend.engine.smc_analyzer import build_all_weekly_forecasts, generate_smc
 from backend.engine.analytics import track_visitor, get_analytics_stats
 from backend.engine.track_record import load_track_record, calculate_track_record_stats, save_track_record
 from backend.engine.quant_lab import load_quant_lab_data
+from backend.engine.trigger_monitor import check_and_send_trigger_alerts, send_telegram_message
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "tungpham8888")
 ADMIN_TOKEN = f"tp_auth_{hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()[:18]}"
@@ -113,6 +114,9 @@ def background_price_streamer():
                             APP_STATE["tech_data"][p]["weekly_high"] = d["weekly_high"]
                         if "weekly_low" in d:
                             APP_STATE["tech_data"][p]["weekly_low"] = d["weekly_low"]
+                
+                # Check real-time trigger and send Telegram alert if entry zone hit
+                check_and_send_trigger_alerts(APP_STATE["tech_data"], APP_STATE["forecasts"])
         except Exception as e:
             pass
 
@@ -269,6 +273,36 @@ def trigger_telegram_alert(req: TelegramAlertRequest, request: Request):
         "message": "Đã phát cảnh báo kịch bản thành công!",
         "alert_text": alert_msg,
         "sent_telegram": sent
+    }
+
+class TelegramConfigRequest(BaseModel):
+    bot_token: Optional[str] = ""
+    chat_id: Optional[str] = ""
+
+@app.post("/api/alerts/test-telegram")
+def test_telegram_alert(req: TelegramConfigRequest, request: Request):
+    if not is_admin_authorized(request):
+        raise HTTPException(status_code=401, detail="Yêu cầu quyền Admin để gửi test cảnh báo!")
+    
+    bot_token = req.bot_token.strip() if req.bot_token else os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+    chat_id = req.chat_id.strip() if req.chat_id else os.environ.get("TELEGRAM_CHAT_ID", "").strip()
+
+    if not bot_token or not chat_id:
+        return {
+            "success": False,
+            "message": "Chưa có TELEGRAM_BOT_TOKEN hoặc TELEGRAM_CHAT_ID. Vui lòng cung cấp Bot Token và Chat ID!"
+        }
+
+    test_msg = (
+        "🚀 *[TÙNG PHẠM ALGO LAB - KẾT NỐI TELEGRAM THÀNH CÔNG]*\n\n"
+        "✅ Xin chào anh Tùng! Hệ thống cảnh báo tự động khi giá chạm Entry & kích hoạt M15 Trigger đã sẵn sàng hoạt động 24/7.\n\n"
+        "👉 *Xem Terminal:* [Tùng Phạm Algo Lab](https://tungpham-algo-lab.onrender.com)"
+    )
+
+    sent = send_telegram_message(bot_token, chat_id, test_msg)
+    return {
+        "success": sent,
+        "message": "Đã gửi tin nhắn thử nghiệm thành công tới Telegram của Mr Tung!" if sent else "Gửi thất bại, vui lòng kiểm tra lại Bot Token và Chat ID (đảm bảo anh đã bấm /start với bot)."
     }
 
 @app.post("/api/auth/login")
