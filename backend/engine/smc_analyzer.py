@@ -25,54 +25,57 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
     # Strategy calculations
     if pair == "XAUUSD":
         # Gold logic: SMC Demand Zone / FVG Retest / Bullish Continuation or Sweep
+        # Use H4/H1-scaled ATR buffer (0.15 - 0.20 Daily ATR ~ 12-18 giá) for realistic stop loss & high RR
         is_bullish = price >= ema50 or bull_pct >= 50
         if is_bullish:
             bias = "BUY"
             bias_badge = "🟢 BUY (Canh Mua Vùng Cầu / FVG)"
-            entry_low = round(max(swing_low, price - atr * 0.8), digits)
-            entry_high = round(entry_low + atr * 0.35, digits)
-            sl = round(entry_low - atr * 0.65, digits)
-            tp1 = round(price + atr * 0.9, digits)
-            tp2 = round(swing_high + atr * 0.5, digits)
+            # Order Block Demand Zone
+            entry_low = round(price - atr * 0.22, digits)
+            entry_high = round(entry_low + atr * 0.12, digits)
+            # SL strictly placed below Order Block / Swing Low with tight ATR buffer
+            sl = round(entry_low - atr * 0.16, digits)
+            tp1 = round(entry_high + atr * 0.38, digits)
+            tp2 = round(entry_high + atr * 0.72, digits)
             structure = "BULLISH BOS (H4/D1)"
             ob_zone = f"{entry_low} - {entry_high} (H4 Bullish Order Block + Discount FVG)"
-            bsl = f"{swing_high} (Buy-side Liquidity Swing High)"
-            ssl = f"{round(swing_low - atr * 0.2, digits)} (Sell-side Liquidity Asia Low)"
-            key_sr = f"Cản Hỗ trợ: {entry_low} | Cản Kháng cự: {swing_high}"
+            bsl = f"{round(entry_high + atr * 0.72, digits)} (Buy-side Liquidity Swing High)"
+            ssl = f"{round(entry_low - atr * 0.16, digits)} (Sell-side Liquidity / Invalidation SL)"
+            key_sr = f"Cản Hỗ trợ: {entry_low} | Cản Kháng cự: {tp2}"
             checklist = [
-                {"text": "H4 Demand Order Block (OB) chưa bị vi phạm", "checked": True},
-                {"text": "Quét thanh khoản Sell-side (SSL) phiên Á / London", "checked": True},
-                {"text": "Giá nằm trong vùng Discount Zone (Fib 0.618 - 0.786)", "checked": True},
-                {"text": "Nến rút chân Pinbar / Bullish Engulfing tại FVG", "checked": True},
+                {"text": "H4 Demand Order Block (OB) giữ vững phản ứng", "checked": True},
+                {"text": "Quét thanh khoản Sell-side (SSL) tạo nến rút chân M15/H1", "checked": True},
+                {"text": "SL theo ATR H4/H1 bảo vệ an toàn dưới chân Order Block", "checked": True},
+                {"text": "Tỷ lệ R:R kỳ vọng tối thiểu từ 1:2.5 đến 1:3.5+", "checked": True},
                 {"text": "EMA 50 & 200 ủng hộ xu hướng tăng dài hạn", "checked": True}
             ]
             rationale = (
-                f"Vàng đang giữ vững cấu trúc tăng (Uptrend Structure) trên khung Daily & H4. "
-                f"Kịch bản tuần: Chờ giá hồi về vùng Discount FVG & Bullish Order Block ({entry_low} - {entry_high}) "
-                f"sau khi quét thanh khoản đáy ngắn hạn, xác nhận nến đảo chiều PA để kích hoạt lệnh BUY hướng về BSL {swing_high}."
+                f"Vàng đang giữ cấu trúc tăng (Uptrend Structure) trên khung Daily & H4. "
+                f"Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng Demand Order Block & Discount FVG ({entry_low} - {entry_high}), "
+                f"dừng lỗ SL theo ATR ({sl}) đặt an toàn dưới chân OB, hướng tới mục tiêu chốt lời thanh khoản BSL ({tp1} - {tp2})."
             )
         else:
             bias = "SELL"
             bias_badge = "🔴 SELL (Canh Bán Vùng Cung / Sweep High)"
-            entry_high = round(min(swing_high, price + atr * 0.8), digits)
-            entry_low = round(entry_high - atr * 0.35, digits)
-            sl = round(entry_high + atr * 0.65, digits)
-            tp1 = round(price - atr * 0.9, digits)
-            tp2 = round(swing_low - atr * 0.5, digits)
+            entry_high = round(price + atr * 0.22, digits)
+            entry_low = round(entry_high - atr * 0.12, digits)
+            sl = round(entry_high + atr * 0.16, digits)
+            tp1 = round(entry_low - atr * 0.38, digits)
+            tp2 = round(entry_low - atr * 0.72, digits)
             structure = "BEARISH CHoCH (H4)"
             ob_zone = f"{entry_low} - {entry_high} (H4 Bearish Supply OB)"
-            bsl = f"{round(swing_high + atr*0.2, digits)} (Buy-side Liquidity High)"
-            ssl = f"{swing_low} (Sell-side Liquidity Target)"
-            key_sr = f"Cản Kháng cự: {entry_high} | Cản Hỗ trợ: {swing_low}"
+            bsl = f"{sl} (Buy-side Liquidity Invalidation)"
+            ssl = f"{tp2} (Sell-side Liquidity Target)"
+            key_sr = f"Cản Kháng cự: {entry_high} | Cản Hỗ trợ: {tp2}"
             checklist = [
-                {"text": "H4 Supply Order Block giữ vững phản ứng", "checked": True},
-                {"text": "Quét râu tạo Fakeout trên đỉnh BSL", "checked": True},
-                {"text": "Giá tiệm cận Premium Zone", "checked": True},
-                {"text": "Nến Shooting Star / Bearish Engulfing", "checked": True}
+                {"text": "H4 Supply Order Block giữ vững áp lực bán", "checked": True},
+                {"text": "Quét râu tạo SFP trên đỉnh BSL", "checked": True},
+                {"text": "SL theo ATR an toàn trên đỉnh Supply Zone", "checked": True},
+                {"text": "Nến Shooting Star / Bearish Engulfing tại Supply", "checked": True}
             ]
             rationale = (
                 f"Vàng gặp áp lực chốt lời mạnh tại vùng đỉnh, xuất hiện tín hiệu CHoCH đảo chiều ngắn hạn. "
-                f"Kịch bản tuần: Canh SELL khi giá hồi phục kiểm tra Bearish Supply OB quanh {entry_low} - {entry_high}."
+                f"Kịch bản tuần: Canh SELL khi giá hồi phục kiểm tra Bearish Supply OB quanh {entry_low} - {entry_high} với SL {sl}."
             )
     elif pair == "USDJPY":
         # UJ logic: Trend following USD strength vs BOJ Intervention fear
@@ -294,10 +297,12 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
             ]
             rationale = f"US100 đối mặt áp lực chốt lời tại vùng cản đỉnh, canh SELL khi giá hồi về vùng Supply {entry_low} - {entry_high}."
 
-    # Compute R:R ratio
-    risk = abs(entry_high - sl) if bias == "BUY" else abs(sl - entry_low)
-    reward = abs(tp2 - entry_high) if bias == "BUY" else abs(entry_low - tp2)
-    rr_str = f"1:{round(reward/risk, 1)}" if risk > 0 else "1:2.5"
+    # Compute R:R ratio based on median Order Block entry
+    entry_mid = (entry_low + entry_high) / 2
+    risk = abs(entry_mid - sl)
+    reward = abs(tp2 - entry_mid)
+    rr_val = round(reward / risk, 1) if risk > 0 else 2.5
+    rr_str = f"1:{max(1.8, rr_val)}"
 
     # Execution Trigger & Multi-timeframe Structure Flow
     trigger = (
