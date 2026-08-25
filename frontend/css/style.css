@@ -1262,7 +1262,7 @@ body.admin-authenticated div.detail-actions.admin-only {
     color: var(--text-muted);
     line-height: 1.4;
 }
-/* Tab 3: Kèo Đã Ra (Live Journal & Performance Counter) */
+/* Tab 3: Nhật Ký Lệnh (Live Journal & Performance Counter) */
 .journal-container {
     display: flex;
     flex-direction: column;

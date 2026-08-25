@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=6.4">
+    <link rel="stylesheet" href="/static/css/style.css?v=6.5">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -259,7 +259,7 @@
                     </button>
                     <button class="tab-btn" data-tab="journal-tab">
                         <i class="fa-solid fa-clipboard-check text-gold"></i>
-                        <span>Kèo Đã Ra</span>
+                        <span>Nhật Ký Lệnh</span>
                     </button>
                     <button class="tab-btn" data-tab="quant-lab-tab">
                         <i class="fa-solid fa-microchip text-primary"></i>
@@ -311,13 +311,13 @@
                     </div>
                 </div>
 
-                <!-- Tab 3: Kèo Đã Ra (Nhật Ký & Thống Kê Winrate Thực Chiến) -->
+                <!-- Tab 3: Nhật Ký Lệnh (Nhật Ký & Thống Kê Winrate Thực Chiến) -->
                 <div class="tab-pane" id="journal-tab">
                     <div class="journal-container">
                         <!-- Live Winrate & RR Stats Header -->
                         <div class="journal-stats-banner">
                             <div class="j-stat-box">
-                                <span class="j-label">TỔNG KÈO</span>
+                                <span class="j-label">TỔNG LỆNH</span>
                                 <strong class="j-val" id="journal-total-setups">0</strong>
                             </div>
                             <div class="j-stat-box">
@@ -342,7 +342,7 @@
                                 <span><i class="fa-solid fa-scale-balanced text-dim"></i> Hòa: <strong id="journal-be">0</strong></span>
                             </div>
                             <button class="btn-sm btn-gold-outline" id="btn-open-add-journal" style="display: none;">
-                                <i class="fa-solid fa-plus"></i> Ghi Nhận Kèo
+                                <i class="fa-solid fa-plus"></i> Ghi Nhận Lệnh
                             </button>
                         </div>
 
@@ -485,7 +485,7 @@
                 <div class="form-row" style="margin-top: -6px; margin-bottom: 10px;">
                     <label class="custom-checkbox-row" style="display: flex; align-items: center; gap: 8px; font-size: 0.76rem; color: #ffd700; cursor: pointer;">
                         <input type="checkbox" id="modal-chk-archive-journal" style="accent-color: #d4af37; width: 15px; height: 15px;">
-                        <span><i class="fa-solid fa-clipboard-check"></i> Đồng thời lưu kết quả vào <strong>Nhật Ký Kèo Đã Ra</strong> (khi chốt TP/SL)</span>
+                        <span><i class="fa-solid fa-clipboard-check"></i> Đồng thời lưu kết quả vào <strong>Nhật Ký Giao Dịch</strong> (khi chốt TP/SL)</span>
                     </label>
                 </div>
 
@@ -505,14 +505,14 @@
         </div>
     </div>
 
-    <!-- Modal: Ghi Nhận Kèo Vào Nhật Ký (Dành cho Admin Mr Tung) -->
+    <!-- Modal: Ghi Nhận Lệnh Vào Nhật Ký (Dành cho Admin Mr Tung) -->
     <div class="modal-overlay" id="journal-modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
                 <div class="modal-title-group">
                     <div class="modal-icon"><i class="fa-solid fa-clipboard-check text-gold"></i></div>
                     <div>
-                        <h3>Ghi Nhận Kèo Thực Chiến Đã Đóng</h3>
+                        <h3>Ghi Nhận Lệnh Thực Chiến Đã Đóng</h3>
                         <p class="modal-sub">Lưu vào bộ đếm thống kê Winrate %, Net R và R:R tích lũy từ hôm nay</p>
                     </div>
                 </div>
@@ -808,6 +808,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=6.4"></script>
+    <script src="/static/js/app.js?v=6.5"></script>
 </body>
 </html>

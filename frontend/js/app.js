@@ -681,9 +681,9 @@ function renderJournal() {
         DOM.journalList.innerHTML = `
             <div class="empty-journal-box">
                 <i class="fa-solid fa-chart-line text-gold"></i>
-                <h4>Bắt Đầu Đếm Kèo Thực Chiến Từ Hôm Nay</h4>
-                <p>Chưa có kèo nào kết thúc. Khi Mr Tung cập nhật kết quả các kèo đã xuất bản, Winrate % và R:R tích lũy sẽ được tính toán tự động và hiển thị tại đây!</p>
-                ${STATE.isAdmin ? `<button type="button" class="btn-sm btn-gold-action" style="margin-top:6px;" onclick="openJournalModal()"><i class="fa-solid fa-plus"></i> Ghi Nhận Kèo Đầu Tiên</button>` : ''}
+                <h4>Bắt Đầu Nhật Ký Giao Dịch Từ Hôm Nay</h4>
+                <p>Chưa có lệnh nào kết thúc. Khi Mr Tung cập nhật kết quả các kịch bản đã xuất bản, Winrate % và R:R tích lũy sẽ được tính toán tự động và hiển thị tại đây!</p>
+                ${STATE.isAdmin ? `<button type="button" class="btn-sm btn-gold-action" style="margin-top:6px;" onclick="openJournalModal()"><i class="fa-solid fa-plus"></i> Ghi Nhận Lệnh Đầu Tiên</button>` : ''}
             </div>
         `;
         return;
@@ -696,7 +696,7 @@ function renderJournal() {
         const formattedPair = r.pair === "XAUUSD" ? "XAU/USD" : (r.pair === "BTCUSD" ? "BTC/USD" : (r.pair === "US100" ? "US100" : `${r.pair.slice(0,3)}/${r.pair.slice(3)}`));
         const dirIcon = r.direction === "BUY" ? "🟢 BUY" : "🔴 SELL";
 
-        const deleteBtnHtml = STATE.isAdmin ? `<button class="j-delete-btn" onclick="handleDeleteJournalEntry('${r.id}')" title="Xóa kèo này khỏi nhật ký"><i class="fa-solid fa-trash-can"></i></button>` : '';
+        const deleteBtnHtml = STATE.isAdmin ? `<button class="j-delete-btn" onclick="handleDeleteJournalEntry('${r.id}')" title="Xóa lệnh này khỏi nhật ký"><i class="fa-solid fa-trash-can"></i></button>` : '';
 
         return `
             <div class="j-card">
@@ -1115,7 +1115,7 @@ async function handleSaveScenario(e) {
                         if (!STATE.journal.records) STATE.journal.records = [];
                         STATE.journal.records.unshift(jData.record);
                         renderJournal();
-                        showToast(`Đã ghi nhận kết quả ${p} vào Nhật Ký Kèo!`, "success");
+                        showToast(`Đã ghi nhận kết quả ${p} vào Nhật Ký Giao Dịch!`, "success");
                     }
                 }).catch(() => {});
             }
@@ -1165,7 +1165,7 @@ async function handleResetScenario() {
 
 function openJournalModal() {
     if (!STATE.isAdmin) {
-        showToast("Vui lòng đăng nhập mật khẩu Admin để ghi nhận kèo!", "info");
+        showToast("Vui lòng đăng nhập mật khẩu Admin để ghi nhận lệnh!", "info");
         openLoginModal(openJournalModal);
         return;
     }
@@ -1187,7 +1187,7 @@ function closeJournalModal() {
 async function handleAddJournalSubmit(e) {
     e.preventDefault();
     if (!STATE.isAdmin) {
-        showToast("Vui lòng đăng nhập Admin để ghi nhận kèo!", "warning");
+        showToast("Vui lòng đăng nhập Admin để ghi nhận lệnh!", "warning");
         return;
     }
 
@@ -1232,9 +1232,9 @@ async function handleAddJournalSubmit(e) {
             STATE.journal.records.unshift(data.record);
             renderJournal();
             closeJournalModal();
-            showToast("Đã lưu kèo vào Nhật Ký và cập nhật Winrate!", "success");
+            showToast("Đã lưu lệnh vào Nhật Ký và cập nhật Winrate!", "success");
         } else {
-            showToast("Lỗi khi ghi nhận kèo.", "warning");
+            showToast("Lỗi khi ghi nhận lệnh.", "warning");
         }
     } catch (err) {
         showToast("Không thể kết nối máy chủ.", "warning");
@@ -1246,7 +1246,7 @@ async function handleDeleteJournalEntry(recordId) {
         showToast("Vui lòng đăng nhập Admin để xóa!", "warning");
         return;
     }
-    if (!confirm("Mr Tung có chắc muốn xóa kèo này khỏi nhật ký?")) return;
+    if (!confirm("Mr Tung có chắc muốn xóa lệnh này khỏi nhật ký?")) return;
 
     try {
         const res = await fetch(`${API_BASE}/api/track-record/${recordId}`, {
@@ -1261,10 +1261,10 @@ async function handleDeleteJournalEntry(recordId) {
             STATE.journal.stats = data.stats;
             STATE.journal.records = STATE.journal.records.filter(r => r.id !== recordId);
             renderJournal();
-            showToast("Đã xóa kèo khỏi nhật ký!", "info");
+            showToast("Đã xóa lệnh khỏi nhật ký!", "info");
         }
     } catch (err) {
-        showToast("Lỗi khi xóa kèo.", "warning");
+        showToast("Lỗi khi xóa lệnh.", "warning");
     }
 }
 
