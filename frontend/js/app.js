@@ -15,9 +15,7 @@ const STATE = {
     quantLab: [],
     tradingViewWidget: null,
     isAdmin: false,
-    adminToken: localStorage.getItem("tp_admin_token") || "",
-    userTier: localStorage.getItem("tp_user_tier") || "PRO", // PRO by default for high value, or toggleable
-    previewAsFree: false
+    adminToken: localStorage.getItem("tp_admin_token") || ""
 };
 
 // DOM Elements Cache
@@ -31,9 +29,6 @@ const DOM = {
     btnExportText: document.getElementById("btn-export-text"),
     btnAdminAuth: document.getElementById("btn-admin-auth"),
     adminBtnText: document.getElementById("admin-btn-text"),
-    btnOpenPricing: document.getElementById("btn-open-pricing"),
-    btnToggleTier: document.getElementById("btn-toggle-tier"),
-    tierPreviewBtnText: document.getElementById("tier-preview-btn-text"),
 
     // Active Pair View
     symbolBadge: document.getElementById("detail-symbol-badge"),
@@ -140,10 +135,6 @@ const DOM = {
     btnCancelLogin: document.getElementById("btn-cancel-login"),
     loginForm: document.getElementById("login-form"),
     adminPasswordInput: document.getElementById("admin-password-input"),
-
-    // Pricing Modal
-    pricingModal: document.getElementById("pricing-modal-overlay"),
-    btnClosePricing: document.getElementById("btn-close-pricing"),
 
     // Toasts
     toastContainer: document.getElementById("toast-container")
@@ -608,12 +599,6 @@ function renderActivePairDetail() {
     if (DOM.triggerBadge) DOM.triggerBadge.textContent = stBadge;
     if (DOM.triggerDesc) DOM.triggerDesc.textContent = f.trigger || (f.bias === "BUY" ? "M15 Bullish CHOCH + displacement nến xác nhận + retest Order Block" : "M15 Bearish CHOCH + râu quét thanh khoản đỉnh + retest Supply Zone");
 
-    // PRO Gating Overlay
-    const isFreeViewer = (STATE.userTier === "FREE" || STATE.previewAsFree) && !STATE.isAdmin;
-    if (DOM.gatedWrapper) {
-        DOM.gatedWrapper.classList.toggle("is-gated", isFreeViewer);
-    }
-
     // SMC Key Zones
     DOM.obVal.textContent = f.ob_zone || "--";
     DOM.bslVal.textContent = f.bsl || "--";
@@ -936,23 +921,6 @@ function closeEditModal() {
     DOM.editModal.classList.remove("active");
 }
 
-function openPricingModal() {
-    if (DOM.pricingModal) DOM.pricingModal.classList.add("active");
-}
-
-function closePricingModal() {
-    if (DOM.pricingModal) DOM.pricingModal.classList.remove("active");
-}
-
-function toggleTierPreview() {
-    STATE.previewAsFree = !STATE.previewAsFree;
-    if (DOM.tierPreviewBtnText) {
-        DOM.tierPreviewBtnText.textContent = STATE.previewAsFree ? "Đang xem: Free View" : "Xem Thử Free View";
-    }
-    renderActivePairDetail();
-    showToast(STATE.previewAsFree ? "Đang bật chế độ xem thử nghiệm Khách (Free View)" : "Đã chuyển về chế độ Toàn quyền (Admin/PRO View)", "info");
-}
-
 async function handleTriggerTelegramAlert() {
     if (!STATE.isAdmin) {
         showToast("Vui lòng đăng nhập Admin để phát cảnh báo!", "warning");
@@ -1138,11 +1106,6 @@ function setupEventListeners() {
     DOM.btnCloseModal.addEventListener("click", closeEditModal);
     DOM.btnCancelModal.addEventListener("click", closeEditModal);
     DOM.editForm.addEventListener("submit", handleSaveScenario);
-
-    // Pricing Modal Listeners
-    if (DOM.btnOpenPricing) DOM.btnOpenPricing.addEventListener("click", openPricingModal);
-    if (DOM.btnClosePricing) DOM.btnClosePricing.addEventListener("click", closePricingModal);
-    if (DOM.btnToggleTier) DOM.btnToggleTier.addEventListener("click", toggleTierPreview);
     if (DOM.btnTriggerTelegramAlert) DOM.btnTriggerTelegramAlert.addEventListener("click", handleTriggerTelegramAlert);
 
     // Admin Auth Listeners

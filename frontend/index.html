@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=6.0">
+    <link rel="stylesheet" href="/static/css/style.css?v=6.1">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -61,18 +61,6 @@
         </div>
 
         <div class="header-right">
-            <!-- PRO Upgrade / Pricing Trigger -->
-            <button class="btn-terminal btn-pro-upgrade" id="btn-open-pricing" title="Xem bảng quyền lợi hội viên PRO">
-                <i class="fa-solid fa-crown"></i>
-                <span>Gói Hội Viên PRO</span>
-            </button>
-
-            <!-- Admin Free/PRO View Switcher -->
-            <button class="btn-terminal btn-outline admin-only" id="btn-toggle-tier" title="Chuyển đổi góc nhìn Khách (Free) / Thành viên (PRO)">
-                <i class="fa-solid fa-eye"></i>
-                <span id="tier-preview-btn-text">Xem Thử Free View</span>
-            </button>
-
             <button class="btn-terminal btn-outline admin-only" id="btn-export-text" title="Xuất Kịch Bản Giao Dịch">
                 <i class="fa-solid fa-share-nodes"></i>
                 <span>Xuất Kịch Bản</span>
@@ -163,49 +151,34 @@
                         </div>
                     </div>
 
-                    <!-- Actionable Trade Setup Execution Layer (PRO Gated for Free Users) -->
-                    <div class="pro-gated-wrapper" id="execution-gated-wrapper">
-                        <!-- PRO Lock Overlay for Free Viewers -->
-                        <div class="pro-unlock-overlay" id="pro-unlock-overlay">
-                            <div class="pro-lock-content">
-                                <div class="lock-icon-glow"><i class="fa-solid fa-shield-halved"></i></div>
-                                <h4>VÙNG ENTRY & TRIGGER M15 DÀNH RIÊNG CHO HỘI VIÊN PRO</h4>
-                                <p>Mở khóa điểm vào lệnh chuẩn xác, tỷ lệ R:R tối ưu và nhận Cảnh báo Telegram tức thì khi setup chuyển sang <strong>ACTIVE</strong>.</p>
-                                <button class="btn-terminal btn-gold-action" id="btn-overlay-unlock" onclick="openPricingModal()">
-                                    <i class="fa-solid fa-crown"></i>
-                                    <span>Mở Khóa Setup PRO (Chỉ từ 299k/Tháng)</span>
-                                </button>
-                            </div>
+                    <!-- Actionable Trade Setup Execution Layer (Fully Open & Transparent) -->
+                    <!-- Execution Levels Grid -->
+                    <div class="execution-levels-grid">
+                        <div class="level-box entry-box">
+                            <span class="level-tag"><i class="fa-solid fa-crosshairs"></i> VÙNG ENTRY (BUY/SELL)</span>
+                            <span class="level-val" id="detail-entry-val">--</span>
                         </div>
+                        <div class="level-box sl-box">
+                            <span class="level-tag"><i class="fa-solid fa-shield-halved"></i> STOP LOSS (SL)</span>
+                            <span class="level-val" id="detail-sl-val">--</span>
+                        </div>
+                        <div class="level-box tp-box">
+                            <span class="level-tag"><i class="fa-solid fa-bullseye"></i> TAKE PROFIT 1</span>
+                            <span class="level-val" id="detail-tp1-val">--</span>
+                        </div>
+                        <div class="level-box tp-box tp2-box">
+                            <span class="level-tag"><i class="fa-solid fa-flag-checkered"></i> TAKE PROFIT 2</span>
+                            <span class="level-val" id="detail-tp2-val">--</span>
+                        </div>
+                    </div>
 
-                        <!-- Execution Levels Grid -->
-                        <div class="execution-levels-grid">
-                            <div class="level-box entry-box">
-                                <span class="level-tag"><i class="fa-solid fa-crosshairs"></i> VÙNG ENTRY (BUY/SELL)</span>
-                                <span class="level-val" id="detail-entry-val">--</span>
-                            </div>
-                            <div class="level-box sl-box">
-                                <span class="level-tag"><i class="fa-solid fa-shield-halved"></i> STOP LOSS (SL)</span>
-                                <span class="level-val" id="detail-sl-val">--</span>
-                            </div>
-                            <div class="level-box tp-box">
-                                <span class="level-tag"><i class="fa-solid fa-bullseye"></i> TAKE PROFIT 1</span>
-                                <span class="level-val" id="detail-tp1-val">--</span>
-                            </div>
-                            <div class="level-box tp-box tp2-box">
-                                <span class="level-tag"><i class="fa-solid fa-flag-checkered"></i> TAKE PROFIT 2</span>
-                                <span class="level-val" id="detail-tp2-val">--</span>
-                            </div>
+                    <!-- Actionable Trigger Condition Card -->
+                    <div class="execution-trigger-card">
+                        <div class="trigger-header">
+                            <span class="trigger-label"><i class="fa-solid fa-bolt-lightning text-gold"></i> ĐIỀU KIỆN KÍCH HOẠT (EXECUTION TRIGGER M15):</span>
+                            <span class="trigger-status-badge" id="detail-trigger-badge">🟡 CHỜ XÁC NHẬN</span>
                         </div>
-
-                        <!-- Actionable Trigger Condition Card -->
-                        <div class="execution-trigger-card">
-                            <div class="trigger-header">
-                                <span class="trigger-label"><i class="fa-solid fa-bolt-lightning text-gold"></i> ĐIỀU KIỆN KÍCH HOẠT (EXECUTION TRIGGER M15):</span>
-                                <span class="trigger-status-badge" id="detail-trigger-badge">🟡 CHỜ XÁC NHẬN</span>
-                            </div>
-                            <p class="trigger-desc" id="detail-trigger-desc">Đang tải điều kiện kích hoạt M15...</p>
-                        </div>
+                        <p class="trigger-desc" id="detail-trigger-desc">Đang tải điều kiện kích hoạt M15...</p>
                     </div>
 
                     <!-- SMC Technical Key Zones -->
@@ -543,97 +516,6 @@
         </div>
     </div>
 
-    <!-- Modal: Membership Pricing / Upgrade Tiers (Chuyển đổi hội viên PRO) -->
-    <div class="modal-overlay" id="pricing-modal-overlay">
-        <div class="modal-card modal-lg">
-            <div class="modal-header">
-                <div class="modal-title-group">
-                    <div class="modal-icon text-gold"><i class="fa-solid fa-crown"></i></div>
-                    <div>
-                        <h3>GÓI HỘI VIÊN TÙNG PHẠM ALGO LAB</h3>
-                        <p class="modal-sub">Hệ thống phân tích thực chiến, dữ liệu định lượng & cảnh báo lệnh thời gian thực</p>
-                    </div>
-                </div>
-                <button class="btn-close-modal" id="btn-close-pricing"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="pricing-grid">
-                    <!-- Tier 1: Free -->
-                    <div class="pricing-card tier-free">
-                        <div class="pc-header">
-                            <span class="pc-badge">MIỄN PHÍ</span>
-                            <h4>FREE MEMBER</h4>
-                            <div class="pc-price">0đ <span>/ Mãi mãi</span></div>
-                        </div>
-                        <ul class="pc-features">
-                            <li><i class="fa-solid fa-check text-success"></i> Weekly Market Map tổng quan</li>
-                            <li><i class="fa-solid fa-check text-success"></i> Xu hướng D1/H4 của 6 cặp chính</li>
-                            <li><i class="fa-solid fa-check text-success"></i> Lịch kinh tế ForexFactory lọc tin đỏ</li>
-                            <li><i class="fa-solid fa-check text-success"></i> Xem toàn bộ Verified Track Record</li>
-                            <li class="pc-disabled"><i class="fa-solid fa-xmark text-danger"></i> Vùng Entry, Stop Loss, TP1/TP2</li>
-                            <li class="pc-disabled"><i class="fa-solid fa-xmark text-danger"></i> Điều kiện Trigger kích hoạt M15</li>
-                            <li class="pc-disabled"><i class="fa-solid fa-xmark text-danger"></i> Cảnh báo Telegram tức thì</li>
-                        </ul>
-                        <div class="pc-footer">
-                            <button class="btn-terminal btn-outline full-width" onclick="closePricingModal()">Đang Sử Dụng</button>
-                        </div>
-                    </div>
-
-                    <!-- Tier 2: PRO (Featured) -->
-                    <div class="pricing-card tier-pro featured">
-                        <div class="featured-ribbon">🔥 ĐƯỢC CHỌN NHIỀU NHẤT</div>
-                        <div class="pc-header">
-                            <span class="pc-badge gold">ACTIONABLE TRADER</span>
-                            <h4>PRO MEMBERSHIP</h4>
-                            <div class="pc-price text-gold">399.000đ <span>/ Tháng</span></div>
-                        </div>
-                        <ul class="pc-features">
-                            <li><i class="fa-solid fa-check text-success"></i> <strong>Toàn bộ quyền lợi gói FREE</strong></li>
-                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Mở khóa Full Setup Kịch Bản Thực Chiến</strong></li>
-                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Điểm Entry Zone, SL, TP1, TP2 tối ưu R:R</strong></li>
-                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Execution Trigger M15 (CHOCH + FVG OB)</strong></li>
-                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Setup Lifecycle: WAITING ➔ ACTIVE ➔ TP</strong></li>
-                            <li><i class="fa-solid fa-circle-check text-gold"></i> <strong>Nhận Cảnh Báo Telegram VIP Tức Thì</strong></li>
-                            <li><i class="fa-solid fa-check text-success"></i> Chi tiết lịch sử lệnh & R-Multiple</li>
-                        </ul>
-                        <div class="pc-footer">
-                            <a href="https://zalo.me/0903663060?text=Toi%20muon%20dang%20ky%20goi%20PRO%20Tung%20Pham%20Algo%20Lab" target="_blank" class="btn-terminal btn-primary btn-glow full-width">
-                                <i class="fa-solid fa-bolt"></i> Đăng Ký Gói PRO Ngay
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Tier 3: PRO+ QUANT -->
-                    <div class="pricing-card tier-pro-plus">
-                        <div class="pc-header">
-                            <span class="pc-badge purple">QUANT & INSTITUTIONAL</span>
-                            <h4>PRO+ QUANT LAB</h4>
-                            <div class="pc-price text-primary">899.000đ <span>/ Tháng</span></div>
-                        </div>
-                        <ul class="pc-features">
-                            <li><i class="fa-solid fa-check text-success"></i> <strong>Toàn bộ quyền lợi gói PRO</strong></li>
-                            <li><i class="fa-solid fa-microchip text-primary"></i> <strong>Truy cập toàn bộ Báo cáo Quant Lab</strong></li>
-                            <li><i class="fa-solid fa-file-csv text-primary"></i> <strong>Tải dữ liệu Backtest VN30F & Vàng (CSV)</strong></li>
-                            <li><i class="fa-solid fa-calculator text-primary"></i> <strong>Công cụ tính Risk & Position Sizing chuẩn</strong></li>
-                            <li><i class="fa-solid fa-video text-primary"></i> <strong>Livestream Review Thị Trường Hàng Tuần</strong></li>
-                            <li><i class="fa-solid fa-headset text-primary"></i> <strong>Hỗ trợ 1-1 trực tiếp từ Mr Tung</strong></li>
-                        </ul>
-                        <div class="pc-footer">
-                            <a href="https://zalo.me/0903663060?text=Toi%20muon%20dang%20ky%20goi%20PRO%2B%20Quant%20Lab" target="_blank" class="btn-terminal btn-outline full-width">
-                                <i class="fa-solid fa-paper-plane"></i> Tư Vấn Gói PRO+
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pricing-contact-banner">
-                    <p><i class="fa-solid fa-phone-volume text-gold"></i> Liên hệ kích hoạt nhanh tài khoản: Hotline / Zalo <strong>0903.663.060</strong> (Tung Pham)</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal: Export Summary -->
     <div class="modal-overlay" id="export-modal-overlay">
         <div class="modal-card modal-sm">
@@ -707,6 +589,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=6.0"></script>
+    <script src="/static/js/app.js?v=6.1"></script>
 </body>
 </html>

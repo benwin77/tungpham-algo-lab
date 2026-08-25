@@ -3,19 +3,19 @@
     "pair": "XAUUSD",
     "name": "Gold / U.S. Dollar (Spot XAU/USD)",
     "tv_symbol": "OANDA:XAUUSD",
-    "current_price": 4675.57,
+    "current_price": 4639.17,
     "bias": "BUY",
     "bias_badge": "🟢 BUY (Canh Mua Vùng Cầu / FVG)",
     "status": "WAITING",
     "strategy_type": "SMC + Thuần PA + Trend Follow",
-    "entry_zone": "4655.2 - 4689.11",
-    "entry_low": 4655.2,
-    "entry_high": 4689.11,
-    "stop_loss": 4592.22,
-    "tp1": 4762.78,
-    "tp2": 4745.55,
-    "rr_ratio": "1:0.6",
-    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (4655.2 - 4689.11)",
+    "entry_zone": "4638.63 - 4672.86",
+    "entry_low": 4638.63,
+    "entry_high": 4672.86,
+    "stop_loss": 4575.06,
+    "tp1": 4727.19,
+    "tp2": 4746.0,
+    "rr_ratio": "1:0.7",
+    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (4638.63 - 4672.86)",
     "market_structure_flow": {
       "d1": "BULLISH UPTREND",
       "h4": "BULLISH BOS",
@@ -23,10 +23,10 @@
       "m15": "WAITING CONFIRMATION TRIGGER"
     },
     "structure": "BULLISH BOS (H4/D1)",
-    "ob_zone": "4655.2 - 4689.11 (H4 Bullish Order Block + Discount FVG)",
+    "ob_zone": "4638.63 - 4672.86 (H4 Bullish Order Block + Discount FVG)",
     "bsl": "4697.1 (Buy-side Liquidity Swing High)",
-    "ssl": "4635.82 (Sell-side Liquidity Asia Low)",
-    "key_sr": "Cản Hỗ trợ: 4655.2 | Cản Kháng cự: 4697.1",
+    "ssl": "4619.07 (Sell-side Liquidity Asia Low)",
+    "key_sr": "Cản Hỗ trợ: 4638.63 | Cản Kháng cự: 4697.1",
     "checklist": [
       {
         "text": "H4 Demand Order Block (OB) chưa bị vi phạm",
@@ -49,32 +49,32 @@
         "checked": true
       }
     ],
-    "rationale": "Vàng đang giữ vững cấu trúc tăng (Uptrend Structure) trên khung Daily & H4. Kịch bản tuần: Chờ giá hồi về vùng Discount FVG & Bullish Order Block (4655.2 - 4689.11) sau khi quét thanh khoản đáy ngắn hạn, xác nhận nến đảo chiều PA để kích hoạt lệnh BUY hướng về BSL 4697.1.",
+    "rationale": "Vàng đang giữ vững cấu trúc tăng (Uptrend Structure) trên khung Daily & H4. Kịch bản tuần: Chờ giá hồi về vùng Discount FVG & Bullish Order Block (4638.63 - 4672.86) sau khi quét thanh khoản đáy ngắn hạn, xác nhận nến đảo chiều PA để kích hoạt lệnh BUY hướng về BSL 4697.1.",
     "user_customized": false,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-25 08:50:10"
+    "updated_at": "2026-08-25 09:14:30"
   },
   "BTCUSD": {
     "pair": "BTCUSD",
     "name": "Bitcoin / U.S. Dollar (BTC/USD 24/7)",
     "tv_symbol": "BINANCE:BTCUSDT",
-    "current_price": 79674.0,
+    "current_price": 79872.0,
     "bias": "BUY",
     "bias_badge": "🟢 BUY (SMC Discount FVG + Whale Accumulation)",
     "status": "WAITING",
     "strategy_type": "SMC + Thuần PA + Trend Follow",
-    "entry_zone": "77509.51 - 78342.01",
-    "entry_low": 77509.51,
-    "entry_high": 78342.01,
-    "stop_loss": 76011.01,
-    "tp1": 82504.49,
+    "entry_zone": "77707.51 - 78540.01",
+    "entry_low": 77707.51,
+    "entry_high": 78540.01,
+    "stop_loss": 76209.01,
+    "tp1": 82702.49,
     "tp2": 80000.0,
-    "rr_ratio": "1:0.7",
-    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (77509.51 - 78342.01)",
+    "rr_ratio": "1:0.6",
+    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (77707.51 - 78540.01)",
     "market_structure_flow": {
       "d1": "BULLISH UPTREND",
       "h4": "BULLISH BOS",
@@ -82,10 +82,10 @@
       "m15": "WAITING CONFIRMATION TRIGGER"
     },
     "structure": "BULLISH UPTREND STRUCTURE (H4/D1)",
-    "ob_zone": "77509.51 - 78342.01 (H4 Bullish Order Block + Imbalance Fill)",
+    "ob_zone": "77707.51 - 78540.01 (H4 Bullish Order Block + Imbalance Fill)",
     "bsl": "80000.0 (Major Swing High BSL)",
-    "ssl": "76510.51 (Weekend Low Sweep Target)",
-    "key_sr": "Hỗ trợ Cầu: 77509.51 | Kháng cự Đỉnh: 80000.0",
+    "ssl": "76708.51 (Weekend Low Sweep Target)",
+    "key_sr": "Hỗ trợ Cầu: 77707.51 | Kháng cự Đỉnh: 80000.0",
     "checklist": [
       {
         "text": "H4 Bullish Order Block (OB) giữ vững phản ứng",
@@ -108,14 +108,14 @@
         "checked": true
       }
     ],
-    "rationale": "Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (77509.51 - 78342.01) sau khi quét thanh khoản đáy, hướng tới mục tiêu thanh khoản đỉnh BSL 80000.0.",
+    "rationale": "Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (77707.51 - 78540.01) sau khi quét thanh khoản đáy, hướng tới mục tiêu thanh khoản đỉnh BSL 80000.0.",
     "user_customized": false,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-25 08:50:10"
+    "updated_at": "2026-08-25 09:14:30"
   },
   "US100": {
     "pair": "US100",
@@ -174,25 +174,25 @@
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-25 08:50:10"
+    "updated_at": "2026-08-25 09:14:30"
   },
   "GBPUSD": {
     "pair": "GBPUSD",
     "name": "GBP / U.S. Dollar",
     "tv_symbol": "FX:GBPUSD",
-    "current_price": 1.36351,
+    "current_price": 1.36336,
     "bias": "BUY",
     "bias_badge": "🟢 BUY (Bullish Trend Rebound)",
     "status": "WAITING",
     "strategy_type": "SMC + Thuần PA + Trend Follow",
-    "entry_zone": "1.36016 - 1.3615",
-    "entry_low": 1.36016,
-    "entry_high": 1.3615,
-    "stop_loss": 1.35772,
-    "tp1": 1.36777,
+    "entry_zone": "1.36001 - 1.36135",
+    "entry_low": 1.36001,
+    "entry_high": 1.36135,
+    "stop_loss": 1.35757,
+    "tp1": 1.36762,
     "tp2": 1.36404,
     "rr_ratio": "1:0.7",
-    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (1.36016 - 1.3615)",
+    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (1.36001 - 1.36135)",
     "market_structure_flow": {
       "d1": "BULLISH UPTREND",
       "h4": "BULLISH BOS",
@@ -200,10 +200,10 @@
       "m15": "WAITING CONFIRMATION TRIGGER"
     },
     "structure": "BULLISH STRUCTURE",
-    "ob_zone": "1.36016 - 1.3615 (H4 Demand OB)",
+    "ob_zone": "1.36001 - 1.36135 (H4 Demand OB)",
     "bsl": "1.36404 (BSL Target)",
     "ssl": "1.36224 (SSL)",
-    "key_sr": "Hỗ trợ: 1.36016 | Kháng cự: 1.36404",
+    "key_sr": "Hỗ trợ: 1.36001 | Kháng cự: 1.36404",
     "checklist": [
       {
         "text": "Test thành công vùng Demand Order Block H4",
@@ -214,32 +214,32 @@
         "checked": true
       }
     ],
-    "rationale": "GBP/USD duy trì lực mua, canh BUY hồi tại vùng cầu 1.36016 - 1.3615.",
+    "rationale": "GBP/USD duy trì lực mua, canh BUY hồi tại vùng cầu 1.36001 - 1.36135.",
     "user_customized": false,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-25 08:50:10"
+    "updated_at": "2026-08-25 09:14:30"
   },
   "USDJPY": {
     "pair": "USDJPY",
     "name": "USD / Japanese Yen",
     "tv_symbol": "FX:USDJPY",
-    "current_price": 159.221,
+    "current_price": 159.274,
     "bias": "SELL",
     "bias_badge": "🔴 SELL (SMC CHoCH Breakout)",
     "status": "WAITING",
     "strategy_type": "SMC + Thuần PA + Trend Follow",
-    "entry_zone": "159.522 - 159.722",
-    "entry_low": 159.522,
-    "entry_high": 159.722,
-    "stop_loss": 160.173,
-    "tp1": 158.52,
+    "entry_zone": "159.577 - 159.779",
+    "entry_low": 159.577,
+    "entry_high": 159.779,
+    "stop_loss": 160.233,
+    "tp1": 158.568,
     "tp2": 159.031,
     "rr_ratio": "1:0.8",
-    "trigger": "M15 Bearish CHOCH + râu quét thanh khoản đỉnh + retest Supply Zone (159.522 - 159.722)",
+    "trigger": "M15 Bearish CHOCH + râu quét thanh khoản đỉnh + retest Supply Zone (159.577 - 159.779)",
     "market_structure_flow": {
       "d1": "BEARISH DOWNTREND",
       "h4": "BEARISH CHOCH",
@@ -247,10 +247,10 @@
       "m15": "WAITING CONFIRMATION TRIGGER"
     },
     "structure": "BEARISH CHoCH",
-    "ob_zone": "159.522 - 159.722 (Supply OB)",
-    "bsl": "159.236 (BSL)",
+    "ob_zone": "159.577 - 159.779 (Supply OB)",
+    "bsl": "159.327 (BSL)",
     "ssl": "159.031 (Target SSL)",
-    "key_sr": "Resistance: 159.722 | Support: 159.031",
+    "key_sr": "Resistance: 159.779 | Support: 159.031",
     "checklist": [
       {
         "text": "Thủng cấu trúc đáy gần nhất (CHoCH)",
@@ -261,32 +261,32 @@
         "checked": true
       }
     ],
-    "rationale": "USD/JPY suy yếu, canh SELL hồi tại vùng kháng cự 159.522 - 159.722.",
+    "rationale": "USD/JPY suy yếu, canh SELL hồi tại vùng kháng cự 159.577 - 159.779.",
     "user_customized": false,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-25 08:50:10"
+    "updated_at": "2026-08-25 09:14:30"
   },
   "CADCHF": {
     "pair": "CADCHF",
     "name": "CAD / Swiss Franc",
     "tv_symbol": "FX:CADCHF",
-    "current_price": 0.57976,
+    "current_price": 0.57985,
     "bias": "BUY",
     "bias_badge": "🟢 BUY (Support Channel Bounce + PA)",
     "status": "WAITING",
     "strategy_type": "SMC + Thuần PA + Trend Follow",
-    "entry_zone": "0.5794 - 0.58023",
-    "entry_low": 0.5794,
-    "entry_high": 0.58023,
+    "entry_zone": "0.57941 - 0.58024",
+    "entry_low": 0.57941,
+    "entry_high": 0.58024,
     "stop_loss": 0.57824,
-    "tp1": 0.57925,
-    "tp2": 0.57943,
-    "rr_ratio": "1:0.4",
-    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (0.5794 - 0.58023)",
+    "tp1": 0.57932,
+    "tp2": 0.57957,
+    "rr_ratio": "1:0.3",
+    "trigger": "M15 Bullish CHOCH + displacement nến xác nhận + retest vùng Order Block (0.57941 - 0.58024)",
     "market_structure_flow": {
       "d1": "BULLISH UPTREND",
       "h4": "BULLISH BOS",
@@ -294,10 +294,10 @@
       "m15": "WAITING CONFIRMATION TRIGGER"
     },
     "structure": "RANGE ACCUMULATION / S&R BOUNCE",
-    "ob_zone": "0.5794 - 0.58023 (Key Support & Demand Base)",
-    "bsl": "0.57976 (Range High Liquidity)",
+    "ob_zone": "0.57941 - 0.58024 (Key Support & Demand Base)",
+    "bsl": "0.5799 (Range High Liquidity)",
     "ssl": "0.57874 (Range Low Liquidity)",
-    "key_sr": "Cản Đáy: 0.5794 | Cản Đỉnh: 0.57976",
+    "key_sr": "Cản Đáy: 0.57941 | Cản Đỉnh: 0.5799",
     "checklist": [
       {
         "text": "Giá chạm cạnh dưới biên độ tích lũy (Range Low)",
@@ -312,13 +312,13 @@
         "checked": true
       }
     ],
-    "rationale": "CAD/CHF đang di chuyển trong biên độ Range đi ngang. Kịch bản tuần: Canh BUY khi giá test vùng biên dưới 0.5794 - 0.58023 với xác nhận nến đảo chiều PA, chốt lời tại đỉnh hộp 0.57976.",
+    "rationale": "CAD/CHF đang di chuyển trong biên độ Range đi ngang. Kịch bản tuần: Canh BUY khi giá test vùng biên dưới 0.57941 - 0.58024 với xác nhận nến đảo chiều PA, chốt lời tại đỉnh hộp 0.5799.",
     "user_customized": false,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
     "bull_score": 50,
     "bear_score": 50,
-    "updated_at": "2026-08-25 08:50:10"
+    "updated_at": "2026-08-25 09:14:30"
   }
 }
