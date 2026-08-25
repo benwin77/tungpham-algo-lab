@@ -4,7 +4,7 @@
 
 const API_BASE = ""; // Relative path to FastAPI backend
 
-// Application Global State
+/// Application Global State
 const STATE = {
     activePair: "XAUUSD",
     forecasts: {},
@@ -13,6 +13,7 @@ const STATE = {
     news: [],
     journal: { stats: {}, records: [] },
     quantLab: [],
+    chartMode: "single", // "single" or "dual"
     tradingViewWidget: null,
     isAdmin: false,
     adminToken: localStorage.getItem("tp_admin_token") || ""
@@ -29,6 +30,14 @@ const DOM = {
     btnExportText: document.getElementById("btn-export-text"),
     btnAdminAuth: document.getElementById("btn-admin-auth"),
     adminBtnText: document.getElementById("admin-btn-text"),
+
+    // Market Sessions Ribbon
+    sessSydney: document.getElementById("sess-sydney"),
+    sessTokyo: document.getElementById("sess-tokyo"),
+    sessLondon: document.getElementById("sess-london"),
+    sessNewyork: document.getElementById("sess-newyork"),
+    nextNewsTitle: document.getElementById("next-news-title"),
+    nextNewsTimer: document.getElementById("next-news-timer"),
 
     // Active Pair View
     symbolBadge: document.getElementById("detail-symbol-badge"),
@@ -67,13 +76,21 @@ const DOM = {
     userNotesBox: document.getElementById("detail-user-notes-box"),
     userNotesText: document.getElementById("detail-user-notes-text"),
 
-    // Actions
+    // Actions & Tools
+    btnOpenLotCalc: document.getElementById("btn-open-lot-calc"),
+    btnOpenLotCalcHdr: document.getElementById("btn-open-lot-calc-hdr"),
+    btnExportTradeCard: document.getElementById("btn-export-trade-card"),
     btnOpenEditModal: document.getElementById("btn-open-edit-modal"),
     btnResetScenario: document.getElementById("btn-reset-scenario"),
 
-    // Chart
+    // Chart & Dual Mode
     chartPairName: document.getElementById("chart-pair-name"),
-    tvContainer: document.getElementById("tradingview_chart"),
+    btnChartSingle: document.getElementById("btn-chart-single"),
+    btnChartDual: document.getElementById("btn-chart-dual"),
+    chartSingleContainer: document.getElementById("tradingview_chart"),
+    chartDualContainer: document.getElementById("tradingview_dual_container"),
+    chartH4Container: document.getElementById("tradingview_chart_h4"),
+    chartM15Container: document.getElementById("tradingview_chart_m15"),
 
     // Sidebar & Tabs
     tabButtons: document.querySelectorAll(".tab-btn"),
@@ -83,13 +100,8 @@ const DOM = {
     newsList: document.getElementById("news-list"),
     newsSentPair: document.getElementById("news-sent-pair"),
     newsSentScore: document.getElementById("news-sent-score"),
-    newsBarBull: document.getElementById("news-bar-bull"),
-    newsBarBear: document.getElementById("news-bar-bear"),
-    newsBullVal: document.getElementById("news-bull-val"),
-    newsBearVal: document.getElementById("news-bear-val"),
-    matrixTbody: document.getElementById("matrix-tbody"),
 
-    // Journal elements
+    // Journal Tab & Stats
     journalTotalSetups: document.getElementById("journal-total-setups"),
     journalWinRate: document.getElementById("journal-win-rate"),
     journalNetR: document.getElementById("journal-net-r"),
@@ -100,7 +112,7 @@ const DOM = {
     journalList: document.getElementById("journal-list"),
     btnOpenAddJournal: document.getElementById("btn-open-add-journal"),
 
-    // Journal Modal
+    // Journal Modal (Add Record)
     journalModal: document.getElementById("journal-modal-overlay"),
     btnCloseJournalModal: document.getElementById("btn-close-journal-modal"),
     btnCancelJournalModal: document.getElementById("btn-cancel-journal-modal"),
@@ -114,17 +126,27 @@ const DOM = {
     jInputResult: document.getElementById("j-input-result"),
     jInputR: document.getElementById("j-input-r"),
     jInputNotes: document.getElementById("j-input-notes"),
-    modalChkArchiveJournal: document.getElementById("modal-chk-archive-journal"),
 
-    // Quant Lab elements
+    // Quant Lab Tab
+    quantList: document.getElementById("quant-strategies-list"),
     quantStrategiesList: document.getElementById("quant-strategies-list"),
 
-    // Edit Modal
+    // Matrix Tab
+    matrixBody: document.getElementById("matrix-table-body"),
+    matrixTbody: document.getElementById("matrix-table-body"),
+
+    // News Sentiment Bars
+    newsBarBull: document.getElementById("news-bar-bull"),
+    newsBarBear: document.getElementById("news-bar-bear"),
+    newsBullVal: document.getElementById("news-bull-val"),
+    newsBearVal: document.getElementById("news-bear-val"),
+
+    // Edit Scenario Modal
     editModal: document.getElementById("edit-modal-overlay"),
     btnCloseModal: document.getElementById("btn-close-modal"),
     btnCancelModal: document.getElementById("btn-cancel-modal"),
     editForm: document.getElementById("edit-scenario-form"),
-    modalPairName: document.getElementById("modal-pair-name"),
+    modalPairName: document.getElementById("modal-title-text"),
     modalInputPair: document.getElementById("modal-input-pair"),
     modalSelectBias: document.getElementById("modal-select-bias"),
     modalSelectStatus: document.getElementById("modal-select-status"),
@@ -136,21 +158,40 @@ const DOM = {
     modalChecklistEditor: document.getElementById("modal-checklist-editor"),
     modalInputRationale: document.getElementById("modal-input-rationale"),
     modalInputNotes: document.getElementById("modal-input-notes"),
+    modalChkArchiveJournal: document.getElementById("modal-chk-archive-journal"),
     btnTriggerTelegramAlert: document.getElementById("btn-trigger-telegram-alert"),
 
     // Export Modal
     exportModal: document.getElementById("export-modal-overlay"),
     btnCloseExport: document.getElementById("btn-close-export"),
-    exportTextArea: document.getElementById("export-text-area"),
     btnCopyExport: document.getElementById("btn-copy-export"),
+    exportTextArea: document.getElementById("export-text-area") || document.getElementById("export-text-content"),
+    exportTextarea: document.getElementById("export-text-area") || document.getElementById("export-text-content"),
     copyBtnText: document.getElementById("copy-btn-text"),
 
-    // Login Modal
+    // Admin Auth Modal
     loginModal: document.getElementById("login-modal-overlay"),
     btnCloseLogin: document.getElementById("btn-close-login"),
     btnCancelLogin: document.getElementById("btn-cancel-login"),
     loginForm: document.getElementById("login-form"),
     adminPasswordInput: document.getElementById("admin-password-input"),
+
+    // Position Size / Lot Calculator Modal
+    calcModal: document.getElementById("calculator-modal-overlay"),
+    btnCloseCalcModal: document.getElementById("btn-close-calc-modal"),
+    calcPairSelect: document.getElementById("calc-pair-select"),
+    calcBalanceInput: document.getElementById("calc-balance-input"),
+    calcRiskInput: document.getElementById("calc-risk-input"),
+    calcEntryInput: document.getElementById("calc-entry-input"),
+    calcSlInput: document.getElementById("calc-sl-input"),
+    calcTpInput: document.getElementById("calc-tp-input"),
+    calcResultLots: document.getElementById("calc-result-lots"),
+    calcResultUnits: document.getElementById("calc-result-units"),
+    calcResultRiskUsd: document.getElementById("calc-result-risk-usd"),
+    calcResultSlDist: document.getElementById("calc-result-sl-dist"),
+    calcResultRewardUsd: document.getElementById("calc-result-reward-usd"),
+    calcResultRr: document.getElementById("calc-result-rr"),
+    btnRiskPills: document.querySelectorAll(".btn-risk-pill"),
 
     // Donate Modal
     btnOpenDonate: document.getElementById("btn-open-donate"),
@@ -521,6 +562,8 @@ function renderAll() {
     renderAssetGrid();
     renderActivePairDetail();
     renderTradingViewWidget();
+    updateMarketSessions();
+    updateNextNewsCountdown();
     renderCalendar();
     renderNews();
     renderJournal();
@@ -763,41 +806,68 @@ function renderTradingViewWidget() {
     else if (p === "USDJPY") tvSymbol = "FX:USDJPY";
     else if (p === "CADCHF") tvSymbol = "FX:CADCHF";
 
-    const container = document.getElementById("tradingview_chart");
-    if (!container) return;
-    container.innerHTML = "";
+    const singleContainer = document.getElementById("tradingview_chart");
+    const dualContainer = document.getElementById("tradingview_dual_container");
+    const h4Container = document.getElementById("tradingview_chart_h4");
+    const m15Container = document.getElementById("tradingview_chart_m15");
 
-    function loadWidget() {
-        if (typeof TradingView !== "undefined" && TradingView.widget) {
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": tvSymbol,
-                "interval": "240",
-                "timezone": "Asia/Ho_Chi_Minh",
-                "theme": "dark",
-                "style": "1",
-                "locale": "vi_VN",
-                "toolbar_bg": "#0b0c10",
-                "enable_publishing": false,
-                "hide_side_toolbar": false,
-                "allow_symbol_change": true,
-                "studies": [
-                    "MASimple@tv-basicstudies",
-                    "EMA@tv-basicstudies",
-                    "RSI@tv-basicstudies"
-                ],
-                "container_id": "tradingview_chart"
-            });
-        } else {
-            // Fallback iframe embed
-            const encodedSym = encodeURIComponent(tvSymbol);
-            container.innerHTML = `
-                <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=${encodedSym}&interval=240&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=%5B%22MASimple%40tv-basicstudies%22%2C%22EMA%40tv-basicstudies%22%2C%22RSI%40tv-basicstudies%22%5D&theme=dark&style=1&timezone=Asia%2FHo_Chi_Minh&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=vi_VN&utm_source=localhost" style="width: 100%; height: 100%; border: none;"></iframe>
-            `;
+    if (STATE.chartMode === "dual") {
+        if (singleContainer) singleContainer.style.display = "none";
+        if (dualContainer) dualContainer.style.display = "grid";
+
+        if (h4Container) {
+            h4Container.innerHTML = "";
+            createTvWidget(h4Container, "tradingview_chart_h4", tvSymbol, "240");
+        }
+        if (m15Container) {
+            m15Container.innerHTML = "";
+            createTvWidget(m15Container, "tradingview_chart_m15", tvSymbol, "15");
+        }
+    } else {
+        if (dualContainer) dualContainer.style.display = "none";
+        if (singleContainer) {
+            singleContainer.style.display = "block";
+            singleContainer.innerHTML = "";
+            createTvWidget(singleContainer, "tradingview_chart", tvSymbol, "240");
         }
     }
+}
 
-    loadWidget();
+function createTvWidget(domElem, containerId, tvSymbol, interval = "240") {
+    if (typeof TradingView !== "undefined" && TradingView.widget) {
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": tvSymbol,
+            "interval": interval,
+            "timezone": "Asia/Ho_Chi_Minh",
+            "theme": "dark",
+            "style": "1",
+            "locale": "vi_VN",
+            "toolbar_bg": "#0b0c10",
+            "enable_publishing": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "studies": [
+                "MASimple@tv-basicstudies",
+                "EMA@tv-basicstudies",
+                "RSI@tv-basicstudies"
+            ],
+            "container_id": containerId
+        });
+    } else {
+        // Fallback iframe embed
+        const encodedSym = encodeURIComponent(tvSymbol);
+        domElem.innerHTML = `
+            <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=${containerId}&symbol=${encodedSym}&interval=${interval}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=%5B%22MASimple%40tv-basicstudies%22%2C%22EMA%40tv-basicstudies%22%2C%22RSI%40tv-basicstudies%22%5D&theme=dark&style=1&timezone=Asia%2FHo_Chi_Minh&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=vi_VN&utm_source=localhost" style="width: 100%; height: 100%; border: none;"></iframe>
+        `;
+    }
+}
+
+function setChartMode(mode) {
+    STATE.chartMode = mode;
+    if (DOM.btnChartSingle) DOM.btnChartSingle.classList.toggle("active", mode === "single");
+    if (DOM.btnChartDual) DOM.btnChartDual.classList.toggle("active", mode === "dual");
+    renderTradingViewWidget();
 }
 
 function renderCalendar() {
@@ -1347,8 +1417,267 @@ function fallbackCopy(text, successMsg) {
     document.body.removeChild(ta);
 }
 
+// -------------------------------------------------------------
+// Market Sessions & Live News Countdown Logic
+// -------------------------------------------------------------
+
+function updateMarketSessions() {
+    const now = new Date();
+    // VN Time (UTC+7)
+    const utcHours = now.getUTCHours();
+    const utcMinutes = now.getUTCMinutes();
+    const vnHours = (utcHours + 7) % 24;
+    const currentDecTime = vnHours + (utcMinutes / 60);
+
+    // Session Ranges in VN Time (UTC+7)
+    // Sydney: 04:00 - 13:00
+    const isSydney = currentDecTime >= 4 && currentDecTime < 13;
+    // Tokyo (Á): 06:00 - 15:00
+    const isTokyo = currentDecTime >= 6 && currentDecTime < 15;
+    // London (Âu): 14:00 - 23:00
+    const isLondon = currentDecTime >= 14 && currentDecTime < 23;
+    // New York (Mỹ): 19:00 - 04:00 (crosses midnight)
+    const isNewyork = currentDecTime >= 19 || currentDecTime < 4;
+
+    updateSessionItem(DOM.sessSydney, isSydney);
+    updateSessionItem(DOM.sessTokyo, isTokyo);
+    updateSessionItem(DOM.sessLondon, isLondon);
+    updateSessionItem(DOM.sessNewyork, isNewyork);
+}
+
+function updateSessionItem(el, isOpen) {
+    if (!el) return;
+    el.classList.toggle("active", isOpen);
+    const statusEl = el.querySelector(".sess-status");
+    if (statusEl) {
+        statusEl.textContent = isOpen ? "🟢 MỞ" : "⚪️ ĐÓNG";
+        statusEl.style.color = isOpen ? "#10b981" : "#64748b";
+    }
+}
+
+function updateNextNewsCountdown() {
+    if (!DOM.nextNewsTitle || !DOM.nextNewsTimer) return;
+    const events = STATE.calendar || [];
+    if (events.length === 0) {
+        DOM.nextNewsTitle.textContent = "Không có tin lớn hôm nay";
+        DOM.nextNewsTimer.textContent = "--";
+        return;
+    }
+
+    const now = new Date();
+    const futureEvents = events.filter(e => {
+        if (!e.date) return false;
+        const d = new Date(e.date);
+        return d.getTime() > now.getTime();
+    }).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (futureEvents.length === 0) {
+        DOM.nextNewsTitle.textContent = "Các tin tức lớn đã diễn ra";
+        DOM.nextNewsTimer.textContent = "DONE";
+        return;
+    }
+
+    const nextEvent = futureEvents.find(e => e.impact === "HIGH") || futureEvents[0];
+    const targetTime = new Date(nextEvent.date).getTime();
+    const diffMs = targetTime - now.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const remainMins = diffMins % 60;
+
+    DOM.nextNewsTitle.textContent = `${nextEvent.currency || 'USD'}: ${nextEvent.event || nextEvent.name}`;
+    if (diffHours > 0) {
+        DOM.nextNewsTimer.textContent = `Sau ${diffHours}h ${remainMins}m`;
+    } else {
+        DOM.nextNewsTimer.textContent = `Sau ${diffMins}m`;
+    }
+}
+
+// -------------------------------------------------------------
+// Position Size & Lot Calculator Logic
+// -------------------------------------------------------------
+
+function openLotCalculator(pair = null) {
+    const targetPair = pair || STATE.activePair || "XAUUSD";
+    if (DOM.calcPairSelect) DOM.calcPairSelect.value = targetPair;
+
+    const f = STATE.forecasts[targetPair] || {};
+    const m = STATE.marketData[targetPair] || {};
+
+    let entryVal = "";
+    if (f.entry_zone) {
+        const parts = f.entry_zone.split("-").map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+        if (parts.length > 0) entryVal = parts[0];
+    } else if (m.current_price) {
+        entryVal = m.current_price;
+    }
+
+    let slVal = f.stop_loss || "";
+    let tpVal = f.tp2 || f.tp1 || "";
+
+    if (DOM.calcEntryInput) DOM.calcEntryInput.value = entryVal;
+    if (DOM.calcSlInput) DOM.calcSlInput.value = slVal;
+    if (DOM.calcTpInput) DOM.calcTpInput.value = tpVal;
+
+    calculateLotSize();
+    if (DOM.calcModal) DOM.calcModal.classList.add("active");
+}
+
+function closeLotCalculator() {
+    if (DOM.calcModal) DOM.calcModal.classList.remove("active");
+}
+
+function calculateLotSize() {
+    if (!DOM.calcPairSelect) return;
+    const pair = DOM.calcPairSelect.value;
+    const balance = parseFloat(DOM.calcBalanceInput.value) || 1000;
+    const riskPct = parseFloat(DOM.calcRiskInput.value) || 1.0;
+    const entry = parseFloat(DOM.calcEntryInput.value);
+    const sl = parseFloat(DOM.calcSlInput.value);
+    const tp = parseFloat(DOM.calcTpInput.value);
+
+    const riskUsd = balance * (riskPct / 100);
+    if (DOM.calcResultRiskUsd) DOM.calcResultRiskUsd.textContent = `$${riskUsd.toFixed(2)}`;
+
+    if (isNaN(entry) || isNaN(sl) || entry <= 0 || sl <= 0 || entry === sl) {
+        if (DOM.calcResultLots) DOM.calcResultLots.textContent = "-- LOT";
+        if (DOM.calcResultUnits) DOM.calcResultUnits.textContent = "Vui lòng nhập Entry & Stop Loss";
+        if (DOM.calcResultSlDist) DOM.calcResultSlDist.textContent = "--";
+        if (DOM.calcResultRewardUsd) DOM.calcResultRewardUsd.textContent = "--";
+        if (DOM.calcResultRr) DOM.calcResultRr.textContent = "--";
+        return;
+    }
+
+    const slDiff = Math.abs(entry - sl);
+    let lots = 0;
+    let slDistText = "";
+    let unitsText = "";
+
+    if (pair === "XAUUSD") {
+        // Gold: 1 lot = 100 oz ($1 move = $100 per lot)
+        lots = riskUsd / (slDiff * 100);
+        slDistText = `${slDiff.toFixed(2)} Giá (${(slDiff * 10).toFixed(0)} Pips)`;
+        unitsText = `${(lots * 100).toFixed(1)} Ounces Vàng`;
+    } else if (pair === "BTCUSD") {
+        // Bitcoin: 1 lot = 1 BTC ($1 move = $1 per lot)
+        lots = riskUsd / slDiff;
+        slDistText = `$${slDiff.toFixed(1)}`;
+        unitsText = `${lots.toFixed(3)} Bitcoin`;
+    } else if (pair === "US100") {
+        // US100 / Nasdaq: 1 point = $1
+        lots = riskUsd / slDiff;
+        slDistText = `${slDiff.toFixed(1)} Điểm`;
+        unitsText = `${lots.toFixed(2)} Hợp đồng`;
+    } else if (pair.includes("JPY")) {
+        // Forex JPY: 1 pip = 0.01 ($10/pip per 1 standard lot)
+        const pips = slDiff / 0.01;
+        lots = riskUsd / (pips * 10);
+        slDistText = `${pips.toFixed(1)} Pips`;
+        unitsText = `${(lots * 100000).toLocaleString()} Đơn vị`;
+    } else {
+        // Standard Forex 5-digit: 1 pip = 0.0001 ($10/pip per 1 standard lot)
+        const pips = slDiff / 0.0001;
+        lots = riskUsd / (pips * 10);
+        slDistText = `${pips.toFixed(1)} Pips`;
+        unitsText = `${(lots * 100000).toLocaleString()} Đơn vị`;
+    }
+
+    if (lots < 0.01) lots = 0.01;
+    const formattedLots = lots >= 10 ? lots.toFixed(1) : lots.toFixed(2);
+
+    if (DOM.calcResultLots) DOM.calcResultLots.textContent = `${formattedLots} LOT`;
+    if (DOM.calcResultUnits) DOM.calcResultUnits.textContent = unitsText;
+    if (DOM.calcResultSlDist) DOM.calcResultSlDist.textContent = slDistText;
+
+    // TP Reward & RR
+    if (!isNaN(tp) && tp > 0 && tp !== entry) {
+        const tpDiff = Math.abs(tp - entry);
+        const rr = (tpDiff / slDiff).toFixed(2);
+        const rewardUsd = riskUsd * (tpDiff / slDiff);
+        if (DOM.calcResultRewardUsd) DOM.calcResultRewardUsd.textContent = `+$${rewardUsd.toFixed(2)}`;
+        if (DOM.calcResultRr) DOM.calcResultRr.textContent = `1 : ${rr}`;
+    } else {
+        if (DOM.calcResultRewardUsd) DOM.calcResultRewardUsd.textContent = "--";
+        if (DOM.calcResultRr) DOM.calcResultRr.textContent = "--";
+    }
+}
+
+// -------------------------------------------------------------
+// 1-Click Trade Card Screenshot Export Logic (html2canvas)
+// -------------------------------------------------------------
+
+async function handleExportTradeCard() {
+    const p = STATE.activePair;
+    const f = STATE.forecasts[p] || {};
+    const formattedPair = p === "XAUUSD" ? "XAU/USD (Spot Gold)" : (p === "BTCUSD" ? "BTC/USD (Bitcoin)" : (p === "US100" ? "US100 (Nasdaq 100)" : `${p.slice(0,3)}/${p.slice(3)}`));
+
+    // Populate Template
+    const tcPairName = document.getElementById("tc-pair-name");
+    const tcStratName = document.getElementById("tc-strat-name");
+    const tcBadgeBias = document.getElementById("tc-badge-bias");
+    const tcUpdatedDate = document.getElementById("tc-updated-date");
+    const tcRrVal = document.getElementById("tc-rr-val");
+    const tcEntryVal = document.getElementById("tc-entry-val");
+    const tcSlVal = document.getElementById("tc-sl-val");
+    const tcTp1Val = document.getElementById("tc-tp1-val");
+    const tcTp2Val = document.getElementById("tc-tp2-val");
+    const tcTriggerVal = document.getElementById("tc-trigger-val");
+
+    const bias = f.bias || "WAIT";
+    const biasText = bias === "BUY" ? "🟢 BUY ONLY" : (bias === "SELL" ? "🔴 SELL ONLY" : "🟡 WAIT SETUP");
+
+    if (tcPairName) tcPairName.textContent = formattedPair;
+    if (tcStratName) tcStratName.textContent = f.strategy || "SMC Order Block & Pure Price Action";
+    if (tcBadgeBias) {
+        tcBadgeBias.textContent = biasText;
+        tcBadgeBias.style.color = bias === "BUY" ? "#10b981" : (bias === "SELL" ? "#ef4444" : "#ffd700");
+        tcBadgeBias.style.borderColor = tcBadgeBias.style.color;
+    }
+    if (tcUpdatedDate) {
+        const today = new Date().toISOString().split('T')[0];
+        tcUpdatedDate.textContent = `Tuần: ${today} • Tùng Phạm Algo Lab`;
+    }
+    if (tcRrVal) tcRrVal.textContent = f.rr_ratio || "1:3.2";
+    if (tcEntryVal) tcEntryVal.textContent = f.entry_zone || "--";
+    if (tcSlVal) tcSlVal.textContent = f.stop_loss || "--";
+    if (tcTp1Val) tcTp1Val.textContent = f.tp1 || "--";
+    if (tcTp2Val) tcTp2Val.textContent = f.tp2 || "--";
+    if (tcTriggerVal) tcTriggerVal.textContent = f.trigger || "M15 Bullish CHOCH + displacement nến xác nhận + retest Order Block...";
+
+    const cardElem = document.getElementById("trade-card-export-template");
+    if (!cardElem) return;
+
+    if (typeof html2canvas === "undefined") {
+        showToast("Đang tải thư viện ảnh, vui lòng thử lại sau 2 giây...", "warning");
+        return;
+    }
+
+    try {
+        showToast("Đang tạo ảnh Card kịch bản chuẩn Quỹ...", "info");
+        const canvas = await html2canvas(cardElem, {
+            scale: 2,
+            backgroundColor: "#07080a",
+            useCORS: true,
+            logging: false
+        });
+
+        const imageUri = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = `TungPhamAlgoLab_${p}_Setup_${new Date().toISOString().split('T')[0]}.png`;
+        link.href = imageUri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast(`🎉 Đã tải ảnh Card kịch bản ${formattedPair} thành công!`, "success");
+    } catch (err) {
+        showToast("Lỗi khi render ảnh Card kịch bản.", "warning");
+    }
+}
+
 // Expose to window for inline onclicks
 window.openDonateModal = openDonateModal;
+window.openLotCalculator = openLotCalculator;
+window.handleExportTradeCard = handleExportTradeCard;
 
 // -------------------------------------------------------------
 // Event Listeners Setup
@@ -1362,6 +1691,39 @@ function setupEventListeners() {
     DOM.btnCancelModal.addEventListener("click", closeEditModal);
     DOM.editForm.addEventListener("submit", handleSaveScenario);
     if (DOM.btnTriggerTelegramAlert) DOM.btnTriggerTelegramAlert.addEventListener("click", handleTriggerTelegramAlert);
+
+    // Chart Mode Listeners (Single / Dual)
+    if (DOM.btnChartSingle) DOM.btnChartSingle.addEventListener("click", () => setChartMode("single"));
+    if (DOM.btnChartDual) DOM.btnChartDual.addEventListener("click", () => setChartMode("dual"));
+
+    // Lot Calculator Listeners
+    if (DOM.btnOpenLotCalc) DOM.btnOpenLotCalc.addEventListener("click", () => openLotCalculator());
+    if (DOM.btnOpenLotCalcHdr) DOM.btnOpenLotCalcHdr.addEventListener("click", () => openLotCalculator());
+    if (DOM.btnCloseCalcModal) DOM.btnCloseCalcModal.addEventListener("click", closeLotCalculator);
+    if (DOM.calcModal) {
+        DOM.calcModal.addEventListener("click", (e) => {
+            if (e.target === DOM.calcModal) closeLotCalculator();
+        });
+    }
+    if (DOM.calcPairSelect) DOM.calcPairSelect.addEventListener("change", () => openLotCalculator(DOM.calcPairSelect.value));
+    [DOM.calcBalanceInput, DOM.calcRiskInput, DOM.calcEntryInput, DOM.calcSlInput, DOM.calcTpInput].forEach(inp => {
+        if (inp) {
+            inp.addEventListener("input", calculateLotSize);
+            inp.addEventListener("change", calculateLotSize);
+        }
+    });
+    DOM.btnRiskPills.forEach(pill => {
+        pill.addEventListener("click", (e) => {
+            const risk = e.currentTarget.getAttribute("data-risk");
+            if (DOM.calcRiskInput) DOM.calcRiskInput.value = risk;
+            DOM.btnRiskPills.forEach(p => p.classList.remove("active"));
+            e.currentTarget.classList.add("active");
+            calculateLotSize();
+        });
+    });
+
+    // Trade Card Export Listener
+    if (DOM.btnExportTradeCard) DOM.btnExportTradeCard.addEventListener("click", handleExportTradeCard);
 
     // Donate Listeners
     if (DOM.btnOpenDonate) DOM.btnOpenDonate.addEventListener("click", openDonateModal);
@@ -1426,6 +1788,10 @@ function setupEventListeners() {
         await loadCalendar();
         renderCalendar();
     });
+
+    // Background Timers for Sessions & News
+    setInterval(updateMarketSessions, 10000);
+    setInterval(updateNextNewsCountdown, 30000);
 }
 
 // Start Application
