@@ -50,7 +50,7 @@
       }
     ],
     "rationale": "Vàng đang giữ cấu trúc tăng (Uptrend Structure) trên khung Daily & H4. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng Demand Order Block & Discount FVG (4615.82 - 4627.74), dừng lỗ SL theo ATR (4599.93) đặt an toàn dưới chân OB, hướng tới mục tiêu chốt lời thanh khoản BSL (4665.48 - 4699.25).",
-    "user_customized": false,
+    "user_customized": true,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
@@ -109,7 +109,7 @@
       }
     ],
     "rationale": "Bitcoin (BTC/USD) duy trì cấu trúc tăng trưởng mạnh mẽ 24/7. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (78757.82 - 79296.91) với SL 78064.71, hướng tới mục tiêu thanh khoản đỉnh BSL (81145.21 - 82762.47).",
-    "user_customized": false,
+    "user_customized": true,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
@@ -168,7 +168,7 @@
       }
     ],
     "rationale": "Chỉ số US100 (Nasdaq) duy trì cấu trúc tăng trưởng mạnh mẽ của nhóm cổ phiếu công nghệ. Kịch bản tuần: Canh BUY khi giá điều chỉnh về vùng FVG + Demand OB (29219.8 - 29264.6) với SL theo ATR (29162.2), hướng tới mục tiêu thanh khoản đỉnh BSL (29418.2 - 29552.6).",
-    "user_customized": false,
+    "user_customized": true,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",
@@ -309,7 +309,7 @@
       }
     ],
     "rationale": "CAD/CHF gặp cản đỉnh Range, canh SELL hồi tại 0.57938 - 0.57985 với SL 0.58045.",
-    "user_customized": false,
+    "user_customized": true,
     "user_notes": "",
     "news_driver": "Core PCE Price Index m/m",
     "sentiment": "NEUTRAL",

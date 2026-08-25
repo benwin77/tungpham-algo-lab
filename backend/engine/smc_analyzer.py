@@ -357,16 +357,13 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
 
 def build_all_weekly_forecasts(tech_data: Dict[str, Any], news_list: List[Dict[str, Any]], calendar_events: List[Dict[str, Any]], existing_file: str = "data/forecasts.json") -> Dict[str, Any]:
     """
-    Build or merge forecasts with user overrides.
+    Build or merge forecasts with existing saved forecasts.
     """
-    existing_user_edits = {}
+    existing_saved = {}
     if os.path.exists(existing_file):
         try:
             with open(existing_file, "r", encoding="utf-8") as f:
-                saved = json.load(f)
-                for k, v in saved.items():
-                    if v.get("user_customized", False):
-                        existing_user_edits[k] = v
+                existing_saved = json.load(f)
         except Exception as e:
             print(f"[SMCAnalyzer] Notice reading existing forecasts: {e}")
 
@@ -377,24 +374,27 @@ def build_all_weekly_forecasts(tech_data: Dict[str, Any], news_list: List[Dict[s
         sent = get_pair_sentiment_summary(pair_key, news_list)
         auto_setup = generate_smc_setup(pair_key, tech, sent, calendar_events)
         
-        # If user previously customized this pair, preserve user's custom settings
-        if pair_key in existing_user_edits:
-            custom = existing_user_edits[pair_key]
+        # If this pair exists in saved file, preserve its status and customizations
+        if pair_key in existing_saved:
+            saved_f = existing_saved[pair_key]
             auto_setup.update({
-                "bias": custom.get("bias", auto_setup["bias"]),
-                "bias_badge": custom.get("bias_badge", auto_setup["bias_badge"]),
-                "status": custom.get("status", auto_setup["status"]),
-                "entry_zone": custom.get("entry_zone", auto_setup["entry_zone"]),
-                "entry_low": custom.get("entry_low", auto_setup["entry_low"]),
-                "entry_high": custom.get("entry_high", auto_setup["entry_high"]),
-                "stop_loss": custom.get("stop_loss", auto_setup["stop_loss"]),
-                "tp1": custom.get("tp1", auto_setup["tp1"]),
-                "tp2": custom.get("tp2", auto_setup["tp2"]),
-                "rr_ratio": custom.get("rr_ratio", auto_setup["rr_ratio"]),
-                "rationale": custom.get("rationale", auto_setup["rationale"]),
-                "user_notes": custom.get("user_notes", ""),
-                "checklist": custom.get("checklist", auto_setup["checklist"]),
-                "user_customized": True
+                "bias": saved_f.get("bias", auto_setup["bias"]),
+                "bias_badge": saved_f.get("bias_badge", auto_setup["bias_badge"]),
+                "status": saved_f.get("status", auto_setup["status"]),
+                "entry_zone": saved_f.get("entry_zone", auto_setup["entry_zone"]),
+                "entry_low": saved_f.get("entry_low", auto_setup["entry_low"]),
+                "entry_high": saved_f.get("entry_high", auto_setup["entry_high"]),
+                "stop_loss": saved_f.get("stop_loss", auto_setup["stop_loss"]),
+                "tp1": saved_f.get("tp1", auto_setup["tp1"]),
+                "tp2": saved_f.get("tp2", auto_setup["tp2"]),
+                "rr_ratio": saved_f.get("rr_ratio", auto_setup["rr_ratio"]),
+                "rationale": saved_f.get("rationale", auto_setup["rationale"]),
+                "user_notes": saved_f.get("user_notes", ""),
+                "checklist": saved_f.get("checklist", auto_setup["checklist"]),
+                "user_customized": saved_f.get("user_customized", False),
+                "actual_entry": saved_f.get("actual_entry"),
+                "activated_at": saved_f.get("activated_at"),
+                "closed_at": saved_f.get("closed_at")
             })
             
         forecasts[pair_key] = auto_setup

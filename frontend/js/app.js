@@ -1483,7 +1483,7 @@ function updateNextNewsCountdown() {
     const diffHours = Math.floor(diffMins / 60);
     const remainMins = diffMins % 60;
 
-    DOM.nextNewsTitle.textContent = `${nextEvent.currency || 'USD'}: ${nextEvent.event || nextEvent.name}`;
+    DOM.nextNewsTitle.textContent = `${nextEvent.currency || 'USD'}: ${nextEvent.title || nextEvent.event || nextEvent.name || 'Economic Release'}`;
     if (diffHours > 0) {
         DOM.nextNewsTimer.textContent = `Sau ${diffHours}h ${remainMins}m`;
     } else {
