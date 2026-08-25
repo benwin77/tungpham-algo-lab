@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Main Style (Stealth Monochrome Dark Terminal) -->
-    <link rel="stylesheet" href="/static/css/style.css?v=6.2">
+    <link rel="stylesheet" href="/static/css/style.css?v=6.3">
 </head>
 <body class="stealth-dark-theme">
     <!-- Subtle Retro Grain Overlay -->
@@ -253,6 +253,10 @@
                         <i class="fa-solid fa-newspaper"></i>
                         <span>Tin Tức</span>
                     </button>
+                    <button class="tab-btn" data-tab="journal-tab">
+                        <i class="fa-solid fa-clipboard-check text-gold"></i>
+                        <span>Kèo Đã Ra</span>
+                    </button>
                     <button class="tab-btn" data-tab="quant-lab-tab">
                         <i class="fa-solid fa-microchip text-primary"></i>
                         <span>Quant Lab</span>
@@ -303,7 +307,49 @@
                     </div>
                 </div>
 
-                <!-- Tab 3: Quant Lab (Chiến lược Định lượng & Backtest 2019-2026) -->
+                <!-- Tab 3: Kèo Đã Ra (Nhật Ký & Thống Kê Winrate Thực Chiến) -->
+                <div class="tab-pane" id="journal-tab">
+                    <div class="journal-container">
+                        <!-- Live Winrate & RR Stats Header -->
+                        <div class="journal-stats-banner">
+                            <div class="j-stat-box">
+                                <span class="j-label">TỔNG KÈO</span>
+                                <strong class="j-val" id="journal-total-setups">0</strong>
+                            </div>
+                            <div class="j-stat-box">
+                                <span class="j-label">WIN RATE</span>
+                                <strong class="j-val text-success" id="journal-win-rate">0.0%</strong>
+                            </div>
+                            <div class="j-stat-box">
+                                <span class="j-label">NET TÍCH LŨY</span>
+                                <strong class="j-val text-gold" id="journal-net-r">+0.0R</strong>
+                            </div>
+                            <div class="j-stat-box">
+                                <span class="j-label">R:R TB</span>
+                                <strong class="j-val text-primary" id="journal-avg-rr">1:2.5</strong>
+                            </div>
+                        </div>
+
+                        <!-- Sub-bar & Action -->
+                        <div class="journal-sub-bar">
+                            <div class="j-sub-meta">
+                                <span><i class="fa-solid fa-circle-check text-success"></i> Thắng: <strong id="journal-wins">0</strong></span>
+                                <span><i class="fa-solid fa-circle-xmark text-danger"></i> Thua: <strong id="journal-losses">0</strong></span>
+                                <span><i class="fa-solid fa-scale-balanced text-dim"></i> Hòa: <strong id="journal-be">0</strong></span>
+                            </div>
+                            <button class="btn-sm btn-gold-outline" id="btn-open-add-journal" style="display: none;">
+                                <i class="fa-solid fa-plus"></i> Ghi Nhận Kèo
+                            </button>
+                        </div>
+
+                        <!-- Real Trades List -->
+                        <div class="journal-list" id="journal-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Quant Lab (Chiến lược Định lượng & Backtest 2019-2026) -->
                 <div class="tab-pane" id="quant-lab-tab">
                     <div class="quant-lab-container">
                         <div class="quant-header-box">
@@ -431,6 +477,14 @@
                     </div>
                 </div>
 
+                <!-- Optional: Save to Journal Checkbox -->
+                <div class="form-row" style="margin-top: -6px; margin-bottom: 10px;">
+                    <label class="custom-checkbox-row" style="display: flex; align-items: center; gap: 8px; font-size: 0.76rem; color: #ffd700; cursor: pointer;">
+                        <input type="checkbox" id="modal-chk-archive-journal" style="accent-color: #d4af37; width: 15px; height: 15px;">
+                        <span><i class="fa-solid fa-clipboard-check"></i> Đồng thời lưu kết quả vào <strong>Nhật Ký Kèo Đã Ra</strong> (khi chốt TP/SL)</span>
+                    </label>
+                </div>
+
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn-terminal btn-telegram-alert" id="btn-trigger-telegram-alert" title="Bắn cảnh báo setup ACTIVE tới kênh VIP Telegram">
@@ -441,6 +495,101 @@
                     <button type="submit" class="btn-terminal btn-primary" id="btn-save-scenario">
                         <i class="fa-solid fa-floppy-disk"></i>
                         <span>Lưu Kịch Bản Của Mr Tung</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Ghi Nhận Kèo Vào Nhật Ký (Dành cho Admin Mr Tung) -->
+    <div class="modal-overlay" id="journal-modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon"><i class="fa-solid fa-clipboard-check text-gold"></i></div>
+                    <div>
+                        <h3>Ghi Nhận Kèo Thực Chiến Đã Đóng</h3>
+                        <p class="modal-sub">Lưu vào bộ đếm thống kê Winrate %, Net R và R:R tích lũy từ hôm nay</p>
+                    </div>
+                </div>
+                <button class="btn-close-modal" id="btn-close-journal-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="journal-add-form" class="modal-form">
+                <!-- Row 1: Pair & Direction -->
+                <div class="form-row form-grid-2">
+                    <div class="form-group">
+                        <label for="j-input-pair"><i class="fa-solid fa-chart-line"></i> Cặp Tài Sản:</label>
+                        <select id="j-input-pair" class="form-input">
+                            <option value="XAUUSD">XAU/USD (Spot Gold)</option>
+                            <option value="BTCUSD">BTC/USD (Bitcoin)</option>
+                            <option value="US100">US100 (Nasdaq 100)</option>
+                            <option value="GBPUSD">GBP/USD</option>
+                            <option value="USDJPY">USD/JPY</option>
+                            <option value="CADCHF">CAD/CHF</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="j-input-direction"><i class="fa-solid fa-compass"></i> Hướng Lệnh:</label>
+                        <select id="j-input-direction" class="form-input">
+                            <option value="BUY">🟢 BUY</option>
+                            <option value="SELL">🔴 SELL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Strategy -->
+                <div class="form-group">
+                    <label for="j-input-strategy"><i class="fa-solid fa-crosshairs text-gold"></i> Tên Chiến Lược / Mô Hình:</label>
+                    <input type="text" id="j-input-strategy" class="form-input" placeholder="Ví dụ: SMC Order Block + London Judas Sweep" value="SMC Strategy" required>
+                </div>
+
+                <!-- Row 3: Entry, SL, TP -->
+                <div class="form-row form-grid-3">
+                    <div class="form-group">
+                        <label for="j-input-entry">Giá Entry:</label>
+                        <input type="text" id="j-input-entry" class="form-input" placeholder="Ví dụ: 2635.50" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="j-input-sl">Stop Loss (SL):</label>
+                        <input type="text" id="j-input-sl" class="form-input" placeholder="Ví dụ: 2625.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="j-input-tp">Take Profit (TP):</label>
+                        <input type="text" id="j-input-tp" class="form-input" placeholder="Ví dụ: 2665.00" required>
+                    </div>
+                </div>
+
+                <!-- Row 4: Result & R-Multiple -->
+                <div class="form-row form-grid-2">
+                    <div class="form-group">
+                        <label for="j-input-result"><i class="fa-solid fa-trophy"></i> Kết Quả Lệnh:</label>
+                        <select id="j-input-result" class="form-input select-bias">
+                            <option value="WIN">✅ THẮNG (Hit TP / R Dương)</option>
+                            <option value="LOSS">❌ THUA (Hit SL / -1.0R)</option>
+                            <option value="BE">⚖️ HÒA VỐN (Breakeven / 0R)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="j-input-r"><i class="fa-solid fa-calculator text-gold"></i> Số R Đạt Được (R-Value):</label>
+                        <input type="number" step="0.1" id="j-input-r" class="form-input input-gold" placeholder="Ví dụ: 2.5 hoặc -1.0" value="2.5" required>
+                    </div>
+                </div>
+
+                <!-- Row 5: Notes -->
+                <div class="form-group">
+                    <label for="j-input-notes"><i class="fa-solid fa-comment-dots"></i> Ghi Chú Thực Chiến:</label>
+                    <input type="text" id="j-input-notes" class="form-input" placeholder="Ví dụ: Khớp entry tại phiên Âu, chốt TP1 và gồng lời...">
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn-terminal btn-outline" id="btn-cancel-journal-modal">Hủy</button>
+                    <button type="submit" class="btn-terminal btn-primary" id="btn-submit-add-journal">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Lưu Vào Bộ Đếm</span>
                     </button>
                 </div>
             </form>
@@ -549,6 +698,6 @@
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     
     <!-- Application Logic -->
-    <script src="/static/js/app.js?v=6.2"></script>
+    <script src="/static/js/app.js?v=6.3"></script>
 </body>
 </html>

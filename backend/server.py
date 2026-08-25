@@ -217,6 +217,13 @@ def add_track_record(req: TrackRecordAddRequest, request: Request):
     save_track_record(records)
     return {"success": True, "record": new_record, "stats": calculate_track_record_stats(records)}
 
+@app.delete("/api/track-record/{record_id}")
+def delete_track_record(record_id: str, request: Request):
+    if not is_admin_authorized(request):
+        raise HTTPException(status_code=401, detail="Yêu cầu quyền Admin để xóa lệnh khỏi nhật ký!")
+    records = delete_track_record_entry(record_id)
+    return {"success": True, "stats": calculate_track_record_stats(records)}
+
 @app.get("/api/quant-lab")
 def get_quant_lab():
     strategies = load_quant_lab_data()

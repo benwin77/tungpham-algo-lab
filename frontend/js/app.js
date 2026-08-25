@@ -11,6 +11,7 @@ const STATE = {
     marketData: {},
     calendar: [],
     news: [],
+    journal: { stats: {}, records: [] },
     quantLab: [],
     tradingViewWidget: null,
     isAdmin: false,
@@ -87,6 +88,33 @@ const DOM = {
     newsBullVal: document.getElementById("news-bull-val"),
     newsBearVal: document.getElementById("news-bear-val"),
     matrixTbody: document.getElementById("matrix-tbody"),
+
+    // Journal elements
+    journalTotalSetups: document.getElementById("journal-total-setups"),
+    journalWinRate: document.getElementById("journal-win-rate"),
+    journalNetR: document.getElementById("journal-net-r"),
+    journalAvgRr: document.getElementById("journal-avg-rr"),
+    journalWins: document.getElementById("journal-wins"),
+    journalLosses: document.getElementById("journal-losses"),
+    journalBe: document.getElementById("journal-be"),
+    journalList: document.getElementById("journal-list"),
+    btnOpenAddJournal: document.getElementById("btn-open-add-journal"),
+
+    // Journal Modal
+    journalModal: document.getElementById("journal-modal-overlay"),
+    btnCloseJournalModal: document.getElementById("btn-close-journal-modal"),
+    btnCancelJournalModal: document.getElementById("btn-cancel-journal-modal"),
+    journalAddForm: document.getElementById("journal-add-form"),
+    jInputPair: document.getElementById("j-input-pair"),
+    jInputDirection: document.getElementById("j-input-direction"),
+    jInputStrategy: document.getElementById("j-input-strategy"),
+    jInputEntry: document.getElementById("j-input-entry"),
+    jInputSl: document.getElementById("j-input-sl"),
+    jInputTp: document.getElementById("j-input-tp"),
+    jInputResult: document.getElementById("j-input-result"),
+    jInputR: document.getElementById("j-input-r"),
+    jInputNotes: document.getElementById("j-input-notes"),
+    modalChkArchiveJournal: document.getElementById("modal-chk-archive-journal"),
 
     // Quant Lab elements
     quantStrategiesList: document.getElementById("quant-strategies-list"),
@@ -183,6 +211,7 @@ function updateAdminUI() {
         DOM.btnAdminAuth.innerHTML = `<i class="fa-solid fa-lock"></i> <span id="admin-btn-text">Admin Login</span>`;
         DOM.btnAdminAuth.title = "Dành riêng cho Mr Tung";
     }
+    renderJournal();
 }
 
 function openLoginModal(actionCallback = null) {
@@ -311,6 +340,7 @@ async function initDashboard() {
             loadForecasts(),
             loadCalendar(),
             loadNews(),
+            loadJournal(),
             loadQuantLab()
         ]);
         renderAll();
@@ -429,6 +459,17 @@ async function loadNews() {
     }
 }
 
+async function loadJournal() {
+    try {
+        const res = await fetch(`${API_BASE}/api/track-record`);
+        if (res.ok) {
+            STATE.journal = await res.json();
+        }
+    } catch (e) {
+        console.warn("Failed loading journal:", e);
+    }
+}
+
 async function loadQuantLab() {
     try {
         const res = await fetch(`${API_BASE}/api/quant-lab`);
@@ -468,6 +509,7 @@ function renderAll() {
     renderTradingViewWidget();
     renderCalendar();
     renderNews();
+    renderJournal();
     renderQuantLab();
     renderMatrixTable();
 }
@@ -601,6 +643,64 @@ function renderActivePairDetail() {
     // Chart header title
     const chartLabel = (p === "XAUUSD") ? "XAU/USD (Spot Gold)" : ((p === "BTCUSD") ? "BTC/USD (Bitcoin 24/7)" : ((p === "US100") ? "US100 (Nasdaq 100 Index)" : formattedPair));
     DOM.chartPairName.textContent = `Biểu Đồ Trực Tiếp: ${chartLabel}`;
+}
+
+function renderJournal() {
+    const stats = STATE.journal.stats || {};
+    const records = STATE.journal.records || [];
+
+    if (DOM.journalTotalSetups) DOM.journalTotalSetups.textContent = stats.total_setups || "0";
+    if (DOM.journalWinRate) DOM.journalWinRate.textContent = `${stats.win_rate || 0}%`;
+    if (DOM.journalNetR) DOM.journalNetR.textContent = stats.net_r || "+0.0R";
+    if (DOM.journalAvgRr) DOM.journalAvgRr.textContent = stats.avg_rr || "1:2.5";
+    if (DOM.journalWins) DOM.journalWins.textContent = stats.wins || "0";
+    if (DOM.journalLosses) DOM.journalLosses.textContent = stats.losses || "0";
+    if (DOM.journalBe) DOM.journalBe.textContent = stats.be || "0";
+
+    if (DOM.btnOpenAddJournal) {
+        DOM.btnOpenAddJournal.style.display = STATE.isAdmin ? "inline-flex" : "none";
+    }
+
+    if (!DOM.journalList) return;
+
+    if (records.length === 0) {
+        DOM.journalList.innerHTML = `
+            <div class="empty-journal-box">
+                <i class="fa-solid fa-chart-line text-gold"></i>
+                <h4>Bắt Đầu Đếm Kèo Thực Chiến Từ Hôm Nay</h4>
+                <p>Chưa có kèo nào kết thúc. Khi Mr Tung cập nhật kết quả các kèo đã xuất bản, Winrate % và R:R tích lũy sẽ được tính toán tự động và hiển thị tại đây!</p>
+                ${STATE.isAdmin ? `<button type="button" class="btn-sm btn-gold-action" style="margin-top:6px;" onclick="openJournalModal()"><i class="fa-solid fa-plus"></i> Ghi Nhận Kèo Đầu Tiên</button>` : ''}
+            </div>
+        `;
+        return;
+    }
+
+    DOM.journalList.innerHTML = records.map(r => {
+        const isWin = r.result === "WIN";
+        const isLoss = r.result === "LOSS";
+        const pillClass = isWin ? "win" : (isLoss ? "loss" : "be");
+        const formattedPair = r.pair === "XAUUSD" ? "XAU/USD" : (r.pair === "BTCUSD" ? "BTC/USD" : (r.pair === "US100" ? "US100" : `${r.pair.slice(0,3)}/${r.pair.slice(3)}`));
+        const dirIcon = r.direction === "BUY" ? "🟢 BUY" : "🔴 SELL";
+
+        const deleteBtnHtml = STATE.isAdmin ? `<button class="j-delete-btn" onclick="handleDeleteJournalEntry('${r.id}')" title="Xóa kèo này khỏi nhật ký"><i class="fa-solid fa-trash-can"></i></button>` : '';
+
+        return `
+            <div class="j-card">
+                ${deleteBtnHtml}
+                <div class="j-top-row">
+                    <div class="j-pair-badge">${formattedPair} • ${dirIcon} <span class="text-dim" style="font-weight:400; font-size:0.68rem;">(${r.date})</span></div>
+                    <span class="j-res-pill ${pillClass}">${r.r_multiple || (isWin ? `+${r.r_value}R` : `${r.r_value}R`)}</span>
+                </div>
+                <div class="j-strat-text"><i class="fa-solid fa-crosshairs text-gold"></i> ${r.strategy || "SMC Strategy"}</div>
+                <div class="j-levels-row">
+                    <span>Entry: <strong>${r.entry}</strong></span>
+                    <span>SL: <strong>${r.sl}</strong></span>
+                    <span>TP: <strong>${r.tp}</strong></span>
+                </div>
+                ${r.notes ? `<div class="j-notes">${r.notes}</div>` : ''}
+            </div>
+        `;
+    }).join("");
 }
 
 function renderQuantLab() {
@@ -965,6 +1065,46 @@ async function handleSaveScenario(e) {
             renderMatrixTable();
             closeEditModal();
             showToast(`Đã lưu kịch bản của Mr Tung cho ${p}!`, "success");
+
+            // Optional auto archive to Journal
+            if (DOM.modalChkArchiveJournal && DOM.modalChkArchiveJournal.checked) {
+                let resType = "WIN";
+                let rVal = 2.5;
+                if (status === "TP1_HIT") { resType = "WIN"; rVal = 2.0; }
+                else if (status === "TP2_HIT") { resType = "WIN"; rVal = 3.5; }
+                else if (status === "INVALIDATED") { resType = "LOSS"; rVal = -1.0; }
+                else if (status === "WAITING") { resType = "BE"; rVal = 0.0; }
+
+                const jPayload = {
+                    pair: p,
+                    direction: bias,
+                    strategy: trigger ? `SMC (${trigger.slice(0, 35)}...)` : "SMC Strategy",
+                    entry: entry,
+                    sl: sl.toString(),
+                    tp: (tp2 || tp1).toString(),
+                    r_multiple: rVal >= 0 ? `+${rVal}R` : `${rVal}R`,
+                    r_value: rVal,
+                    result: resType,
+                    notes: rationale || "Tự động ghi nhận từ kịch bản tuần khi chốt lệnh."
+                };
+
+                fetch(`${API_BASE}/api/track-record/add`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Admin-Token": STATE.adminToken
+                    },
+                    body: JSON.stringify(jPayload)
+                }).then(r => r.json()).then(jData => {
+                    if (jData.success) {
+                        STATE.journal.stats = jData.stats;
+                        if (!STATE.journal.records) STATE.journal.records = [];
+                        STATE.journal.records.unshift(jData.record);
+                        renderJournal();
+                        showToast(`Đã ghi nhận kết quả ${p} vào Nhật Ký Kèo!`, "success");
+                    }
+                }).catch(() => {});
+            }
         } else if (res.status === 401) {
             showToast("Hết phiên đăng nhập Admin! Vui lòng đăng nhập lại.", "warning");
             openLoginModal();
@@ -1009,6 +1149,115 @@ async function handleResetScenario() {
     }
 }
 
+function openJournalModal() {
+    if (!STATE.isAdmin) {
+        showToast("Vui lòng đăng nhập mật khẩu Admin để ghi nhận kèo!", "info");
+        openLoginModal(openJournalModal);
+        return;
+    }
+    if (DOM.jInputPair) DOM.jInputPair.value = STATE.activePair || "XAUUSD";
+    const f = STATE.forecasts[STATE.activePair] || {};
+    if (DOM.jInputDirection) DOM.jInputDirection.value = (f.bias === "SELL") ? "SELL" : "BUY";
+    if (DOM.jInputStrategy) DOM.jInputStrategy.value = f.strategy || "SMC Order Block & Liquidity";
+    if (DOM.jInputEntry && f.entry) DOM.jInputEntry.value = f.entry;
+    if (DOM.jInputSl && f.sl) DOM.jInputSl.value = f.sl;
+    if (DOM.jInputTp && f.tp1) DOM.jInputTp.value = f.tp2 || f.tp1;
+
+    if (DOM.journalModal) DOM.journalModal.classList.add("active");
+}
+
+function closeJournalModal() {
+    if (DOM.journalModal) DOM.journalModal.classList.remove("active");
+}
+
+async function handleAddJournalSubmit(e) {
+    e.preventDefault();
+    if (!STATE.isAdmin) {
+        showToast("Vui lòng đăng nhập Admin để ghi nhận kèo!", "warning");
+        return;
+    }
+
+    const pair = DOM.jInputPair.value;
+    const direction = DOM.jInputDirection.value;
+    const strategy = DOM.jInputStrategy.value.trim() || "SMC Strategy";
+    const entry = DOM.jInputEntry.value.trim();
+    const sl = DOM.jInputSl.value.trim();
+    const tp = DOM.jInputTp.value.trim();
+    const result = DOM.jInputResult.value;
+    const rValue = parseFloat(DOM.jInputR.value) || 0;
+    const rMultiple = rValue >= 0 ? `+${rValue}R` : `${rValue}R`;
+    const notes = DOM.jInputNotes.value.trim();
+
+    const payload = {
+        pair,
+        direction,
+        strategy,
+        entry,
+        sl,
+        tp,
+        r_multiple: rMultiple,
+        r_value: rValue,
+        result,
+        notes
+    };
+
+    try {
+        const res = await fetch(`${API_BASE}/api/track-record/add`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Admin-Token": STATE.adminToken
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            STATE.journal.stats = data.stats;
+            if (!STATE.journal.records) STATE.journal.records = [];
+            STATE.journal.records.unshift(data.record);
+            renderJournal();
+            closeJournalModal();
+            showToast("Đã lưu kèo vào Nhật Ký và cập nhật Winrate!", "success");
+        } else {
+            showToast("Lỗi khi ghi nhận kèo.", "warning");
+        }
+    } catch (err) {
+        showToast("Không thể kết nối máy chủ.", "warning");
+    }
+}
+
+async function handleDeleteJournalEntry(recordId) {
+    if (!STATE.isAdmin) {
+        showToast("Vui lòng đăng nhập Admin để xóa!", "warning");
+        return;
+    }
+    if (!confirm("Mr Tung có chắc muốn xóa kèo này khỏi nhật ký?")) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/track-record/${recordId}`, {
+            method: "DELETE",
+            headers: {
+                "X-Admin-Token": STATE.adminToken
+            }
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            STATE.journal.stats = data.stats;
+            STATE.journal.records = STATE.journal.records.filter(r => r.id !== recordId);
+            renderJournal();
+            showToast("Đã xóa kèo khỏi nhật ký!", "info");
+        }
+    } catch (err) {
+        showToast("Lỗi khi xóa kèo.", "warning");
+    }
+}
+
+// Expose to window for inline onclicks
+window.openJournalModal = openJournalModal;
+window.handleDeleteJournalEntry = handleDeleteJournalEntry;
+
 async function handleExportText() {
     try {
         const res = await fetch(`${API_BASE}/api/export-text`);
@@ -1044,6 +1293,12 @@ function setupEventListeners() {
     DOM.btnCancelModal.addEventListener("click", closeEditModal);
     DOM.editForm.addEventListener("submit", handleSaveScenario);
     if (DOM.btnTriggerTelegramAlert) DOM.btnTriggerTelegramAlert.addEventListener("click", handleTriggerTelegramAlert);
+
+    // Journal Modal Listeners
+    if (DOM.btnOpenAddJournal) DOM.btnOpenAddJournal.addEventListener("click", openJournalModal);
+    if (DOM.btnCloseJournalModal) DOM.btnCloseJournalModal.addEventListener("click", closeJournalModal);
+    if (DOM.btnCancelJournalModal) DOM.btnCancelJournalModal.addEventListener("click", closeJournalModal);
+    if (DOM.journalAddForm) DOM.journalAddForm.addEventListener("submit", handleAddJournalSubmit);
 
     // Admin Auth Listeners
     DOM.btnAdminAuth.addEventListener("click", handleAdminButtonClick);
