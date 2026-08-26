@@ -424,12 +424,12 @@ function startRealtimeTickerStream() {
                 }
                 STATE.marketData["BTCUSD"].current_price = parseFloat(price);
                 STATE.marketData["BTCUSD"].change_pct = parseFloat(chg);
+                if (STATE.forecasts["BTCUSD"]) {
+                    STATE.forecasts["BTCUSD"].current_price = parseFloat(price);
+                }
 
                 renderTickerRibbon();
-                
-                // Update active BTC card price & detail if active
-                const btcCard = document.querySelector(".asset-card:nth-child(2) .ac-price");
-                if (btcCard) btcCard.textContent = price;
+                renderAssetGrid();
                 
                 if (STATE.activePair === "BTCUSD") {
                     const priceSub = document.querySelector(".detail-stat-card .stat-val");
@@ -441,13 +441,18 @@ function startRealtimeTickerStream() {
         }
     }
 
-    // 2. Poll backend market-data every 4s for Forex, Gold & US100
+    // 2. Poll backend market-data every 3s for Forex, Gold & US100
     async function updateLiveMarket() {
         try {
             const res = await fetch(`${API_BASE}/api/market-data`);
             if (res.ok) {
                 const data = await res.json();
                 Object.assign(STATE.marketData, data);
+                for (const p in data) {
+                    if (STATE.forecasts[p] && data[p].current_price !== undefined) {
+                        STATE.forecasts[p].current_price = data[p].current_price;
+                    }
+                }
                 renderTickerRibbon();
                 renderAssetGrid();
 
