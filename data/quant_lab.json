@@ -13,8 +13,7 @@
     "sharpe_ratio": 2.45,
     "net_profit_r": "+22.45% (Net +$2,245)",
     "description": "Thuật toán SMC thế hệ mới kết hợp nhận diện Order Block vi mô, quét thanh khoản SFP, chốt lời đa tầng (TP1 +1.5R chốt 50% & kéo SL về Breakeven hòa vốn, TP2 +3.5R). Đã kiểm thử 4 năm thực chiến trên nền tảng Quỹ FTMO với Max Drawdown chỉ 4.84%.",
-    "badge": "⚡️ FTMO VERIFIED (4 NĂM)",
-    "download_url": "/api/cbot/download"
+    "badge": "⚡️ FTMO VERIFIED (4 NĂM)"
   },
   {
     "id": "quant_vn30f",

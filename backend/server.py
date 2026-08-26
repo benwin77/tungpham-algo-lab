@@ -236,13 +236,6 @@ def get_quant_lab():
         "strategies": strategies
     }
 
-@app.get("/api/cbot/download")
-def download_cbot():
-    cbot_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "cbot", "TungPhamAlgoLab_SMC_Bot.cs")
-    if not os.path.exists(cbot_path):
-        raise HTTPException(status_code=404, detail="cBot file not found")
-    return FileResponse(cbot_path, filename="TungPhamAlgoLab_SMC_Bot.cs", media_type="text/plain")
-
 @app.post("/api/alerts/telegram")
 def trigger_telegram_alert(req: TelegramAlertRequest, request: Request):
     if not is_admin_authorized(request):
