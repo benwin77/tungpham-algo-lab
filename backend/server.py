@@ -355,7 +355,15 @@ def get_forecasts():
                 APP_STATE["forecasts"] = saved
         except Exception:
             pass
-    return APP_STATE.get("forecasts", {})
+            
+    # CRITICAL: Luôn tiêm giá thị trường thời gian thực (Live Price) mới nhất vào kịch bản
+    forecasts = APP_STATE.get("forecasts", {})
+    tech = APP_STATE.get("tech_data", {})
+    for p, f_item in forecasts.items():
+        if p in tech and tech[p].get("current_price") is not None:
+            f_item["current_price"] = tech[p]["current_price"]
+            
+    return forecasts
 
 @app.post("/api/forecasts/update")
 def update_forecast(req: ForecastUpdateRequest, request: Request):

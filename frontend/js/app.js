@@ -602,16 +602,18 @@ function renderAssetGrid() {
         const biasBadge = bias === "BUY" ? "🟢 BUY" : (bias === "SELL" ? "🔴 SELL" : "⚪️ WAIT");
         const formattedPair = p === "XAUUSD" ? "XAU/USD" : (p === "BTCUSD" ? "BTC/USD" : (p === "US100" ? "US100" : `${p.slice(0,3)}/${p.slice(3)}`));
 
+        const livePrice = (m.current_price !== undefined && m.current_price !== null && m.current_price !== "") ? m.current_price : (f.current_price || "--");
+
         return `
             <div class="asset-card ${isGold} ${isActive}" onclick="switchPair('${p}')">
                 <div class="ac-top">
                     <span class="ac-pair">${formattedPair}</span>
                     <span class="ac-bias-pill ${biasClass}">${biasBadge}</span>
                 </div>
-                <div class="ac-price">${m.current_price || f.current_price || "--"}</div>
+                <div class="ac-price">${livePrice}</div>
                 <div class="ac-sub">
-                    <span>${f.status || "PLANNING"}</span>
-                    <span class="ac-rr">R:R ${f.rr_ratio || "1:3"}</span>
+                    <span>${f.status || "WAITING"}</span>
+                    <span class="ac-rr">R:R ${f.rr_ratio || "1:3.5"}</span>
                 </div>
             </div>
         `;
