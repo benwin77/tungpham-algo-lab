@@ -417,7 +417,8 @@ def generate_smc_setup(pair: str, tech: Dict[str, Any], sent: Dict[str, Any], ca
 
 def build_all_weekly_forecasts(tech_data: Dict[str, Any], news_list: List[Dict[str, Any]], calendar_events: List[Dict[str, Any]], existing_file: str = "data/forecasts.json") -> Dict[str, Any]:
     """
-    Build or merge forecasts with existing saved forecasts.
+    Build fresh, 100% accurate algorithmic SMC forecasts adapted to current live market prices.
+    Preserves active trade execution only if a trade is currently in flight.
     """
     existing_saved = {}
     if os.path.exists(existing_file):
@@ -434,28 +435,32 @@ def build_all_weekly_forecasts(tech_data: Dict[str, Any], news_list: List[Dict[s
         sent = get_pair_sentiment_summary(pair_key, news_list)
         auto_setup = generate_smc_setup(pair_key, tech, sent, calendar_events)
         
-        # If this pair exists in saved file, preserve its status and customizations
+        # Only preserve active trade state if trade is ACTIVE
         if pair_key in existing_saved:
             saved_f = existing_saved[pair_key]
-            auto_setup.update({
-                "bias": saved_f.get("bias", auto_setup["bias"]),
-                "bias_badge": saved_f.get("bias_badge", auto_setup["bias_badge"]),
-                "status": saved_f.get("status", auto_setup["status"]),
-                "entry_zone": saved_f.get("entry_zone", auto_setup["entry_zone"]),
-                "entry_low": saved_f.get("entry_low", auto_setup["entry_low"]),
-                "entry_high": saved_f.get("entry_high", auto_setup["entry_high"]),
-                "stop_loss": saved_f.get("stop_loss", auto_setup["stop_loss"]),
-                "tp1": saved_f.get("tp1", auto_setup["tp1"]),
-                "tp2": saved_f.get("tp2", auto_setup["tp2"]),
-                "rr_ratio": saved_f.get("rr_ratio", auto_setup["rr_ratio"]),
-                "rationale": saved_f.get("rationale", auto_setup["rationale"]),
-                "user_notes": saved_f.get("user_notes", ""),
-                "checklist": saved_f.get("checklist", auto_setup["checklist"]),
-                "user_customized": saved_f.get("user_customized", False),
-                "actual_entry": saved_f.get("actual_entry"),
-                "activated_at": saved_f.get("activated_at"),
-                "closed_at": saved_f.get("closed_at")
-            })
+            saved_status = saved_f.get("status", "WAITING")
+            
+            # If trade is actively in flight, keep its locked entry/sl/tp
+            if saved_status == "ACTIVE" and saved_f.get("actual_entry"):
+                auto_setup.update({
+                    "bias": saved_f.get("bias", auto_setup["bias"]),
+                    "bias_badge": saved_f.get("bias_badge", auto_setup["bias_badge"]),
+                    "status": "ACTIVE",
+                    "entry_zone": saved_f.get("entry_zone", auto_setup["entry_zone"]),
+                    "entry_low": saved_f.get("entry_low", auto_setup["entry_low"]),
+                    "entry_high": saved_f.get("entry_high", auto_setup["entry_high"]),
+                    "stop_loss": saved_f.get("stop_loss", auto_setup["stop_loss"]),
+                    "tp1": saved_f.get("tp1", auto_setup["tp1"]),
+                    "tp2": saved_f.get("tp2", auto_setup["tp2"]),
+                    "rr_ratio": saved_f.get("rr_ratio", auto_setup["rr_ratio"]),
+                    "actual_entry": saved_f.get("actual_entry"),
+                    "activated_at": saved_f.get("activated_at"),
+                    "user_customized": saved_f.get("user_customized", False),
+                    "user_notes": saved_f.get("user_notes", "")
+                })
+            else:
+                # In WAITING status: Always use fresh mathematically accurate setup
+                auto_setup["user_notes"] = saved_f.get("user_notes", "")
             
         forecasts[pair_key] = auto_setup
         
