@@ -807,7 +807,7 @@ function renderTradingViewWidget() {
     let tvSymbol = "OANDA:XAUUSD";
     if (p === "XAUUSD") tvSymbol = "OANDA:XAUUSD";
     else if (p === "BTCUSD") tvSymbol = "BINANCE:BTCUSDT";
-    else if (p === "US100") tvSymbol = "PEPPERSTONE:NAS100";
+    else if (p === "US100") tvSymbol = "CME_MINI:NQ1!";
     else if (p === "GBPUSD") tvSymbol = "FX:GBPUSD";
     else if (p === "USDJPY") tvSymbol = "FX:USDJPY";
     else if (p === "CADCHF") tvSymbol = "FX:CADCHF";

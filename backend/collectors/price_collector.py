@@ -7,7 +7,7 @@ from typing import Dict, Any, Optional
 SYMBOL_MAP = {
     "XAUUSD": {"ticker": "GC=F", "name": "Gold / U.S. Dollar (Spot XAU/USD)", "digits": 2, "tv_symbol": "OANDA:XAUUSD"},
     "BTCUSD": {"ticker": "BTC-USD", "name": "Bitcoin / U.S. Dollar (BTC/USD 24/7)", "digits": 2, "tv_symbol": "BINANCE:BTCUSDT"},
-    "US100":  {"ticker": "NQ=F", "name": "US100 (Nasdaq 100 Index)", "digits": 2, "tv_symbol": "PEPPERSTONE:NAS100"},
+    "US100":  {"ticker": "NQ=F", "name": "US100 (Nasdaq 100 E-mini Futures)", "digits": 1, "tv_symbol": "CME_MINI:NQ1!"},
     "GBPUSD": {"ticker": "GBPUSD=X", "name": "GBP / U.S. Dollar", "digits": 5, "tv_symbol": "FX:GBPUSD"},
     "USDJPY": {"ticker": "USDJPY=X", "name": "USD / Japanese Yen", "digits": 3, "tv_symbol": "FX:USDJPY"},
     "CADCHF": {"ticker": "CADCHF=X", "name": "CAD / Swiss Franc", "digits": 5, "tv_symbol": "FX:CADCHF"}
@@ -83,58 +83,56 @@ def fetch_tradingview_spot_data() -> Dict[str, Dict[str, Any]]:
     except Exception as e:
         print(f"[PriceCollector] Binance live feed notice: {e}")
 
-    # 3. US100 / Nasdaq Index Spot (Live 24/5 continuous CFD & Futures feed from NQ=F)
+    # 3. US100 / Nasdaq Index Spot (Live TradingView Futures scan for CME_MINI:NQ1!)
     try:
-        t_nq = yf.Ticker("NQ=F")
-        p = getattr(t_nq.fast_info, "last_price", None)
-        h = getattr(t_nq.fast_info, "day_high", None)
-        l = getattr(t_nq.fast_info, "day_low", None)
-        prev = getattr(t_nq.fast_info, "previous_close", None)
-        
-        if not p:
-            t_ndx = yf.Ticker("^NDX")
-            p = getattr(t_ndx.fast_info, "last_price", None)
-            h = getattr(t_ndx.fast_info, "day_high", None)
-            l = getattr(t_ndx.fast_info, "day_low", None)
-            prev = getattr(t_ndx.fast_info, "previous_close", None)
-            
-        if p:
-            close_p = round(float(p), 1)
-            high_p = round(float(h or close_p * 1.005), 1)
-            low_p = round(float(l or close_p * 0.995), 1)
-            prev_p = float(prev or close_p)
-            chg = round(close_p - prev_p, 1)
-            chg_pct = round((chg / prev_p) * 100, 2) if prev_p else 0.0
-            results["US100"] = {
-                "current_price": close_p,
-                "change_pct": chg_pct,
-                "change": chg,
-                "swing_high": high_p,
-                "swing_low": low_p,
-                "weekly_open": round(prev_p, 1),
-                "weekly_high": high_p,
-                "weekly_low": low_p,
-                "ema50": round(close_p * 0.99, 1),
-                "ema200": round(close_p * 0.93, 1),
-                "atr": round(high_p - low_p or 250.0, 1),
-            }
+        url_fut = "https://scanner.tradingview.com/futures/scan"
+        payload_fut = {
+            "symbols": {"tickers": ["CME_MINI:NQ1!"]},
+            "columns": ["close", "change", "change_abs", "high", "low", "open", "EMA50", "EMA200", "ATR"]
+        }
+        r_f = requests.post(url_fut, json=payload_fut, headers=headers, timeout=5)
+        if r_f.status_code == 200:
+            d_f = r_f.json().get("data", [])
+            if d_f and len(d_f[0].get("d", [])) >= 9:
+                d = d_f[0]["d"]
+                close_p = round(float(d[0]), 1)
+                results["US100"] = {
+                    "current_price": close_p,
+                    "change_pct": round(float(d[1] or 0), 2),
+                    "change": round(float(d[2] or 0), 1),
+                    "swing_high": round(float(d[3] or close_p * 1.005), 1),
+                    "swing_low": round(float(d[4] or close_p * 0.995), 1),
+                    "weekly_open": round(float(d[5] or close_p), 1),
+                    "weekly_high": round(float(d[3] or close_p * 1.005), 1),
+                    "weekly_low": round(float(d[4] or close_p * 0.995), 1),
+                    "ema50": round(float(d[6] or close_p * 0.99), 1),
+                    "ema200": round(float(d[7] or close_p * 0.93), 1),
+                    "atr": round(float(d[8] or 250.0), 1),
+                }
     except Exception as e:
-        print(f"[PriceCollector] US100 live feed notice: {e}")
+        print(f"[PriceCollector] US100 futures scan notice: {e}")
         
     if "US100" not in results:
-        results["US100"] = {
-            "current_price": 29312.00,
-            "change_pct": 0.32,
-            "change": 92.50,
-            "swing_high": 29420.00,
-            "swing_low": 28950.00,
-            "weekly_open": 29250.00,
-            "weekly_high": 29420.00,
-            "weekly_low": 28950.00,
-            "ema50": 29150.00,
-            "ema200": 27200.00,
-            "atr": 280.0,
-        }
+        try:
+            t_nq = yf.Ticker("NQ=F")
+            p = getattr(t_nq.fast_info, "last_price", None)
+            if p:
+                close_p = round(float(p), 1)
+                results["US100"] = {
+                    "current_price": close_p,
+                    "change_pct": 0.5,
+                    "change": 120.0,
+                    "swing_high": round(close_p * 1.005, 1),
+                    "swing_low": round(close_p * 0.995, 1),
+                    "weekly_open": close_p,
+                    "weekly_high": round(close_p * 1.005, 1),
+                    "weekly_low": round(close_p * 0.995, 1),
+                    "ema50": round(close_p * 0.99, 1),
+                    "ema200": round(close_p * 0.93, 1),
+                    "atr": 250.0,
+                }
+        except Exception:
+            pass
 
     # 4. Spot Forex Pairs (USDJPY, GBPUSD, CADCHF)
     url_fx = "https://scanner.tradingview.com/forex/scan"
